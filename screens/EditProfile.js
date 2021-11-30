@@ -5,6 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 import ImagePicker from 'react-native-image-crop-picker';
+import DropDownPicker from "react-native-custom-dropdown";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import auth from '@react-native-firebase/auth';

@@ -83,7 +83,7 @@ export const login = async (email, password, setIsLoading) => {
             });
     })
 };
-export const signup = async (email, password, firstName, lastName, image) => {
+export const signup = async (email, password, firstName, lastName, image, interest) => {
     const uploadUri = image;
     let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
     console.log('image1=',filename);
@@ -103,7 +103,7 @@ export const signup = async (email, password, firstName, lastName, image) => {
                 try {
                     await AsyncStorage.setItem(
                         'uid',
-                        JSON.stringify(user)
+                        JSON.stringify(user),
                     );
                 } catch (error) {
                     // Error saving data
@@ -116,6 +116,7 @@ export const signup = async (email, password, firstName, lastName, image) => {
                         lastname: lastName,
                         email: email,
                         image: url,
+                        interest: interest,
                         fcmtoken: fcmToken,
                     })
                     .then(() => {
@@ -125,7 +126,7 @@ export const signup = async (email, password, firstName, lastName, image) => {
                 resolve({ status: true, user: user });
             })
             .catch(error => {
-                if (error.code === 'storage/unauthorized') {
+                if (error.code === '[storage/unauthorized]') {
                     console.log('That email address is already in use!');
                     reject({ status: false, error: "That email address is already in use!" });
                 }

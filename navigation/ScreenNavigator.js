@@ -27,7 +27,7 @@ export const ScreenNavigator = () => {
         console.log('Token=', fcmToken);
     }
     useEffect( async () => {
-        await auth().signInAnonymously()
+        await auth().signInAnonymously();
         getFCMToken()
         const unsubscribe = messaging().onMessage(async remoteMessage => {
             Alert.alert(

@@ -32,8 +32,9 @@ const SignUp = ({ navigation }) => {
     const [value, setValue] = useState(null);
     const [items, setItems] = useState([
         { label: 'Apple', value: 'apple' },
-        { label: 'Banana', value: 'banana' }
-    ])
+        { label: 'Banana', value: 'banana' },
+    ]);
+    const [interest, setInterest] = useState('');
     // const reference = storage().ref('Images.profile');
     const goToPickImage = () => {
         ImagePicker.openPicker({
@@ -70,7 +71,7 @@ const SignUp = ({ navigation }) => {
     }
     const signUp = async () => {
         if (validate_field()) {
-            signup(email, password, firstName, lastName, image)
+            signup(email, password, firstName, lastName, image, interest)
                 .then((user) => {
                     console.log('user=', user);
                     navigation.replace('SignIn');
@@ -114,6 +115,7 @@ const SignUp = ({ navigation }) => {
                         style={styles.picker}
                         containerStyle={{ height: h('7%') }}
                         arrowColor='#8B8B8B'
+                        onChangeItem={(interest)=>setInterest(interest)}
                         style={{
                             borderTopLeftRadius: 50, borderTopRightRadius: 50,
                             borderBottomLeftRadius: 50, borderBottomRightRadius: 50,
@@ -125,7 +127,6 @@ const SignUp = ({ navigation }) => {
                             flex: 1
                         }}
                     />
-                    {console.log(value)}
                 </View>
                 <Input placeholder='E-mail Address' value={email} onChangeText={(email) => setEmail(email)} />
                 <Input
