@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from "react-native";
-import {widthPercentageToDP as w, heightPercentageToDP as h} from 'react-native-responsive-screen';
+import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const Input = ({navigation, placeholder, onChangeText, value, icon, secureTextEntry}) => {
-    return(
+const Input = ({ navigation, placeholder, onChangeText, value, icon, secureTextEntry }) => {
+    return (
         <View style={styles.input}>
             <TextInput
                 placeholder={placeholder}
@@ -14,9 +14,9 @@ const Input = ({navigation, placeholder, onChangeText, value, icon, secureTextEn
                 onChangeText={onChangeText}
                 value={value}
                 secureTextEntry={secureTextEntry}
-                style={{flex:1}}
+                style={{ flex: 1 }}
             />
-            <View style={styles.text}>{icon}</View>
+            <View style={styles.icon}>{icon}</View>
         </View>
     );
 };
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center'
     },
-    text: {
+    icon: {
         color: '#8B8B8B'
     },
 });

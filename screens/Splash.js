@@ -1,20 +1,20 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, ScrollView, ImageBackground, Dimensions } from "react-native";
 
-import {widthPercentageToDP as w, heightPercentageToDP as h} from 'react-native-responsive-screen';
+import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 
 import { Images } from "../content/Images";
 
 // import messaging from '@react-native-firebase/messaging';
 
 
-const {height, width} = Dimensions.get('screen');
-const Splash = ({navigation}) => {
+const { height, width } = Dimensions.get('screen');
+const Splash = ({ navigation }) => {
     setTimeout(() => {
-        navigation.replace("LogIn"); 
+        navigation.replace("LogIn");
     }, 5000);
-    return(
-        <View style={{flex:1}}>
+    return (
+        <View style={{ flex: 1 }}>
             <ImageBackground style={styles.black}>
                 <Image
                     style={styles.logo}
@@ -25,7 +25,7 @@ const Splash = ({navigation}) => {
             </ImageBackground>
             <ImageBackground
                 source={Images.sound_wave}
-                resizeMode="contain"
+                // resizeMode="contain"
                 style={styles.wave}
             >
             </ImageBackground>
@@ -51,10 +51,11 @@ const styles = StyleSheet.create({
         bottom: ('10%'),
         alignSelf: 'center',
         fontSize: 18,
+        fontFamily: 'Roboto-Regular',
     },
     wave: {
-        height: height*0.4,
-        width: width*1,
+        height: height * 0.4,
+        width: width * 1,
         // position: 'absolute',
         bottom: '20%',
     },

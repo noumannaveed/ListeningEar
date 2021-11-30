@@ -1,15 +1,16 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
-import {widthPercentageToDP as w, heightPercentageToDP as h} from 'react-native-responsive-screen';
+import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 import Button from "../content/contacts/Button";
 import Button1 from "../content/contacts/Button1";
 
 
+
 import { Images } from "../content/Images";
 
-const LogIn = ({navigation}) => {
-    return(
+const LogIn = ({ navigation }) => {
+    return (
         <View>
             <Image
                 source={Images.logo1}
@@ -18,8 +19,8 @@ const LogIn = ({navigation}) => {
             />
             <Text style={styles.text}>Your Place For The Unbias Opinion</Text>
             <Text style={styles.text1}>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</Text>
-            <Button title='Login'/>
-            <Button1 title='Create Profile' onPress={()=>navigation.navigate('SignUp')}/>
+            <Button title='Login' onPress={() => navigation.replace('SignIn')} />
+            <Button1 title='Create Profile' onPress={() => navigation.navigate('SignUp')} />
         </View>
     );
 };
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     },
     text: {
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontFamily: 'Roboto-Bold',
         fontSize: 15,
         color: 'black',
     },
@@ -42,6 +43,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: w('16%'),
         paddingVertical: h('3%'),
         fontSize: 15,
+        fontFamily: 'Roboto-Regular',
+        color: '#8B8B8B',
     },
     text2: {
         textAlign: 'center',

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, Acces
 
 import Octicons from 'react-native-vector-icons/Octicons';
 
-import {widthPercentageToDP as w, heightPercentageToDP as h} from 'react-native-responsive-screen';
+import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 
 
 import { Images } from "../content/Images";
@@ -11,10 +11,10 @@ import Header from "../content/contacts/Header";
 import Input from "../content/contacts/Input";
 import Button from "../content/contacts/Button";
 
-const ProfileQuestion = ({navigation}) => {
-    return(
+const ProfileQuestion = ({ navigation }) => {
+    return (
         <View>
-            <Header title='Profile Question' onPress={()=>navigation.goBack()}/>
+            <Header title='Profile Question' onPress={() => navigation.goBack()} />
             <View style={styles.main}>
                 <ImageBackground
                     style={styles.image}
@@ -58,12 +58,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         // alignItems: 'center',
         marginVertical: h('2%'),
-        marginHorizontal: w('10%')
+        marginHorizontal: w('10%'),
     },
     text: {
         color: '#8B8B8B',
         paddingHorizontal: '10%',
-        fontSize: 18
+        fontSize: 18,
+        fontFamily: 'Roboto-Regular',
     },
 });
 

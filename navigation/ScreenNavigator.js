@@ -1,7 +1,7 @@
-import React,{useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Alert } from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import Splash from '../screens/Splash';
 import LogIn from '../screens/LogIn';
 import SignUp from '../screens/SignUp';
@@ -15,25 +15,28 @@ import ThankYou from '../screens/ThankYou';
 
 const Stack = createStackNavigator();
 
+import auth from '@react-native-firebase/auth'
 import messaging from '@react-native-firebase/messaging';
+import SignIn from '../screens/SignIn';
+import EditProfile from '../screens/EditProfile';
 
 export const ScreenNavigator = () => {
     const getFCMToken = async () => {
-            const fcmToken = await messaging().getToken();
-            // return fcmToken;
-            console.log('Token=',fcmToken);
-        }
-      useEffect(()=>{
-          getFCMToken()
-          const unsubscribe = messaging().onMessage(async remoteMessage => {
+        const fcmToken = await messaging().getToken();
+        // return fcmToken;
+        console.log('Token=', fcmToken);
+    }
+    useEffect( async () => {
+        await auth().signInAnonymously()
+        getFCMToken()
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
             Alert.alert(
-                // remoteMessage.notification.title,
-                 JSON.stringify(remoteMessage.notification.title),
-                 JSON.stringify(remoteMessage.notification.body));
-          });
-          return unsubscribe;
-      },[])  
-      
+                JSON.stringify(remoteMessage.notification.title),
+                JSON.stringify(remoteMessage.notification.body));
+        });
+        return unsubscribe;
+    }, [])
+
 
     return (
         <NavigationContainer>
@@ -41,52 +44,62 @@ export const ScreenNavigator = () => {
                 <Stack.Screen
                     name="Splash"
                     component={Splash}
-                    options={{headerShown: false}}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen
                     name="LogIn"
                     component={LogIn}
-                    options={{headerShown: false}}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="SignIn"
+                    component={SignIn}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen
                     name="SignUp"
                     component={SignUp}
-                    options={{headerShown: false}}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen
                     name="ProfileQuestion"
                     component={ProfileQuestion}
-                    options={{headerShown: false}}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen
                     name="PhoneNumber"
                     component={PhoneNumber}
-                    options={{headerShown: false}}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen
                     name="Notification"
                     component={Notification}
-                    options={{headerShown: false}}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen
                     name="PreviousListener"
                     component={PreviousListener}
-                    options={{headerShown: false}}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen
                     name="WaitingRoom"
                     component={WaitingRoom}
-                    options={{headerShown: false}}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen
                     name="UserConnecting"
                     component={UserConnecting}
-                    options={{headerShown: false}}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen
                     name="ThankYou"
                     component={ThankYou}
-                    options={{headerShown: false}}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="EditProfile"
+                    component={EditProfile}
+                    options={{ headerShown: false }}
                 />
             </Stack.Navigator>
         </NavigationContainer>

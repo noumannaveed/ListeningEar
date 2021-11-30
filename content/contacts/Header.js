@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const Header = ({navigation, title, onPress}) => {
-    return(
+const Header = ({ navigation, title, onPress }) => {
+    return (
         <View>
             <View style={styles.container}>
                 <TouchableOpacity style={styles.back} onPress={onPress}>
@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     back: {
         flexDirection: 'row',
         alignItems: 'center',
+        fontFamily: 'Roboto-Bold',
     },
     text: {
         color: '#948e8e',
@@ -38,7 +39,8 @@ const styles = StyleSheet.create({
     },
     text1: {
         color: 'black',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
+        fontFamily: 'Roboto-Bold',
         fontSize: 18,
     },
     seprator: {

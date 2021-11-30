@@ -1,17 +1,17 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, ScrollView, ImageBackground } from "react-native";
 
-import {widthPercentageToDP as w, heightPercentageToDP as h} from 'react-native-responsive-screen';
+import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 import Button from "../content/contacts/Button";
 import Button1 from "../content/contacts/Button1";
 import Header from "../content/contacts/Header";
 
 import { Images } from "../content/Images";
 
-const ThankYou = ({navigation}) => {
-    return(
-        <View style={{flex:1}}>
-            <Header title='Thank You' onPress={()=>navigation.goBack()}/>
+const ThankYou = ({ navigation }) => {
+    return (
+        <View style={{ flex: 1 }}>
+            <Header title='Thank You' onPress={() => navigation.goBack()} />
             <Image
                 style={styles.sign}
                 source={Images.sign}
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         color: '#008AB6',
         textAlign: 'center',
         fontSize: 25,
-        fontWeight: 'bold',
+        fontFamily: 'Roboto-Bold',
         marginHorizontal: w('10%')
     },
     sign: {

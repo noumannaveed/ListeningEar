@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from "react-native";
 
-import {widthPercentageToDP as w, heightPercentageToDP as h} from 'react-native-responsive-screen';
+import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 
 
-const {height, width} = Dimensions.get('screen');
-const Listen = ({navigation, name, source}) => {
-    return(
+const { height, width } = Dimensions.get('screen');
+const Listen = ({ navigation, name, source }) => {
+    return (
         <View style={styles.Container}>
             <View style={styles.main}>
                 <View>
@@ -27,33 +27,34 @@ const Listen = ({navigation, name, source}) => {
 };
 
 const styles = StyleSheet.create({
-   Container: {
-       marginHorizontal: w('4.7%'),
-       marginVertical: h('1%')
-   },
-   main: {
-       flexDirection:'row',
-       justifyContent:'space-between'
+    Container: {
+        marginHorizontal: w('4.7%'),
+        marginVertical: h('1%')
+    },
+    main: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
     text: {
-        fontWeight: 'bold',
+        fontFamily: 'Roboto-Bold',
         color: 'black',
         fontSize: 18,
     },
     dis: {
-        flexDirection:'row',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         width: w('70%'),
         marginVertical: h('1%')
     },
     text1: {
         fontSize: 18,
+        fontFamily: 'Roboto-Regular',
     },
     image: {
         overflow: 'hidden',
-        height: height*0.08,
-        width: height*0.08,
-        borderRadius: (height*0.08)/2,
+        height: height * 0.08,
+        width: height * 0.08,
+        borderRadius: (height * 0.08) / 2,
         bottom: 7
     }
 });

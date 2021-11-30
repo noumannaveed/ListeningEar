@@ -10,4 +10,4 @@ const Images = {
     Ellipse: require('../content/assets/images/Ellipse6.png'),
     sign: require('../content/assets/images/signboard1.png'),
 };
-export {Images};
+export { Images };
