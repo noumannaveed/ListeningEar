@@ -52,7 +52,7 @@ const PhoneNumber = ({ navigation }) => {
     }
     return (
         <View>
-            <Header title='Need a Listening Ear?' onPress={() => navigation.goBack()} />
+            <Header title='Need a Listening Ear?'/>
             <View style={styles.main}>
                 <View
                     style={styles.image}
@@ -66,7 +66,7 @@ const PhoneNumber = ({ navigation }) => {
             </View>
             <Text style={styles.text}>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</Text>
             {/* <Button title='Send out notification' onPress={() => navigation.navigate('Notification')} /> */}
-            <Button title='Send out notification' onPress={() => {handleNotification()}} />
+            <Button title='Send out notification' onPress={() => navigation.navigate('Notification')} />
             <Button1 title='Contact a previous listener' onPress={() => navigation.navigate('PreviousListener')} />
             <Button title='Log Out' onPress={logOut} />
             <Button title='Edit Profile' onPress={()=>navigation.navigate('EditProfile')}/>

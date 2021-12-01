@@ -32,7 +32,7 @@ export const signout = async () => {
 };
 export const login = async (email, password, setIsLoading) => {
     const fcmToken = await messaging().getToken();
-    console.log('Token=',fcmToken);
+    console.log('Token=', fcmToken);
     setIsLoading(true);
     return new Promise((resolve, reject) => {
         auth()
@@ -83,19 +83,24 @@ export const login = async (email, password, setIsLoading) => {
             });
     })
 };
-export const signup = async (email, password, firstName, lastName, image, interest) => {
-    const uploadUri = image;
-    let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
-    console.log('image1=',filename);
-    try {
-        await storage().ref(filename).putFile(uploadUri);
-        console.log('upload=', uploadUri);
-    } catch (error) {
-        console.log('error=', error);
+export const signup = async (email, password, firstName, lastName, image, interest, check) => {
+    // console.log('image1=',filename);
+    const url = '';
+    if (check) {
+        try {
+            const uploadUri = image;
+            let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
+            await storage().ref(filename).putFile(uploadUri);
+            url = await storage().ref(filename).getDownloadURL();
+            console.log('upload=', uploadUri);
+        } catch (error) {
+            console.log('error=', error);
+        }
     }
-    const url = await storage().ref(filename).getDownloadURL();
+
+    
     const fcmToken = await messaging().getToken();
-    console.log('url=',url);
+    // console.log('url=', url);
     return new Promise((resolve) => {
         auth()
             .createUserWithEmailAndPassword(email, password)

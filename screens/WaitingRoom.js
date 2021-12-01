@@ -15,13 +15,13 @@ const WaitingRoom = ({ navigation }) => {
         <View style={{ flex: 1 }}>
             <Header title='Waiting Room' />
             <Text style={styles.text1}>Your notification is being sent out</Text>
-            <ImageBackground style={styles.black}>
+            <View style={styles.black}>
                 <Image
                     style={styles.waiting}
                     source={Images.waiting}
                     resizeMode="contain"
                 />
-            </ImageBackground>
+            </View>
             <ImageBackground
                 source={Images.sound_wave}
                 // resizeMode="contain"
@@ -42,12 +42,12 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Regular',
     },
     black: {
-        height: h('20%'),
-        width: w('35%'),
+        height: height * 0.165,
+        width: height * 0.165,
+        borderRadius: (height * 0.165) / 2,
         alignSelf: 'center',
         overflow: 'hidden',
         justifyContent: 'center',
-        borderRadius: 75,
         backgroundColor: '#C4C4C4'
     },
     waiting: {

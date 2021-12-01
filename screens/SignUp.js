@@ -28,6 +28,7 @@ const SignUp = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isSecureEntry, setIsSecureEntry] = useState(true);
+    const [check, setCheck] = useState(false);
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     const [items, setItems] = useState([
@@ -43,6 +44,7 @@ const SignUp = ({ navigation }) => {
             cropping: true,
         }).then((res) => {
             setImage(res.path);
+            setCheck(true);
             // console.log(res.path);
         });
     };
@@ -71,7 +73,7 @@ const SignUp = ({ navigation }) => {
     }
     const signUp = async () => {
         if (validate_field()) {
-            signup(email, password, firstName, lastName, image, interest)
+            signup(email, password, firstName, lastName, image, interest, check)
                 .then((user) => {
                     console.log('user=', user);
                     navigation.replace('SignIn');
@@ -83,9 +85,9 @@ const SignUp = ({ navigation }) => {
         }
     }
     return (
-        <View>
+        <View style={{flex:1}}>
             <Header title='Create Profile' onPress={() => navigation.goBack()} />
-            <ScrollView>
+            <ScrollView style={{flex:1}}>
                 <View style={styles.main}>
                     <View
                         resizeMode='contain'
@@ -154,7 +156,7 @@ const SignUp = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     main: {
-        marginVertical: h('4%')
+        marginVertical: h('1%')
     },
     image: {
         height: height * 0.15,
