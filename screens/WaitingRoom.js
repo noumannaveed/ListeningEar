@@ -8,12 +8,12 @@ import { Images } from "../content/Images";
 
 const { height, width } = Dimensions.get('screen');
 const WaitingRoom = ({ navigation }) => {
-    setTimeout(() => {
-        navigation.replace("UserConnecting");
-    }, 5000);
+    // setTimeout(() => {
+    //     navigation.replace("UserConnecting");
+    // }, 5000);
     return (
         <View style={{ flex: 1 }}>
-            <Header title='Waiting Room' />
+            <Header title='Waiting Room' onPress={()=>navigation.goBack()}/>
             <Text style={styles.text1}>Your notification is being sent out</Text>
             <View style={styles.black}>
                 <Image

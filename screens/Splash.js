@@ -1,7 +1,9 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { View, Text, Image, StyleSheet, ScrollView, ImageBackground, Dimensions } from "react-native";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Images } from "../content/Images";
 
@@ -10,9 +12,23 @@ import { Images } from "../content/Images";
 
 const { height, width } = Dimensions.get('screen');
 const Splash = ({ navigation }) => {
-    setTimeout(() => {
-        navigation.replace("LogIn");
-    }, 5000);
+    const checkLogin = async () => {
+        let value = await AsyncStorage.getItem('uid');
+        console.log('splash=', value);
+        let parse = JSON.parse(value);
+        setTimeout(() => {
+            if (value===null) {
+                navigation.replace("LogIn");
+            } else if (value!=null) {
+                navigation.navigate("PhoneNumber");
+            }
+            
+        }, 5000);
+    }
+    useEffect(()=>{
+        checkLogin();
+    },[])
+    
     return (
         <View style={{ flex: 1 }}>
             <ImageBackground style={styles.black}>

@@ -54,17 +54,6 @@ const SignIn = ({ navigation }) => {
         }
 
     }
-    useEffect(()=>{
-        createChannels();
-    },[]);
-    const createChannels = () => {
-        PushNotification.createChannel(
-            {
-                channelId:"test-channel",
-                channelName:"Test Channel"
-            }
-        )
-    }
     return (
         <View>
             <ScrollView>

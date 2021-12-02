@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Regular',
     },
     image: {
-        overflow: 'hidden',
+        // overflow: 'hidden',
         height: height * 0.08,
         width: height * 0.08,
         borderRadius: (height * 0.08) / 2,

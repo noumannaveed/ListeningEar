@@ -22,9 +22,9 @@ import EditProfile from '../screens/EditProfile';
 
 export const ScreenNavigator = () => {
     const getFCMToken = async () => {
-        const fcmToken = await messaging().getToken();
-        // return fcmToken;
-        console.log('Token=', fcmToken);
+        // const fcmToken = await messaging().getToken();
+        // // return fcmToken;
+        // console.log('Token=', fcmToken);
     }
     useEffect( async () => {
         await auth().signInAnonymously();

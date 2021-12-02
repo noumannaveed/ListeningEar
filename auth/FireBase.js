@@ -5,7 +5,7 @@ import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
 import storage from '@react-native-firebase/storage';
 export const signout = async () => {
-    let value = await AsyncStorage.getItem('uid');
+    let value = await AsyncStorage.getItem('uid',null);
     let parse = JSON.parse(value);
     console.log('value=', parse.user.uid);
     firestore()
@@ -84,7 +84,6 @@ export const login = async (email, password, setIsLoading) => {
     })
 };
 export const signup = async (email, password, firstName, lastName, image, interest, check) => {
-    // console.log('image1=',filename);
     const url = '';
     if (check) {
         try {
@@ -97,8 +96,6 @@ export const signup = async (email, password, firstName, lastName, image, intere
             console.log('error=', error);
         }
     }
-
-    
     const fcmToken = await messaging().getToken();
     // console.log('url=', url);
     return new Promise((resolve) => {
