@@ -42,8 +42,11 @@ const Notification = ({ navigation }) => {
                         borderBottomLeftRadius: 50, borderBottomRightRadius: 50
                     }}
                     itemStyle={{
-                        // justifyContent: 'space-between',
-                        flex:1
+                        justifyContent: 'flex-start',
+                    }}
+                    dropDownStyle={{
+                        borderTopLeftRadius: 20, borderTopRightRadius: 20,
+                        borderBottomLeftRadius: 20, borderBottomRightRadius: 20,
                     }}
                 />
             </View>

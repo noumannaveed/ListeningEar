@@ -20,21 +20,11 @@ import messaging from '@react-native-firebase/messaging';
 import SignIn from '../screens/SignIn';
 import EditProfile from '../screens/EditProfile';
 
+
+
 export const ScreenNavigator = () => {
-    const getFCMToken = async () => {
-        // const fcmToken = await messaging().getToken();
-        // // return fcmToken;
-        // console.log('Token=', fcmToken);
-    }
     useEffect( async () => {
         await auth().signInAnonymously();
-        getFCMToken()
-        const unsubscribe = messaging().onMessage(async remoteMessage => {
-            Alert.alert(
-                JSON.stringify(remoteMessage.notification.title),
-                JSON.stringify(remoteMessage.notification.body));
-        });
-        return unsubscribe;
     }, [])
 
 

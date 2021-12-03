@@ -88,7 +88,7 @@ const SignUp = ({ navigation }) => {
         <View style={{flex:1}}>
             <Header title='Create Profile' onPress={() => navigation.goBack()} />
             <ScrollView style={{flex:1}}>
-                <View style={styles.main}>
+                <TouchableOpacity style={styles.main} onPress={() => goToPickImage()}>
                     <View
                         resizeMode='contain'
                         style={styles.image}
@@ -98,10 +98,10 @@ const SignUp = ({ navigation }) => {
                             style={styles.image}
                         />
                     </View>
-                    <TouchableOpacity style={styles.camera} onPress={() => goToPickImage()}>
-                        <Ionicons name="md-camera" size={22} color="#dbd5d5" />
+                    <TouchableOpacity style={styles.camera}>
+                        <Ionicons name="md-camera" size={22} color="#dbd5d5" style={{top:h('0.17%')}} />
                     </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
                 <Input placeholder='First Name' value={firstName} onChangeText={(firstName) => setFirstName(firstName)} />
                 <Input placeholder='Last Name' value={lastName} onChangeText={(lastName) => setLastName(lastName)} />
                 <View style={styles.pick}>
@@ -126,7 +126,12 @@ const SignUp = ({ navigation }) => {
                         }}
                         itemStyle={{
                             // justifyContent: 'space-between',
-                            flex: 1
+                            // flex: 1
+                            justifyContent: 'flex-start',
+                        }}
+                        dropDownStyle={{
+                            borderTopLeftRadius: 20, borderTopRightRadius: 20,
+                            borderBottomLeftRadius: 20, borderBottomRightRadius: 20,
                         }}
                     />
                 </View>

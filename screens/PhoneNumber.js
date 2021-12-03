@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, Dimensions } from "react-native";
 
 import auth from '@react-native-firebase/auth';
@@ -24,7 +24,8 @@ const { height, width } = Dimensions.get('screen');
 var fcmUnsubscribe = null;
 
 const PhoneNumber = ({ navigation }) => {
-    const notification = (fcmToken, firstName, lastName) => {
+    const [check, setCheck] = useState(false);
+    const notification = (fcmToken, firstName, lastName, data) => {
         // console.log('not=', fcmToken);
         fetch('https://fcm.googleapis.com/fcm/send', {
             method: 'POST',
@@ -38,11 +39,16 @@ const PhoneNumber = ({ navigation }) => {
                     "title": [firstName] + [' '] + [lastName],
                     "body": "Friend request!",
                 },
+                "data": {
+                    "type": "new-request",
+                    "user": [data],
+                },
                 "mutable_content": false,
                 "sound": "Tri-tone"
             }),
-        }).then((data) => {
+        }).then(() => {
             console.warn('sended');
+            // console.log('data=', data);
             navigation.navigate('WaitingRoom');
         })
     }
@@ -62,12 +68,14 @@ const PhoneNumber = ({ navigation }) => {
         let token = '';
         let recieveData = '';
         let count = 0;
+        let connectionId = generateUUID(32);
         firestore()
             .collection('Users')
             .doc(parse.user.uid)
             .get()
             .then(dat => {
                 check = dat.data().interest.value;
+                console.log('check=', check);
                 token = dat.data().fcmtoken;
                 recieveData = dat.data();
                 // console.log('token=',data1.firstname);
@@ -76,32 +84,56 @@ const PhoneNumber = ({ navigation }) => {
             .collection('Users')
             .get()
             .then(querySnapshot => {
-                console.log('Total users: ', querySnapshot.size);
                 querySnapshot.forEach(documentSnapshot => {
                     const data = documentSnapshot.data();
-                    // console.log('data=', data.fcmtoken);
                     if ("interest" in data) {
                         if (data.interest.value === check && data.fcmtoken != token && data.fcmtoken != 'null') {
-                            notification(data.fcmtoken, recieveData.firstname, recieveData.lastname);
+                            notification(data.fcmtoken, recieveData.firstname, recieveData.lastname, recieveData);
+                            const rid = documentSnapshot.id;
+                            // console.log('id=', id);
+                            console.log('request=', data);
+                            firestore()
+                                .collection('Users')
+                                .doc(parse.user.uid)
+                                .update({
+                                    connectionid: connectionId,
+                                })
+                                .then(() => {
+                                    console.log('Connection added!');
+                                    // navigation.navigate('WaitingRoom');
+                                });
                             count++;
                             firestore()
                                 .collection('Connection')
-                                .doc(generateUUID(32))
+                                .doc(connectionId)
                                 .set({
                                     createdBy: recieveData,
-                                    responded: '',
+                                    responded: 'false',
                                     noofuser: count,
                                     createdAt: new Date(),
                                     otheruser: '',
                                 })
                                 .then(() => {
                                     console.log('Connection added!');
+                                    const id = documentSnapshot.id;
+                                    console.log('id=', id);
+                                    console.log('request=', data);
+                                    firestore()
+                                        .collection('Users')
+                                        .doc(id)
+                                        .update({
+                                            connectionid: connectionId,
+                                        })
+                                        .then(() => {
+                                            console.log('Connection added!');
+                                            // navigation.navigate('WaitingRoom');
+                                        });
+                                    // navigation.navigate('WaitingRoom');
                                 });
-                            console.log('redata=',recieveData);
-                            console.log('token=',data.fcmtoken);
-                            console.log('count=',count);
+                            // console.log('redata=',recieveData);
+                            // console.log('token=',data.fcmtoken);
+                            // console.log('count=',count);
                             // console.log('uid=',generateUUID(32));
-
                         }
                     }
                 });

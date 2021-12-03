@@ -116,22 +116,22 @@ export default class EditProfile extends Component {
             <View>
                 <Header title='Create Profile' onPress={() => this.props.navigation.goBack()} />
                 <ScrollView>
-                    <View style={styles.main}>
+                    <TouchableOpacity style={styles.main} onPress={this.goToPickImage}>
                         <View
                             resizeMode='contain'
                             style={styles.image}
                         >
                             <Image
                                 source={{ uri: this.state.image }}
-                                style={{ height: 200, width: 200 }}
+                                style={styles.image}
                             />
                         </View>
-                        <TouchableOpacity style={styles.camera} onPress={this.goToPickImage}>
-                            <Ionicons name="md-camera" size={22} color="#dbd5d5" />
+                        <TouchableOpacity style={styles.camera}>
+                            <Ionicons name="md-camera" size={22} color="#dbd5d5" style={{top:h('0.17%')}}/>
                         </TouchableOpacity>
-                    </View>
+                    </TouchableOpacity>
                     <Input placeholder='First Name' value={this.state.firstName} onChangeText={(firstName) => this.setState({ firstName })} />
-                    <Input placeholder='Last Name' value={this.state.lastName} onChangeText={(lastName) => this.setState(lastName)} />
+                    <Input placeholder='Last Name' value={this.state.lastName} onChangeText={(lastName) => this.setState({lastName})} />
                     <Button title='Update Your Profile' onPress={this.update} />
                 </ScrollView>
             </View>
@@ -154,7 +154,6 @@ const styles = StyleSheet.create({
     camera: {
         alignItems: 'center',
         // justifyContent: 'center',
-        // marginHorizontal: w('46%'),
         marginHorizontal: width * 0.46,
         height: width * 0.08,
         width: width * 0.08,

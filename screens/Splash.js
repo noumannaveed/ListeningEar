@@ -7,26 +7,47 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Images } from "../content/Images";
 
-// import messaging from '@react-native-firebase/messaging';
+import messaging from '@react-native-firebase/messaging';
 
 
 const { height, width } = Dimensions.get('screen');
 const Splash = ({ navigation }) => {
+    const image = '';
     const checkLogin = async () => {
         let value = await AsyncStorage.getItem('uid');
         console.log('splash=', value);
-        let parse = JSON.parse(value);
+        // let parse = JSON.parse(value);
         setTimeout(() => {
             if (value===null) {
                 navigation.replace("LogIn");
             } else if (value!=null) {
-                navigation.navigate("PhoneNumber");
-            }
-            
+                navigation.replace("PhoneNumber");
+            }  
         }, 5000);
     }
     useEffect(()=>{
         checkLogin();
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            const user = JSON.parse(remoteMessage.data.user);
+            image = user[0].image;
+            console.log('image=',image);
+            if(remoteMessage.data.type==='new-request') {
+               navigation.navigate('UserConnecting');
+            }
+            // await naviagtion.navigate('Notification');
+            // Alert.alert(
+            //     JSON.stringify(remoteMessage.notification.title),
+            //     JSON.stringify(remoteMessage.notification.body),
+            //     [
+            //         {
+            //           text: "Cancel",
+            //           onPress: () => console.log("Cancel Pressed"),
+            //           style: "cancel"
+            //         },
+            //         { text: "OK", onPress: () => console.log("OK Pressed") }
+            //     ]
+            //     );
+        });
     },[])
     
     return (
