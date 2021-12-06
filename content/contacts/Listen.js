@@ -5,7 +5,7 @@ import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-nativ
 
 
 const { height, width } = Dimensions.get('screen');
-const Listen = ({ navigation, name, source }) => {
+const Listen = ({ name, source }) => {
     return (
         <View style={styles.Container}>
             <View style={styles.main}>
@@ -18,7 +18,7 @@ const Listen = ({ navigation, name, source }) => {
                 </View>
                 <Image
                     source={source}
-                    resizeMode='contain'
+                    // resizeMode='contain'
                     style={styles.image}
                 />
             </View>

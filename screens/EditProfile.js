@@ -64,15 +64,15 @@ export default class EditProfile extends Component {
             .get()
             .then((doc) => {
                 if (doc.exists) {
-                    console.log('pvalue=', doc);
+                    // console.log('pvalue=', doc);
                     const data = doc.data();
-                    console.log('data=', data.image);
+                    // console.log('data=', data.image);
                     this.setState({
                         image: data.image,
                         firstName: data.firstname,
                         lastName: data.lastname,
                     });
-                    console.log('image=', data.image);
+                    // console.log('image=', data.image);
                 }
             });
     }
@@ -80,7 +80,7 @@ export default class EditProfile extends Component {
         await this.getUser();
     }
     update = async () => {
-        console.log('check=', this.state.check);
+        // console.log('check=', this.state.check);
 
         if (this.state.check) {
             try {
@@ -97,7 +97,7 @@ export default class EditProfile extends Component {
         }
         let value = await AsyncStorage.getItem('uid');
         let parse = JSON.parse(value);
-        console.log('value=', parse.user.uid);
+        // console.log('value=', parse.user.uid);
         firestore()
             .collection('Users')
             .doc(parse.user.uid)
@@ -127,7 +127,7 @@ export default class EditProfile extends Component {
                             />
                         </View>
                         <TouchableOpacity style={styles.camera}>
-                            <Ionicons name="md-camera" size={22} color="#dbd5d5" style={{top:h('0.17%')}}/>
+                            <Ionicons name="md-camera" size={22} color="#dbd5d5" style={{top:h('0.3%')}}/>
                         </TouchableOpacity>
                     </TouchableOpacity>
                     <Input placeholder='First Name' value={this.state.firstName} onChangeText={(firstName) => this.setState({ firstName })} />
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#C4C4C4',
         borderRadius: (width * 0.08) / 2,
         bottom: h('5%'),
-        left: w('12%'),
+        left: h('6%'),
         opacity: 0.9,
     },
     text: {

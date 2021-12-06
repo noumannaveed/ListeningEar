@@ -1,5 +1,5 @@
-import React, {useEffect} from "react";
-import { View, Text, Image, StyleSheet, ScrollView, ImageBackground, Dimensions } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, Image, StyleSheet, ScrollView, ImageBackground, Dimensions, Alert } from "react-native";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 
@@ -12,44 +12,50 @@ import messaging from '@react-native-firebase/messaging';
 
 const { height, width } = Dimensions.get('screen');
 const Splash = ({ navigation }) => {
-    const image = '';
+    // const image = '';
     const checkLogin = async () => {
         let value = await AsyncStorage.getItem('uid');
         console.log('splash=', value);
         // let parse = JSON.parse(value);
         setTimeout(() => {
-            if (value===null) {
+            if (value === null) {
                 navigation.replace("LogIn");
-            } else if (value!=null) {
+            } else if (value != null) {
                 navigation.replace("PhoneNumber");
-            }  
+            }
         }, 5000);
     }
-    useEffect(()=>{
+    useEffect(() => {
         checkLogin();
         const unsubscribe = messaging().onMessage(async remoteMessage => {
-            const user = JSON.parse(remoteMessage.data.user);
-            image = user[0].image;
-            console.log('image=',image);
-            if(remoteMessage.data.type==='new-request') {
-               navigation.navigate('UserConnecting');
+            // console.log('senderid=',senderUid);
+            // console.log('user=',image);
+            if (remoteMessage.data.type === 'new-request') {
+                const user = JSON.parse(remoteMessage.data.user);
+                const image = user[0].image;
+                const senderUid = JSON.parse(remoteMessage.data.uid);
+                navigation.navigate('UserConnecting', { image, user, senderUid });
+                //    return unsubscribe;
             }
-            // await naviagtion.navigate('Notification');
-            // Alert.alert(
-            //     JSON.stringify(remoteMessage.notification.title),
-            //     JSON.stringify(remoteMessage.notification.body),
-            //     [
-            //         {
-            //           text: "Cancel",
-            //           onPress: () => console.log("Cancel Pressed"),
-            //           style: "cancel"
-            //         },
-            //         { text: "OK", onPress: () => console.log("OK Pressed") }
-            //     ]
-            //     );
+            if (remoteMessage.data.type === 'request-accepted') {
+                navigation.navigate('PreviousListener');
+                //    return unsubscribe;
+            }
+            Alert.alert(
+                JSON.stringify(remoteMessage.notification.title),
+                JSON.stringify(remoteMessage.notification.body),
+                [
+                    {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                    },
+                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                ]
+            );
         });
-    },[])
-    
+    }, [])
+
     return (
         <View style={{ flex: 1 }}>
             <ImageBackground style={styles.black}>

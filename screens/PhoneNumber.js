@@ -21,11 +21,10 @@ import Button from "../content/contacts/Button";
 import Button1 from "../content/contacts/Button1";
 
 const { height, width } = Dimensions.get('screen');
-var fcmUnsubscribe = null;
 
 const PhoneNumber = ({ navigation }) => {
     const [check, setCheck] = useState(false);
-    const notification = (fcmToken, firstName, lastName, data) => {
+    const notification = (fcmToken, firstName, lastName, data, uid) => {
         // console.log('not=', fcmToken);
         fetch('https://fcm.googleapis.com/fcm/send', {
             method: 'POST',
@@ -42,6 +41,7 @@ const PhoneNumber = ({ navigation }) => {
                 "data": {
                     "type": "new-request",
                     "user": [data],
+                    "uid": [uid],
                 },
                 "mutable_content": false,
                 "sound": "Tri-tone"
@@ -67,6 +67,8 @@ const PhoneNumber = ({ navigation }) => {
         let check = '';
         let token = '';
         let recieveData = '';
+        let senderData = '';
+        let uid = '';
         let count = 0;
         let connectionId = generateUUID(32);
         firestore()
@@ -75,9 +77,10 @@ const PhoneNumber = ({ navigation }) => {
             .get()
             .then(dat => {
                 check = dat.data().interest.value;
-                console.log('check=', check);
+                // console.log('check=', check);
                 token = dat.data().fcmtoken;
                 recieveData = dat.data();
+                uid = parse.user.uid;
                 // console.log('token=',data1.firstname);
             });
         firestore()
@@ -88,7 +91,7 @@ const PhoneNumber = ({ navigation }) => {
                     const data = documentSnapshot.data();
                     if ("interest" in data) {
                         if (data.interest.value === check && data.fcmtoken != token && data.fcmtoken != 'null') {
-                            notification(data.fcmtoken, recieveData.firstname, recieveData.lastname, recieveData);
+                            notification(data.fcmtoken, recieveData.firstname, recieveData.lastname, recieveData, uid);
                             const rid = documentSnapshot.id;
                             // console.log('id=', id);
                             console.log('request=', data);
@@ -101,35 +104,45 @@ const PhoneNumber = ({ navigation }) => {
                                 .then(() => {
                                     console.log('Connection added!');
                                     // navigation.navigate('WaitingRoom');
+
                                 });
                             count++;
                             firestore()
-                                .collection('Connection')
-                                .doc(connectionId)
-                                .set({
-                                    createdBy: recieveData,
-                                    responded: 'false',
-                                    noofuser: count,
-                                    createdAt: new Date(),
-                                    otheruser: '',
-                                })
-                                .then(() => {
-                                    console.log('Connection added!');
-                                    const id = documentSnapshot.id;
-                                    console.log('id=', id);
-                                    console.log('request=', data);
+                                .collection('Users')
+                                .doc(parse.user.uid)
+                                .get()
+                                .then(dat => {
+                                    senderData = dat.data();
+                                    // console.log('token=',data1.firstname);
                                     firestore()
-                                        .collection('Users')
-                                        .doc(id)
-                                        .update({
-                                            connectionid: connectionId,
+                                        .collection('Connection')
+                                        .doc(connectionId)
+                                        .set({
+                                            createdBy: senderData,
+                                            responded: 'false',
+                                            noofuser: count,
+                                            createdAt: new Date(),
+                                            otheruser: '',
                                         })
                                         .then(() => {
                                             console.log('Connection added!');
+                                            const id = documentSnapshot.id;
+                                            console.log('id=', id);
+                                            console.log('request=', data);
+                                            firestore()
+                                                .collection('Users')
+                                                .doc(id)
+                                                .update({
+                                                    connectionid: connectionId,
+                                                })
+                                                .then(() => {
+                                                    console.log('Connection added!');
+                                                    // navigation.navigate('WaitingRoom');
+                                                });
                                             // navigation.navigate('WaitingRoom');
                                         });
-                                    // navigation.navigate('WaitingRoom');
                                 });
+
                             // console.log('redata=',recieveData);
                             // console.log('token=',data.fcmtoken);
                             // console.log('count=',count);

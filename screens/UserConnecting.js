@@ -2,6 +2,11 @@ import React from "react";
 import { View, Text, Image, StyleSheet, ScrollView, ImageBackground, Dimensions } from "react-native";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import firestore from '@react-native-firebase/firestore';
+
 import Button from "../content/contacts/Button";
 import Button1 from "../content/contacts/Button1";
 import Header from "../content/contacts/Header";
@@ -9,7 +14,79 @@ import Header from "../content/contacts/Header";
 import { Images } from "../content/Images";
 
 const { height, width } = Dimensions.get('screen');
-const UserConnecting = ({ navigation }) => {
+const UserConnecting = ({ navigation, route }) => {
+    const image = route.params.image;
+    const user = route.params.user;
+    const senderUid = route.params.senderUid;
+    let senderFcmToken = '';
+    const notifications = async(fcmToken) => {
+        fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "key=AAAArc-UobE:APA91bEuxAzyQBJfkst1uSClNiWmre1tW5DOePJXMNFuXR7mu5a-8kl9eaMyk2tVLMGB3505YrQZN4634EdnQdW3rligTtQMRp30TsUVgwLh6VJJK-HvaMEXVLqZnNbGOT1ekitoNEPn"
+            },
+            body: JSON.stringify({
+                "to": fcmToken,
+                "notification": {
+                    "title": "accepted",
+                    "body": "Friend request!",
+                },
+                "data": {
+                    "type": "request-accepted",
+                },
+                "mutable_content": false,
+                "sound": "Tri-tone"
+            }),
+        }).then(() => {
+            console.warn('sended');
+            // console.log('data=', data);
+            navigation.navigate('PreviousListener');
+        })
+    }
+    const accept = async () => {
+        let value = await AsyncStorage.getItem('uid');
+        let parse = JSON.parse(value);
+        console.log('Userconnect=', senderUid[0]);
+        // senderUid = JSON.parse(senderUid);
+        // console.log(parse.user.uid);
+        firestore()
+            .collection('Users')
+            .doc(parse.user.uid)
+            .update({
+                responded: 'true',
+            })
+            .then(() => {
+                firestore()
+                    .collection('Users')
+                    .doc(parse.user.uid)
+                    .get()
+                    .then(data => {
+                        // console.log(data.data().connectionid);
+                        const otherUser = data.data();
+                        firestore()
+                            .collection('Connection')
+                            .doc(data.data().connectionid)
+                            .update({
+                                otheruser: otherUser,
+                                responded: 'true',
+                            })
+                            .then(() => {
+                                console.log('other user added!');
+                                firestore()
+                                    .collection('Users')
+                                    .doc(senderUid[0])
+                                    .get()
+                                    .then(documentsnapshot => {
+                                        senderFcmToken = documentsnapshot.data().fcmtoken;
+                                        console.log('Sender=', senderFcmToken);
+                                    })
+                                    notifications(senderFcmToken);   
+                            })
+                    })
+                    
+            });
+    }
     return (
         <View style={{ flex: 1 }}>
             <Header title='Waiting Room' onPress={() => navigation.goBack()} />
@@ -17,8 +94,8 @@ const UserConnecting = ({ navigation }) => {
             <ImageBackground style={styles.black} source={Images.wifi} resizeMode="contain">
                 <Image
                     style={styles.Ellipse}
-                    source={Images.Ellipse}
-                    resizeMode="contain"
+                    source={{ uri: image }}
+                // resizeMode="contain"
                 />
             </ImageBackground>
             <Text style={styles.text2}>Are you available to listen and provide positive feedback?</Text>
@@ -28,7 +105,7 @@ const UserConnecting = ({ navigation }) => {
                 style={styles.wave}
             >
                 <View style={styles.buttonView}>
-                    <Button title='Yes' onPress={() => navigation.navigate('ThankYou')} style={styles.button} />
+                    <Button title='Yes' onPress={accept} style={styles.button} />
                     <Button1 title='No' style={styles.button1} />
                 </View>
             </ImageBackground>
@@ -59,8 +136,12 @@ const styles = StyleSheet.create({
     },
     Ellipse: {
         alignSelf: 'center',
-        height: height * 0.16,
-        width: height * 0.16,
+        height: height * 0.15,
+        width: height * 0.15,
+        borderRadius: (height * 0.15) / 2,
+
+        // borderWidth: 1,
+        // borderColor: 'black'
     },
     wave: {
         height: height * 0.4,

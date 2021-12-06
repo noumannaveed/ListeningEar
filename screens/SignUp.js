@@ -99,7 +99,7 @@ const SignUp = ({ navigation }) => {
                         />
                     </View>
                     <TouchableOpacity style={styles.camera}>
-                        <Ionicons name="md-camera" size={22} color="#dbd5d5" style={{top:h('0.17%')}} />
+                        <Ionicons name="md-camera" size={22} color="#dbd5d5" style={{top:h('0.3%')}} />
                     </TouchableOpacity>
                 </TouchableOpacity>
                 <Input placeholder='First Name' value={firstName} onChangeText={(firstName) => setFirstName(firstName)} />
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#C4C4C4',
         borderRadius: (width * 0.08) / 2,
         bottom: h('5%'),
-        left: w('12%'),
+        left: h('6%'),
         opacity: 0.9,
     },
     text: {
