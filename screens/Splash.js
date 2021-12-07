@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, Image, StyleSheet, ScrollView, ImageBackground, Dimensions, Alert } from "react-native";
+import { View, Text, Image, StyleSheet, SafeAreaView, ImageBackground, Dimensions, Alert } from "react-native";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 
@@ -8,7 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Images } from "../content/Images";
 
 import messaging from '@react-native-firebase/messaging';
-
+import firestore from '@react-native-firebase/firestore';
 
 const { height, width } = Dimensions.get('screen');
 const Splash = ({ navigation }) => {
@@ -36,44 +36,56 @@ const Splash = ({ navigation }) => {
                 const senderUid = JSON.parse(remoteMessage.data.uid);
                 navigation.navigate('UserConnecting', { image, user, senderUid });
                 //    return unsubscribe;
-            }
-            if (remoteMessage.data.type === 'request-accepted') {
-                navigation.navigate('PreviousListener');
-                //    return unsubscribe;
+            } else {
+                const connection = remoteMessage.data.connectionid
+                console.log('connection=', connection);
+                firestore()
+                    .collection('Connection')
+                    .doc(connection)
+                    .onSnapshot(doc => {
+                        // console.log('doc=', doc.data().responded);
+                        if (doc.data().responded === 'true') {
+                            // const receiver = remoteMessage.data.receiver;
+                            navigation.navigate('PreviousListener');
+                            //    return unsubscribe;
+                        }
+                    })
             }
             Alert.alert(
                 JSON.stringify(remoteMessage.notification.title),
                 JSON.stringify(remoteMessage.notification.body),
-                [
-                    {
-                        text: "Cancel",
-                        onPress: () => console.log("Cancel Pressed"),
-                        style: "cancel"
-                    },
-                    { text: "OK", onPress: () => console.log("OK Pressed") }
-                ]
+                // [
+                //     {
+                //         text: "Cancel",
+                //         onPress: () => console.log("Cancel Pressed"),
+                //         style: "cancel"
+                //     },
+                //     { text: "OK", onPress: () => console.log("OK Pressed") }
+                // ]
             );
         });
     }, [])
 
     return (
-        <View style={{ flex: 1 }}>
-            <ImageBackground style={styles.black}>
-                <Image
-                    style={styles.logo}
-                    source={Images.logo}
-                    resizeMode="contain"
-                />
-                <Text style={styles.text}>Parker Mason Management, LLC</Text>
-            </ImageBackground>
-            <ImageBackground
-                source={Images.sound_wave}
-                // resizeMode="contain"
-                style={styles.wave}
-            >
-            </ImageBackground>
-            <View style={styles.loading}></View>
-        </View>
+        <SafeAreaView>
+            <View>
+                <ImageBackground style={styles.black}>
+                    <Image
+                        style={styles.logo}
+                        source={Images.logo}
+                        resizeMode="contain"
+                    />
+                    <Text style={styles.text}>Parker Mason Management, LLC</Text>
+                </ImageBackground>
+                <ImageBackground
+                    source={Images.sound_wave}
+                    // resizeMode="contain"
+                    style={styles.wave}
+                >
+                </ImageBackground>
+                <View style={styles.loading}></View>
+            </View>
+        </SafeAreaView>
     );
 };
 

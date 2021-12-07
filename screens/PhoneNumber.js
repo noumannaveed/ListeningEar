@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions, SafeAreaView } from "react-native";
 
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -68,6 +68,7 @@ const PhoneNumber = ({ navigation }) => {
         let token = '';
         let recieveData = '';
         let senderData = '';
+        let senderId= '';
         let uid = '';
         let count = 0;
         let connectionId = generateUUID(32);
@@ -113,6 +114,7 @@ const PhoneNumber = ({ navigation }) => {
                                 .get()
                                 .then(dat => {
                                     senderData = dat.data();
+                                    senderId = dat.id;
                                     // console.log('token=',data1.firstname);
                                     firestore()
                                         .collection('Connection')
@@ -123,6 +125,7 @@ const PhoneNumber = ({ navigation }) => {
                                             noofuser: count,
                                             createdAt: new Date(),
                                             otheruser: '',
+                                            senderid: senderId,
                                         })
                                         .then(() => {
                                             console.log('Connection added!');
@@ -160,26 +163,28 @@ const PhoneNumber = ({ navigation }) => {
             })
     }
     return (
-        <View>
-            <Header title='Need a Listening Ear?' />
-            <View style={styles.main}>
-                <View
-                    style={styles.image}
-                >
-                    <Image
-                        source={Images.question}
-                        resizeMode='contain'
-                        style={styles.image1}
-                    />
+        <SafeAreaView>
+            <View>
+                <Header title='Need a Listening Ear?' />
+                <View style={styles.main}>
+                    <View
+                        style={styles.image}
+                    >
+                        <Image
+                            source={Images.question}
+                            resizeMode='contain'
+                            style={styles.image1}
+                        />
+                    </View>
                 </View>
+                <Text style={styles.text}>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</Text>
+                {/* <Button title='Send out notification' onPress={() => navigation.navigate('Notification')} /> */}
+                <Button title='Send out notification' onPress={handleNotification} />
+                <Button1 title='Contact a previous listener' onPress={() => navigation.navigate('PreviousListener')} />
+                <Button title='Log Out' onPress={logOut} />
+                <Button title='Edit Profile' onPress={() => navigation.navigate('EditProfile')} />
             </View>
-            <Text style={styles.text}>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</Text>
-            {/* <Button title='Send out notification' onPress={() => navigation.navigate('Notification')} /> */}
-            <Button title='Send out notification' onPress={handleNotification} />
-            <Button1 title='Contact a previous listener' onPress={() => navigation.navigate('PreviousListener')} />
-            <Button title='Log Out' onPress={logOut} />
-            <Button title='Edit Profile' onPress={() => navigation.navigate('EditProfile')} />
-        </View>
+        </SafeAreaView>
     );
 };
 

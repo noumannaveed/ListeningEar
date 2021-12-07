@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView, ImageBackground } from "react-native";
+import { View, Text, Image, StyleSheet, SafeAreaView, ImageBackground } from "react-native";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 import Button from "../content/contacts/Button";
@@ -10,15 +10,17 @@ import { Images } from "../content/Images";
 
 const ThankYou = ({ navigation }) => {
     return (
-        <View style={{ flex: 1 }}>
-            <Header title='Thank You' onPress={() => navigation.goBack()} />
-            <Image
-                style={styles.sign}
-                source={Images.sign}
-                resizeMode="contain"
-            />
-            <Text style={styles.text}>Thanks for using Listening Ear</Text>
-        </View>
+        <SafeAreaView>
+            <View style={{ flex: 1 }}>
+                <Header title='Thank You' onPress={() => navigation.goBack()} />
+                <Image
+                    style={styles.sign}
+                    source={Images.sign}
+                    resizeMode="contain"
+                />
+                <Text style={styles.text}>Thanks for using Listening Ear</Text>
+            </View>
+        </SafeAreaView>
     );
 };
 

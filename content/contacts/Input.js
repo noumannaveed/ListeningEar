@@ -5,7 +5,7 @@ import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-nativ
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const Input = ({ navigation, placeholder, onChangeText, value, icon, secureTextEntry }) => {
+const Input = ({ placeholder, onChangeText, value, icon, secureTextEntry }) => {
     return (
         <View style={styles.input}>
             <TextInput

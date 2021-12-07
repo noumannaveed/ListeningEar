@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Component } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, Dimensions, ScrollView, Alert } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, Alert } from "react-native";
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -113,28 +113,30 @@ export default class EditProfile extends Component {
     }
     render() {
         return (
-            <View>
-                <Header title='Create Profile' onPress={() => this.props.navigation.goBack()} />
-                <ScrollView>
-                    <TouchableOpacity style={styles.main} onPress={this.goToPickImage}>
-                        <View
-                            resizeMode='contain'
-                            style={styles.image}
-                        >
-                            <Image
-                                source={{ uri: this.state.image }}
+            <SafeAreaView>
+                <View>
+                    <Header title='Create Profile' onPress={() => this.props.navigation.goBack()} />
+                    <ScrollView>
+                        <TouchableOpacity style={styles.main} onPress={this.goToPickImage}>
+                            <View
+                                resizeMode='contain'
                                 style={styles.image}
-                            />
-                        </View>
-                        <TouchableOpacity style={styles.camera}>
-                            <Ionicons name="md-camera" size={22} color="#dbd5d5" style={{top:h('0.3%')}}/>
+                            >
+                                <Image
+                                    source={{ uri: this.state.image }}
+                                    style={styles.image}
+                                />
+                            </View>
+                            <TouchableOpacity style={styles.camera}>
+                                <Ionicons name="md-camera" size={22} color="#dbd5d5" style={{ top: h('0.3%') }} />
+                            </TouchableOpacity>
                         </TouchableOpacity>
-                    </TouchableOpacity>
-                    <Input placeholder='First Name' value={this.state.firstName} onChangeText={(firstName) => this.setState({ firstName })} />
-                    <Input placeholder='Last Name' value={this.state.lastName} onChangeText={(lastName) => this.setState({lastName})} />
-                    <Button title='Update Your Profile' onPress={this.update} />
-                </ScrollView>
-            </View>
+                        <Input placeholder='First Name' value={this.state.firstName} onChangeText={(firstName) => this.setState({ firstName })} />
+                        <Input placeholder='Last Name' value={this.state.lastName} onChangeText={(lastName) => this.setState({ lastName })} />
+                        <Button title='Update Your Profile' onPress={this.update} />
+                    </ScrollView>
+                </View>
+            </SafeAreaView>
         );
     }
 };

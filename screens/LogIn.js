@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image, SafeAreaView } from "react-native";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 import Button from "../content/contacts/Button";
@@ -11,17 +11,19 @@ import { Images } from "../content/Images";
 
 const LogIn = ({ navigation }) => {
     return (
-        <View>
-            <Image
-                source={Images.logo1}
-                style={styles.logo}
-                resizeMode="contain"
-            />
-            <Text style={styles.text}>Your Place For The Unbias Opinion</Text>
-            <Text style={styles.text1}>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</Text>
-            <Button title='Login' onPress={() => navigation.replace('SignIn')} />
-            <Button1 title='Create Profile' onPress={() => navigation.navigate('SignUp')} />
-        </View>
+        <SafeAreaView>
+            <View>
+                <Image
+                    source={Images.logo1}
+                    style={styles.logo}
+                    resizeMode="contain"
+                />
+                <Text style={styles.text}>Your Place For The Unbias Opinion</Text>
+                <Text style={styles.text1}>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</Text>
+                <Button title='Login' onPress={() => navigation.replace('SignIn')} />
+                <Button1 title='Create Profile' onPress={() => navigation.navigate('SignUp')} />
+            </View>
+        </SafeAreaView>
     );
 };
 

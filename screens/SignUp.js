@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, Dimensions, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, Dimensions, ScrollView } from "react-native";
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -85,6 +85,7 @@ const SignUp = ({ navigation }) => {
         }
     }
     return (
+        <SafeAreaView>
         <View style={{flex:1}}>
             <Header title='Create Profile' onPress={() => navigation.goBack()} />
             <ScrollView style={{flex:1}}>
@@ -156,6 +157,7 @@ const SignUp = ({ navigation }) => {
                 </TouchableOpacity>
             </ScrollView>
         </View>
+        </SafeAreaView>
     );
 };
 

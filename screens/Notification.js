@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, AccessibilityInfo } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 
 // import DropDownPicker from 'react-native-dropdown-picker';
 import DropDownPicker from "react-native-custom-dropdown";
@@ -21,44 +21,46 @@ const Notification = ({ navigation }) => {
     const [isSwitchOn, setIsSwitchOn] = useState(false);
     const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
     return (
-        <View>
-            <Header title='Need a Listening Ear?' onPress={() => navigation.goBack()} />
-            <Text style={styles.text}>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</Text>
-            <View style={styles.pick}>
-                <DropDownPicker
-                    placeholder='Select one option here....'
-                    placeholderStyle={{ color: '#8B8B8B' }}
-                    open={open}
-                    value={value}
-                    items={items}
-                    setOpen={setOpen}
-                    setValue={setValue}
-                    setItems={setItems}
-                    style={styles.picker}
-                    containerStyle={{ height: h('7%') }}
-                    arrowColor='#8B8B8B'
-                    style={{
-                        borderTopLeftRadius: 50, borderTopRightRadius: 50,
-                        borderBottomLeftRadius: 50, borderBottomRightRadius: 50
-                    }}
-                    itemStyle={{
-                        justifyContent: 'flex-start',
-                    }}
-                    dropDownStyle={{
-                        borderTopLeftRadius: 20, borderTopRightRadius: 20,
-                        borderBottomLeftRadius: 20, borderBottomRightRadius: 20,
-                    }}
+        <SafeAreaView>
+            <View>
+                <Header title='Need a Listening Ear?' onPress={() => navigation.goBack()} />
+                <Text style={styles.text}>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</Text>
+                <View style={styles.pick}>
+                    <DropDownPicker
+                        placeholder='Select one option here....'
+                        placeholderStyle={{ color: '#8B8B8B' }}
+                        open={open}
+                        value={value}
+                        items={items}
+                        setOpen={setOpen}
+                        setValue={setValue}
+                        setItems={setItems}
+                        style={styles.picker}
+                        containerStyle={{ height: h('7%') }}
+                        arrowColor='#8B8B8B'
+                        style={{
+                            borderTopLeftRadius: 50, borderTopRightRadius: 50,
+                            borderBottomLeftRadius: 50, borderBottomRightRadius: 50
+                        }}
+                        itemStyle={{
+                            justifyContent: 'flex-start',
+                        }}
+                        dropDownStyle={{
+                            borderTopLeftRadius: 20, borderTopRightRadius: 20,
+                            borderBottomLeftRadius: 20, borderBottomRightRadius: 20,
+                        }}
+                    />
+                </View>
+                <Switch
+                    value={isSwitchOn}
+                    onValueChange={onToggleSwitch}
+                    color='#FFC69B'
+                    style={styles.switch}
                 />
+                <Text style={styles.text1}>Enable for Notification</Text>
+                <Button title='Submit' onPress={() => navigation.navigate('WaitingRoom')} />
             </View>
-            <Switch
-                value={isSwitchOn}
-                onValueChange={onToggleSwitch}
-                color='#FFC69B'
-                style={styles.switch}
-            />
-            <Text style={styles.text1}>Enable for Notification</Text>
-            <Button title='Submit' onPress={() => navigation.navigate('WaitingRoom')} />
-        </View>
+        </SafeAreaView>
     );
 };
 

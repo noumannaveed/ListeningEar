@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView, ImageBackground, Dimensions } from "react-native";
+import { View, Text, Image, StyleSheet, SafeAreaView, ImageBackground, Dimensions } from "react-native";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 
@@ -19,7 +19,8 @@ const UserConnecting = ({ navigation, route }) => {
     const user = route.params.user;
     const senderUid = route.params.senderUid;
     let senderFcmToken = '';
-    const notifications = async(fcmToken) => {
+    let receiverId = '';
+    const notification = async (fcmToken, type, title, body, id) => {
         fetch('https://fcm.googleapis.com/fcm/send', {
             method: 'POST',
             headers: {
@@ -29,11 +30,12 @@ const UserConnecting = ({ navigation, route }) => {
             body: JSON.stringify({
                 "to": fcmToken,
                 "notification": {
-                    "title": "accepted",
-                    "body": "Friend request!",
+                    "title": title,
+                    "body": body,
                 },
                 "data": {
-                    "type": "request-accepted",
+                    "type": type,
+                    "connectionid": id,
                 },
                 "mutable_content": false,
                 "sound": "Tri-tone"
@@ -64,11 +66,13 @@ const UserConnecting = ({ navigation, route }) => {
                     .then(data => {
                         // console.log(data.data().connectionid);
                         const otherUser = data.data();
+                        const receiverId = data.id;
                         firestore()
                             .collection('Connection')
                             .doc(data.data().connectionid)
                             .update({
                                 otheruser: otherUser,
+                                receiverid: receiverId,
                                 responded: 'true',
                             })
                             .then(() => {
@@ -79,37 +83,52 @@ const UserConnecting = ({ navigation, route }) => {
                                     .get()
                                     .then(documentsnapshot => {
                                         senderFcmToken = documentsnapshot.data().fcmtoken;
+                                        const sender = documentsnapshot.data();
+                                        // connectionId = documentsnapshot.data().connectionid;
+                                        notification(senderFcmToken, type = 'request-accepted', title = 'accepted', body = 'Friend request!', documentsnapshot.data().connectionid);
                                         console.log('Sender=', senderFcmToken);
                                     })
-                                    notifications(senderFcmToken);   
                             })
                     })
-                    
+
             });
     }
+    const reject = () => {
+        firestore()
+            .collection('Users')
+            .doc(senderUid[0])
+            .get()
+            .then(documentsnapshot => {
+                senderFcmToken = documentsnapshot.data().fcmtoken;
+                notification(senderFcmToken, type = 'request-rejected', title = 'rejected', body = 'No user available', documentsnapshot.data().connectionid);
+                console.log('Sender=', senderFcmToken);
+            })
+    }
     return (
-        <View style={{ flex: 1 }}>
-            <Header title='Waiting Room' onPress={() => navigation.goBack()} />
-            <Text style={styles.text1}>Someone would like to speak to you</Text>
-            <ImageBackground style={styles.black} source={Images.wifi} resizeMode="contain">
-                <Image
-                    style={styles.Ellipse}
-                    source={{ uri: image }}
-                // resizeMode="contain"
-                />
-            </ImageBackground>
-            <Text style={styles.text2}>Are you available to listen and provide positive feedback?</Text>
-            <ImageBackground
-                source={Images.sound_wave}
-                // resizeMode="contain"
-                style={styles.wave}
-            >
-                <View style={styles.buttonView}>
-                    <Button title='Yes' onPress={accept} style={styles.button} />
-                    <Button1 title='No' style={styles.button1} />
-                </View>
-            </ImageBackground>
-        </View>
+        <SafeAreaView>
+            <View>
+                <Header title='Waiting Room' onPress={() => navigation.goBack()} />
+                <Text style={styles.text1}>Someone would like to speak to you</Text>
+                <ImageBackground style={styles.black} source={Images.wifi} resizeMode="contain">
+                    <Image
+                        style={styles.Ellipse}
+                        source={{ uri: image }}
+                    // resizeMode="contain"
+                    />
+                </ImageBackground>
+                <Text style={styles.text2}>Are you available to listen and provide positive feedback?</Text>
+                <ImageBackground
+                    source={Images.sound_wave}
+                    // resizeMode="contain"
+                    style={styles.wave}
+                >
+                    <View style={styles.buttonView}>
+                        <Button title='Yes' onPress={accept} style={styles.button} />
+                        <Button1 title='No' onPress={reject} style={styles.button1} />
+                    </View>
+                </ImageBackground>
+            </View>
+        </SafeAreaView>
     );
 };
 

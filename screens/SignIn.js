@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, Dimensions, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, Dimensions, ScrollView } from "react-native";
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -42,9 +42,9 @@ const SignIn = ({ navigation }) => {
     const logIn = async () => {
         if (validate_field()) {
             login(email, password, setIsLoading)
-                .then( async (user) => {
+                .then(async (user) => {
                     const user1 = await firestore().collection('Users').doc(user.user.user.uid).get();
-                    console.log('user=',user1);
+                    console.log('user=', user1);
                     navigation.replace('PhoneNumber');
                 })
                 .catch((error) => {
@@ -55,45 +55,47 @@ const SignIn = ({ navigation }) => {
 
     }
     return (
-        <View>
-            <ScrollView>
-                <Image
-                    source={Images.logo1}
-                    style={styles.logo}
-                    resizeMode="contain"
-                />
-                <Input placeholder='E-mail Address' value={email} onChangeText={(email) => setEmail(email)} />
-                <Input
-                    placeholder='Password'
-                    value={password}
-                    onChangeText={(password) => setPassword(password)}
-                    icon={
-                        <TouchableOpacity onPress={() => {
-                            setIsSecureEntry((prev) => !prev)
-                        }}>
-                            <Ionicons name={isSecureEntry ? "eye-outline" : "eye-off-outline"} size={20} />
-                        </TouchableOpacity>
-                    }
-                    secureTextEntry={isSecureEntry}
-                />
-                <TouchableOpacity>
-                    <Text style={styles.text1}>Forget Password</Text>
-                </TouchableOpacity>
-                <View>
-                    {isLoading ? (
-                        <ActivityIndicator color='#FFC69B' animating={setIsLoading} />
-                    ) : (
-                        <Button title='Log In' onPress={logIn} />
-                    )
-                    }
-                </View>
-                <Text style={styles.text}>OR</Text>
-                <Button1 title='Create Profile' onPress={() => navigation.navigate('SignUp')} />
-                {/* <TouchableOpacity onPress={()=>navigation.navigate('PhoneNumber')}>
+        <SafeAreaView>
+            <View>
+                <ScrollView>
+                    <Image
+                        source={Images.logo1}
+                        style={styles.logo}
+                        resizeMode="contain"
+                    />
+                    <Input placeholder='E-mail Address' value={email} onChangeText={(email) => setEmail(email)} />
+                    <Input
+                        placeholder='Password'
+                        value={password}
+                        onChangeText={(password) => setPassword(password)}
+                        icon={
+                            <TouchableOpacity onPress={() => {
+                                setIsSecureEntry((prev) => !prev)
+                            }}>
+                                <Ionicons name={isSecureEntry ? "eye-outline" : "eye-off-outline"} size={20} />
+                            </TouchableOpacity>
+                        }
+                        secureTextEntry={isSecureEntry}
+                    />
+                    <TouchableOpacity>
+                        <Text style={styles.text1}>Forget Password</Text>
+                    </TouchableOpacity>
+                    <View>
+                        {isLoading ? (
+                            <ActivityIndicator color='#FFC69B' animating={setIsLoading} />
+                        ) : (
+                            <Button title='Log In' onPress={logIn} />
+                        )
+                        }
+                    </View>
+                    <Text style={styles.text}>OR</Text>
+                    <Button1 title='Create Profile' onPress={() => navigation.navigate('SignUp')} />
+                    {/* <TouchableOpacity onPress={()=>navigation.navigate('PhoneNumber')}>
                 <Text style={styles.text1}>Create Profile with phone number</Text>
             </TouchableOpacity> */}
-            </ScrollView>
-        </View>
+                </ScrollView>
+            </View>
+        </SafeAreaView>
     );
 };
 

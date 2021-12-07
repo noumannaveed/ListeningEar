@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView, ImageBackground, Dimensions } from "react-native";
+import { View, Text, Image, StyleSheet, SafeAreaView, ImageBackground, Dimensions } from "react-native";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 import Header from "../content/contacts/Header";
@@ -12,24 +12,26 @@ const WaitingRoom = ({ navigation }) => {
     //     navigation.replace("UserConnecting");
     // }, 5000);
     return (
-        <View style={{ flex: 1 }}>
-            <Header title='Waiting Room' onPress={()=>navigation.goBack()}/>
-            <Text style={styles.text1}>Your notification is being sent out</Text>
-            <View style={styles.black}>
-                <Image
-                    style={styles.waiting}
-                    source={Images.waiting}
-                    resizeMode="contain"
-                />
+        <SafeAreaView>
+            <View>
+                <Header title='Waiting Room' onPress={() => navigation.goBack()} />
+                <Text style={styles.text1}>Your notification is being sent out</Text>
+                <View style={styles.black}>
+                    <Image
+                        style={styles.waiting}
+                        source={Images.waiting}
+                        resizeMode="contain"
+                    />
+                </View>
+                <ImageBackground
+                    source={Images.sound_wave}
+                    // resizeMode="contain"
+                    style={styles.wave}
+                >
+                    <Text style={styles.text}>Relax in the waiting room</Text>
+                </ImageBackground>
             </View>
-            <ImageBackground
-                source={Images.sound_wave}
-                // resizeMode="contain"
-                style={styles.wave}
-            >
-                <Text style={styles.text}>Relax in the waiting room</Text>
-            </ImageBackground>
-        </View>
+        </SafeAreaView>
     );
 };
 
