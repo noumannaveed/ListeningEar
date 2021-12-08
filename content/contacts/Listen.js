@@ -17,7 +17,7 @@ const Listen = ({ name, source }) => {
                     </View>
                 </View>
                 <Image
-                    source={source}
+                    source={{uri:source}}
                     // resizeMode='contain'
                     style={styles.image}
                 />
@@ -29,7 +29,7 @@ const Listen = ({ name, source }) => {
 const styles = StyleSheet.create({
     Container: {
         marginHorizontal: w('4.7%'),
-        marginVertical: h('1%')
+        marginVertical: h('1%'),
     },
     main: {
         flexDirection: 'row',

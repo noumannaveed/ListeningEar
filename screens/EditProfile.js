@@ -20,6 +20,8 @@ import Button from "../content/contacts/Button";
 import { signup } from "../auth/FireBase";
 
 
+import { ActivityIndicator } from "react-native-paper";
+
 const { height, width } = Dimensions.get('screen');
 export default class EditProfile extends Component {
     constructor(props) {
@@ -31,6 +33,7 @@ export default class EditProfile extends Component {
             check: false,
             url: '',
             userData: '',
+            loading: false,
         };
     }
     goToPickImage = () => {
@@ -56,6 +59,7 @@ export default class EditProfile extends Component {
         return true;
     }
     getUser = async () => {
+        this.setState({ loading: true });
         let value = await AsyncStorage.getItem('uid');
         let parse = JSON.parse(value);
         firestore()
@@ -75,13 +79,14 @@ export default class EditProfile extends Component {
                     // console.log('image=', data.image);
                 }
             });
+        this.setState({ loading: false });
     }
     async componentDidMount() {
         await this.getUser();
     }
     update = async () => {
         // console.log('check=', this.state.check);
-
+        this.setState({ loading: true });
         if (this.state.check) {
             try {
                 const uploadUri = this.state.image;
@@ -109,6 +114,7 @@ export default class EditProfile extends Component {
             .then(() => {
                 Alert.alert('Successfully Updated!')
                 console.log('User updated!');
+                this.setState({ loading: false });
             });
     }
     render() {
@@ -133,7 +139,14 @@ export default class EditProfile extends Component {
                         </TouchableOpacity>
                         <Input placeholder='First Name' value={this.state.firstName} onChangeText={(firstName) => this.setState({ firstName })} />
                         <Input placeholder='Last Name' value={this.state.lastName} onChangeText={(lastName) => this.setState({ lastName })} />
-                        <Button title='Update Your Profile' onPress={this.update} />
+                        <View>
+                            {this.state.loading ? (
+                                <ActivityIndicator color='#FFC69B' animating={this.state.loading} />
+                            ) : (
+                                <Button title='Update Your Profile' onPress={this.update} />
+                            )
+                            }
+                        </View>
                     </ScrollView>
                 </View>
             </SafeAreaView>

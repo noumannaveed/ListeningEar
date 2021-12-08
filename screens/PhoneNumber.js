@@ -12,6 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import PushNotification from "react-native-push-notification";
 import { LocalNotification } from "../src/services/LocalPushController";
 
+import { ActivityIndicator } from "react-native-paper";
 
 import { signout } from "../auth/FireBase";
 import { Images } from "../content/Images";
@@ -23,7 +24,8 @@ import Button1 from "../content/contacts/Button1";
 const { height, width } = Dimensions.get('screen');
 
 const PhoneNumber = ({ navigation }) => {
-    const [check, setCheck] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [notificationLoading, setNotificationLoading] = useState(false);
     const notification = (fcmToken, firstName, lastName, data, uid) => {
         // console.log('not=', fcmToken);
         fetch('https://fcm.googleapis.com/fcm/send', {
@@ -61,6 +63,7 @@ const PhoneNumber = ({ navigation }) => {
         return uuid.join('');
     }
     const handleNotification = async () => {
+        setNotificationLoading(true);
         let value = await AsyncStorage.getItem('uid');
         let parse = JSON.parse(value);
         // console.log('value=', parse.user.uid);
@@ -68,7 +71,7 @@ const PhoneNumber = ({ navigation }) => {
         let token = '';
         let recieveData = '';
         let senderData = '';
-        let senderId= '';
+        let senderId = '';
         let uid = '';
         let count = 0;
         let connectionId = generateUUID(32);
@@ -140,26 +143,22 @@ const PhoneNumber = ({ navigation }) => {
                                                 })
                                                 .then(() => {
                                                     console.log('Connection added!');
-                                                    // navigation.navigate('WaitingRoom');
                                                 });
-                                            // navigation.navigate('WaitingRoom');
                                         });
                                 });
-
-                            // console.log('redata=',recieveData);
-                            // console.log('token=',data.fcmtoken);
-                            // console.log('count=',count);
-                            // console.log('uid=',generateUUID(32));
                         }
                     }
                 });
             });
+        setNotificationLoading(false);
     }
     const logOut = async () => {
+        setIsLoading(true);
         signout()
             .then((user) => {
                 console.log(user);
                 navigation.navigate('SignIn');
+                setIsLoading(false);
             })
     }
     return (
@@ -178,10 +177,23 @@ const PhoneNumber = ({ navigation }) => {
                     </View>
                 </View>
                 <Text style={styles.text}>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</Text>
-                {/* <Button title='Send out notification' onPress={() => navigation.navigate('Notification')} /> */}
-                <Button title='Send out notification' onPress={handleNotification} />
+                <View>
+                    {notificationLoading ? (
+                        <ActivityIndicator color='#FFC69B' animating={notificationLoading} />
+                    ) : (
+                        <Button title='Send out notification' onPress={handleNotification} />
+                    )
+                    }
+                </View>
                 <Button1 title='Contact a previous listener' onPress={() => navigation.navigate('PreviousListener')} />
-                <Button title='Log Out' onPress={logOut} />
+                <View>
+                    {isLoading ? (
+                        <ActivityIndicator color='#FFC69B' animating={isLoading} />
+                    ) : (
+                        <Button title='Log Out' onPress={logOut} />
+                    )
+                    }
+                </View>
                 <Button title='Edit Profile' onPress={() => navigation.navigate('EditProfile')} />
             </View>
         </SafeAreaView>
