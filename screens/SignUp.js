@@ -85,7 +85,7 @@ const SignUp = ({ navigation }) => {
         }
     }
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{flex:1}}>
         <View style={{flex:1}}>
             <Header title='Create Profile' onPress={() => navigation.goBack()} />
             <ScrollView style={{flex:1}}>

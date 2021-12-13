@@ -34,34 +34,23 @@ const Splash = ({ navigation }) => {
                 const user = JSON.parse(remoteMessage.data.user);
                 const image = user[0].image;
                 const senderUid = JSON.parse(remoteMessage.data.uid);
-                navigation.navigate('UserConnecting', { image, user, senderUid });
-                //    return unsubscribe;
+                const connectionId = JSON.parse(remoteMessage.data.connection);
+                const connectionid = connectionId[0];
+                navigation.navigate('UserConnecting', { image, user, senderUid, connectionid });
             } else {
-                const connection = remoteMessage.data.connectionid
-                console.log('connection=', connection);
+                const connection = remoteMessage.data.connectionid;
                 firestore()
                     .collection('Connection')
                     .doc(connection)
                     .onSnapshot(doc => {
-                        // console.log('doc=', doc.data().responded);
                         if (doc.data().responded === 'true') {
-                            // const receiver = remoteMessage.data.receiver;
                             navigation.navigate('PreviousListener');
-                            //    return unsubscribe;
                         }
                     })
             }
             Alert.alert(
                 JSON.stringify(remoteMessage.notification.title),
                 JSON.stringify(remoteMessage.notification.body),
-                // [
-                //     {
-                //         text: "Cancel",
-                //         onPress: () => console.log("Cancel Pressed"),
-                //         style: "cancel"
-                //     },
-                //     { text: "OK", onPress: () => console.log("OK Pressed") }
-                // ]
             );
         });
     }, [])

@@ -22,6 +22,7 @@ export default class PreviousListener extends Component {
         };
     }
     getUser = async () => {
+        let temp = [];
         let value = await AsyncStorage.getItem('uid');
         let parse = JSON.parse(value);
         console.log('parse=', parse.user.uid);
@@ -30,41 +31,39 @@ export default class PreviousListener extends Component {
             .doc(parse.user.uid)
             .get()
             .then(data => {
-                // console.log('data=', data.data().connectionid);
-                firestore()
-                    .collection('Connection')
-                    .doc(data.data().connectionid)
-                    .get()
-                    .then(document => {
-                        // console.log('connectiondata=',data.data().receiverid);
-                        if (parse.user.uid === document.data().senderid) {
-                            console.log('you are sender!', parse.user.uid);
-                            firestore()
-                                .collection('Users')
-                                .doc(document.data().receiverid)
-                                .get()
-                                .then(doc => {
-                                    let temp = [];
-                                    temp.push(doc.data());
-                                    this.setState({ userList: temp });
-                                    // this.setState({ userList: doc.data() })
-                                    console.log('tempreceiveruser=', temp);
-                                })
-                        } else if (parse.user.uid === document.data().receiverid) {
-                            console.log('you are receiver!', parse.user.uid);
-                            firestore()
-                                .collection('Users')
-                                .doc(document.data().senderid)
-                                .get()
-                                .then(doc => {
-                                    let temp = [];
-                                    temp.push(doc.data());
-                                    this.setState({ userList: temp });
-                                    console.log('tempsenderuser=', temp);
-                                    // console.log('senderuser=', DATA);
-                                })
-                        }
-                    })
+                console.log('value=', data.data().connection.length);
+                for (var i = 0; i < data.data().connection.length; i++) {
+                    console.log('connectionids=', data.data().connection[i]);
+                    firestore()
+                        .collection('Connection')
+                        .doc(data.data().connection[i].connectionid)
+                        .get()
+                        .then(document => {
+                            if (parse.user.uid === document.data().senderid) {
+                                console.log('you are sender!', parse.user.uid);
+                                firestore()
+                                    .collection('Users')
+                                    .doc(document.data().receiverid)
+                                    .get()
+                                    .then(doc => {
+                                        temp.push(doc.data());
+                                        this.setState({ userList: temp });
+                                        console.log('tempreceiveruser=', temp);
+                                    })
+                            } else if (parse.user.uid === document.data().receiverid) {
+                                console.log('you are receiver!', parse.user.uid);
+                                firestore()
+                                    .collection('Users')
+                                    .doc(document.data().senderid)
+                                    .get()
+                                    .then(doc => {
+                                        temp.push(doc.data());
+                                        this.setState({ userList: temp });
+                                        console.log('tempsenderuser=', temp);
+                                    })
+                            }
+                        })
+                }
             })
     }
     async componentDidMount() {

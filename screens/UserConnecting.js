@@ -18,8 +18,12 @@ const UserConnecting = ({ navigation, route }) => {
     const image = route.params.image;
     const user = route.params.user;
     const senderUid = route.params.senderUid;
+    const connectionId = route.params.connectionid;
     let senderFcmToken = '';
     let receiverId = '';
+    let type = '';
+    let title = '';
+    let body = '';
     const notification = async (fcmToken, type, title, body, id) => {
         fetch('https://fcm.googleapis.com/fcm/send', {
             method: 'POST',
@@ -49,14 +53,13 @@ const UserConnecting = ({ navigation, route }) => {
     const accept = async () => {
         let value = await AsyncStorage.getItem('uid');
         let parse = JSON.parse(value);
-        console.log('Userconnect=', senderUid[0]);
-        // senderUid = JSON.parse(senderUid);
-        // console.log(parse.user.uid);
+        const connect = { connectionid: connectionId, senderid: senderUid[0] }
         firestore()
             .collection('Users')
             .doc(parse.user.uid)
             .update({
                 responded: 'true',
+                connection: firestore.FieldValue.arrayUnion(connect),
             })
             .then(() => {
                 firestore()
@@ -64,12 +67,11 @@ const UserConnecting = ({ navigation, route }) => {
                     .doc(parse.user.uid)
                     .get()
                     .then(data => {
-                        // console.log(data.data().connectionid);
                         const otherUser = data.data();
                         const receiverId = data.id;
                         firestore()
                             .collection('Connection')
-                            .doc(data.data().connectionid)
+                            .doc(connectionId)
                             .update({
                                 otheruser: otherUser,
                                 receiverid: receiverId,
@@ -84,8 +86,7 @@ const UserConnecting = ({ navigation, route }) => {
                                     .then(documentsnapshot => {
                                         senderFcmToken = documentsnapshot.data().fcmtoken;
                                         const sender = documentsnapshot.data();
-                                        // connectionId = documentsnapshot.data().connectionid;
-                                        notification(senderFcmToken, type = 'request-accepted', title = 'accepted', body = 'Friend request!', documentsnapshot.data().connectionid);
+                                        notification(senderFcmToken, type = 'request-accepted', title = 'accepted', body = 'Friend request!', connectionId);
                                         console.log('Sender=', senderFcmToken);
                                     })
                             })
@@ -99,9 +100,28 @@ const UserConnecting = ({ navigation, route }) => {
             .doc(senderUid[0])
             .get()
             .then(documentsnapshot => {
-                senderFcmToken = documentsnapshot.data().fcmtoken;
-                notification(senderFcmToken, type = 'request-rejected', title = 'rejected', body = 'No user available', documentsnapshot.data().connectionid);
-                console.log('Sender=', senderFcmToken);
+                for (var i = 0; i < documentsnapshot.data().connection.length; i++) {
+                    // console.log(documentsnapshot.data().connection[i]);
+                    if (connectionId === documentsnapshot.data().connection[i].connectionid) {
+                        // console.log(documentsnapshot.data().connection[i].connectionid);
+                        // const obj = { connectionid, receiverid } 
+                        firestore()
+                            .collection('Users')
+                            .doc(senderUid[0])
+                            .update({
+                                connection: firestore.FieldValue.arrayRemove(documentsnapshot.data().connection[i]),
+                            })
+                            .then(() => {
+                                console.log('deleted!');
+                                firestore()
+                                    .collection('Connection')
+                                    .doc(connectionId)
+                                    .delete()
+                            })
+                    }
+                }
+                // senderFcmToken = documentsnapshot.data().fcmtoken;
+                // notification(senderFcmToken, type = 'request-rejected', title = 'rejected', body = 'No user available', connectionId);
             })
     }
     return (
