@@ -66,9 +66,7 @@ const PhoneNumber = ({ navigation }) => {
         let parse = JSON.parse(value);
         let check = '';
         let token = '';
-        let recieveData = '';
-        let senderData = '';
-        let senderId = '';
+        let receiveData = '';
         let uid = '';
         let count = 0;
         let connectionId = generateUUID(32);
@@ -80,10 +78,10 @@ const PhoneNumber = ({ navigation }) => {
             .then(dat => {
                 check = dat.data().interest.value;
                 token = dat.data().fcmtoken;
-                recieveData = dat.data();
+                receiveData = dat.data();
                 uid = parse.user.uid;
                 connections = dat.data().connection;
-                // console.log('connections=', connections[0]);
+                // console.log('connections=', connections[0].receiverid);
             });
         firestore()
             .collection('Users')
@@ -95,8 +93,7 @@ const PhoneNumber = ({ navigation }) => {
                     // console.log('connections=',connections);
                     let isCheck = false;
                     for (var i = 0; i < connections.length; i++) {
-                        // console.log('recieverid=',connections[i].recieverid);
-                        if (id === connections[i].recieverid || id === connections[i].senderid) {
+                        if (id === connections[i].receiverid || id === connections[i].senderid) {
                             isCheck = true;
                             // console.log('recieverid=', connections[i].recieverid);
                         } else {
@@ -109,43 +106,24 @@ const PhoneNumber = ({ navigation }) => {
                         if ("interest" in data) {
                             // console.log('condition=', c);
                             if (data.interest.value === check && data.fcmtoken != token && data.fcmtoken != 'null') {
-                                const connect = { connectionid: connectionId, recieverid: id }
-                                firestore()
-                                    .collection('Users')
-                                    .doc(parse.user.uid)
-                                    .update({
-                                        connection: firestore.FieldValue.arrayUnion(connect),
-                                    })
-                                    .then(() => {
-                                        console.log('Connection added!');
-                                    });
-                                notification(data.fcmtoken, recieveData, uid, connectionId);
+                                notification(data.fcmtoken, receiveData, uid, connectionId);
                                 count++;
                                 firestore()
-                                    .collection('Users')
-                                    .doc(parse.user.uid)
-                                    .get()
-                                    .then(dat => {
-                                        senderData = dat.data();
-                                        senderId = dat.id;
-                                        firestore()
-                                            .collection('Connection')
-                                            .doc(connectionId)
-                                            .set({
-                                                createdBy: senderData,
-                                                responded: 'false',
-                                                noofuser: count,
-                                                createdAt: new Date(),
-                                                otheruser: '',
-                                                senderid: senderId,
-                                            })
-                                            .then(() => {
-                                                console.log('Connection added!');
-                                            });
-                                    });
+                                .collection('Connection')
+                                .doc(connectionId)
+                                .set({
+                                    responded: 'false',
+                                    noofuser: count,
+                                    createdAt: new Date(),
+                                    // otheruser: '',
+                                })
+                                .then(() => {
+                                    console.log('Connection added!');
+                                });
                             }
                         }
                     }
+                    console.log(count);
                 });
             });
         setNotificationLoading(false);

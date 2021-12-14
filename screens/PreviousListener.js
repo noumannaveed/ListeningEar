@@ -46,7 +46,10 @@ export default class PreviousListener extends Component {
                                     .doc(document.data().receiverid)
                                     .get()
                                     .then(doc => {
-                                        temp.push(doc.data());
+                                        temp.push({
+                                            ...doc.data(),
+                                            uid:doc.id
+                                        });
                                         this.setState({ userList: temp });
                                         console.log('tempreceiveruser=', temp);
                                     })
@@ -57,7 +60,10 @@ export default class PreviousListener extends Component {
                                     .doc(document.data().senderid)
                                     .get()
                                     .then(doc => {
-                                        temp.push(doc.data());
+                                        temp.push({
+                                            ...doc.data(),
+                                            uid:doc.id
+                                        });
                                         this.setState({ userList: temp });
                                         console.log('tempsenderuser=', temp);
                                     })
@@ -69,18 +75,20 @@ export default class PreviousListener extends Component {
     async componentDidMount() {
         this.setState({ loading: true });
         await this.getUser();
+        // console.log('uid=',item.uid);
         this.setState({ loading: false });
     }
     renderItem = ({ item }) => (
         <Listen
             name={item.firstname}
             source={item.image}
+            onPress={() => this.props.navigation.navigate('ChatScreen', { userName: item.firstname, image: item.image, userId: item.uid })}
+            // onPress={()=>console.log(item)}
         />
     );
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                {console.log('userList=', this.state.userList)}
                 <View style={{ flex: 1 }}>
                     <Header title='Need a Listening Ear?' onPress={() => this.props.navigation.goBack()} />
                     <View>

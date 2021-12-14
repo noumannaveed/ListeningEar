@@ -53,13 +53,14 @@ const UserConnecting = ({ navigation, route }) => {
     const accept = async () => {
         let value = await AsyncStorage.getItem('uid');
         let parse = JSON.parse(value);
-        const connect = { connectionid: connectionId, senderid: senderUid[0] }
+        const sender = { connectionid: connectionId, senderid: senderUid[0] }
+        const receiver = { connectionid: connectionId, receiverid: parse.user.uid }
         firestore()
             .collection('Users')
             .doc(parse.user.uid)
             .update({
                 responded: 'true',
-                connection: firestore.FieldValue.arrayUnion(connect),
+                connection: firestore.FieldValue.arrayUnion(sender),
             })
             .then(() => {
                 firestore()
@@ -70,26 +71,37 @@ const UserConnecting = ({ navigation, route }) => {
                         const otherUser = data.data();
                         const receiverId = data.id;
                         firestore()
-                            .collection('Connection')
-                            .doc(connectionId)
+                            .collection('Users')
+                            .doc(senderUid[0])
                             .update({
-                                otheruser: otherUser,
-                                receiverid: receiverId,
-                                responded: 'true',
+                                connection: firestore.FieldValue.arrayUnion(receiver),
                             })
                             .then(() => {
-                                console.log('other user added!');
                                 firestore()
                                     .collection('Users')
                                     .doc(senderUid[0])
                                     .get()
                                     .then(documentsnapshot => {
                                         senderFcmToken = documentsnapshot.data().fcmtoken;
-                                        const sender = documentsnapshot.data();
+                                        const send = documentsnapshot.data();
                                         notification(senderFcmToken, type = 'request-accepted', title = 'accepted', body = 'Friend request!', connectionId);
-                                        console.log('Sender=', senderFcmToken);
+                                        // console.log('Sender=', senderFcmToken);
+                                        firestore()
+                                            .collection('Connection')
+                                            .doc(connectionId)
+                                            .update({
+                                                createdBy: send,
+                                                otheruser: otherUser,
+                                                receiverid: receiverId,
+                                                senderid: senderUid[0],
+                                                responded: 'true',
+                                            })
+                                            .then(() => {
+                                                console.log('other user added!');
+                                            })
                                     })
                             })
+
                     })
 
             });
