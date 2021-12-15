@@ -5,7 +5,7 @@ import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
 import storage from '@react-native-firebase/storage';
 export const signout = async () => {
-    let value = await AsyncStorage.getItem('uid',null);
+    let value = await AsyncStorage.getItem('uid', null);
     let parse = JSON.parse(value);
     console.log('value=', parse.user.uid);
     firestore()
@@ -133,5 +133,17 @@ export const signup = async (email, password, firstName, lastName, image, intere
                     reject({ status: false, error: "That email address is already in use!" });
                 }
             });
+    })
+};
+
+export const sendMessage = (connectionId, message) => {
+    return new Promise((resolve) => {
+        console.log('connect=', message);
+        firestore()
+            .collection('Connection')
+            .doc(connectionId)
+            .collection('Messages')
+            .add({ ...message, createdAt: firestore.FieldValue.serverTimestamp() })
+        resolve({ status: true });
     })
 };

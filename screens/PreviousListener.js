@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, FlatList, SafeAreaView } from "react-native";
+import { View, StyleSheet, FlatList, SafeAreaView, Dimensions } from "react-native";
 
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
@@ -12,6 +12,7 @@ import Listen from "../content/contacts/Listen";
 import { Images } from "../content/Images";
 
 import { ActivityIndicator } from "react-native-paper";
+const { height, width } = Dimensions.get('screen');
 
 export default class PreviousListener extends Component {
     constructor(props) {
@@ -33,7 +34,8 @@ export default class PreviousListener extends Component {
             .then(data => {
                 console.log('value=', data.data().connection.length);
                 for (var i = 0; i < data.data().connection.length; i++) {
-                    console.log('connectionids=', data.data().connection[i]);
+                    console.log('connectionids=', data.data().connection[i].connectionid)
+                    let connectionid = data.data().connection[i].connectionid
                     firestore()
                         .collection('Connection')
                         .doc(data.data().connection[i].connectionid)
@@ -48,7 +50,8 @@ export default class PreviousListener extends Component {
                                     .then(doc => {
                                         temp.push({
                                             ...doc.data(),
-                                            uid:doc.id
+                                            uid: doc.id,
+                                            connection: connectionid,
                                         });
                                         this.setState({ userList: temp });
                                         console.log('tempreceiveruser=', temp);
@@ -62,7 +65,8 @@ export default class PreviousListener extends Component {
                                     .then(doc => {
                                         temp.push({
                                             ...doc.data(),
-                                            uid:doc.id
+                                            uid: doc.id,
+                                            connection: connectionid,
                                         });
                                         this.setState({ userList: temp });
                                         console.log('tempsenderuser=', temp);
@@ -82,8 +86,8 @@ export default class PreviousListener extends Component {
         <Listen
             name={item.firstname}
             source={item.image}
-            onPress={() => this.props.navigation.navigate('ChatScreen', { userName: item.firstname, image: item.image, userId: item.uid })}
-            // onPress={()=>console.log(item)}
+            onPress={() => this.props.navigation.navigate('ChatScreen', { userName: item.firstname, image: item.image, userId: item.uid, parse: item.parse, connection: item.connection })}
+        // onPress={() => console.log(item.connection)}
         />
     );
     render() {
@@ -93,7 +97,13 @@ export default class PreviousListener extends Component {
                     <Header title='Need a Listening Ear?' onPress={() => this.props.navigation.goBack()} />
                     <View>
                         {this.state.loading ? (
-                            <ActivityIndicator color='#FFC69B' animating={this.state.loading} />
+                            <View style={styles.loading}>
+                                <ActivityIndicator
+                                    color='#FFC69B'
+                                    animating={this.state.loading}
+                                    size='large'
+                                />
+                            </View>
                         ) : (
                             <FlatList
                                 data={this.state.userList}
@@ -110,5 +120,9 @@ export default class PreviousListener extends Component {
 };
 
 const styles = StyleSheet.create({
-
+    loading: {
+        alignItems: 'center',
+        justifyContent: "center",
+        marginVertical: height * 0.375
+    }
 });

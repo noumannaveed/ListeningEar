@@ -43,9 +43,12 @@ const Splash = ({ navigation }) => {
                     .collection('Connection')
                     .doc(connection)
                     .onSnapshot(doc => {
-                        if (doc.data().responded === 'true') {
-                            navigation.navigate('PreviousListener');
+                        if (doc.exists) {
+                            if (doc.data().responded === 'true') {
+                                navigation.navigate('PreviousListener');
+                            }
                         }
+
                     })
             }
             Alert.alert(

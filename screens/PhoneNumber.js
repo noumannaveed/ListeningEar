@@ -52,6 +52,29 @@ const PhoneNumber = ({ navigation }) => {
             navigation.navigate('WaitingRoom');
         })
     }
+    const notificationOff = (fcmToken) => {
+        fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "key=AAAArc-UobE:APA91bEuxAzyQBJfkst1uSClNiWmre1tW5DOePJXMNFuXR7mu5a-8kl9eaMyk2tVLMGB3505YrQZN4634EdnQdW3rligTtQMRp30TsUVgwLh6VJJK-HvaMEXVLqZnNbGOT1ekitoNEPn"
+            },
+            body: JSON.stringify({
+                "to": fcmToken,
+                "notification": {
+                    "title": "No user found",
+                    "body": "Try again!",
+                },
+                "data": {
+                    "type": "no-user",
+                },
+                "mutable_content": false,
+                "sound": "Tri-tone"
+            }),
+        }).then(() => {
+            console.warn('sended');
+        })
+    }
     function generateUUID(digits) {
         let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ';
         let uuid = [];
@@ -96,8 +119,6 @@ const PhoneNumber = ({ navigation }) => {
                         if (id === connections[i].receiverid || id === connections[i].senderid) {
                             isCheck = true;
                             // console.log('recieverid=', connections[i].recieverid);
-                        } else {
-                            isCheck = false;
                         }
                     }
                     console.log('check=', isCheck);
@@ -123,7 +144,9 @@ const PhoneNumber = ({ navigation }) => {
                             }
                         }
                     }
-                    console.log(count);
+                    else if (count===0) {
+                        notificationOff(token)
+                    }
                 });
             });
         setNotificationLoading(false);
