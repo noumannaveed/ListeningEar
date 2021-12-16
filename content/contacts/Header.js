@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const Header = ({ navigation, title, onPress }) => {
+const Header = ({ navigation, title, onPress, icon }) => {
     return (
         <View>
             <View style={styles.container}>
@@ -11,9 +11,13 @@ const Header = ({ navigation, title, onPress }) => {
                     <Ionicons name="chevron-back" size={16} color="#948e8e" />
                     <Text style={styles.text}>Back</Text>
                 </TouchableOpacity>
+                <View></View>
                 <Text style={styles.text1}>{title}</Text>
                 <View></View>
                 <View></View>
+                <TouchableOpacity>
+                    <Ionicons name={icon} size={24} color="black" />
+                </TouchableOpacity>
             </View>
             <View style={styles.seprator}></View>
         </View>

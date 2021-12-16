@@ -28,8 +28,6 @@ const Splash = ({ navigation }) => {
     useEffect(() => {
         checkLogin();
         const unsubscribe = messaging().onMessage(async remoteMessage => {
-            // console.log('senderid=',senderUid);
-            // console.log('user=',image);
             if (remoteMessage.data.type === 'new-request') {
                 const user = JSON.parse(remoteMessage.data.user);
                 const image = user[0].image;
@@ -37,7 +35,7 @@ const Splash = ({ navigation }) => {
                 const connectionId = JSON.parse(remoteMessage.data.connection);
                 const connectionid = connectionId[0];
                 navigation.navigate('UserConnecting', { image, user, senderUid, connectionid });
-            } else {
+            } else if (remoteMessage.data.type === 'request-accepted') {
                 const connection = remoteMessage.data.connectionid;
                 firestore()
                     .collection('Connection')
@@ -50,11 +48,13 @@ const Splash = ({ navigation }) => {
                         }
 
                     })
+            } else if (remoteMessage.data.type != 'new-message') {
+                Alert.alert(
+                    JSON.stringify(remoteMessage.notification.title),
+                    JSON.stringify(remoteMessage.notification.body),
+                );
             }
-            Alert.alert(
-                JSON.stringify(remoteMessage.notification.title),
-                JSON.stringify(remoteMessage.notification.body),
-            );
+
         });
     }, [])
 

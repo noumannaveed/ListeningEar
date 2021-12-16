@@ -86,8 +86,8 @@ export default class PreviousListener extends Component {
         <Listen
             name={item.firstname}
             source={item.image}
-            onPress={() => this.props.navigation.navigate('ChatScreen', { userName: item.firstname, image: item.image, userId: item.uid, parse: item.parse, connection: item.connection })}
-        // onPress={() => console.log(item.connection)}
+            onPress={() => this.props.navigation.navigate('ChatScreen', { userName: item.firstname, image: item.image, userId: item.uid, parse: item.parse, connection: item.connection, token: item.fcmtoken })}
+            // onPress={() => console.log(item.fcmtoken)}
         />
     );
     render() {
