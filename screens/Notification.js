@@ -3,9 +3,15 @@ import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 
 // import DropDownPicker from 'react-native-dropdown-picker';
 import DropDownPicker from "react-native-custom-dropdown";
+
 import { Switch } from 'react-native-paper';
+import { ActivityIndicator } from "react-native-paper";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import firestore from '@react-native-firebase/firestore';
 
 
 import Header from "../content/contacts/Header";
@@ -14,12 +20,145 @@ import Button from "../content/contacts/Button";
 const Notification = ({ navigation }) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
+    const [interest, setInterest] = useState('');
     const [items, setItems] = useState([
-        { label: 'Apple', value: 'apple' },
-        { label: 'Banana', value: 'banana' }
+        { label: 'Entertainment', value: 'entertainment' },
+        { label: 'Sports', value: 'sports' },
+        { label: 'Travelling', value: 'travelling' },
+        { label: 'Eating', value: 'eating' },
     ])
     const [isSwitchOn, setIsSwitchOn] = useState(false);
     const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+    const [notificationLoading, setNotificationLoading] = useState(false);
+
+    const notification = (fcmToken, data, uid, connection) => {
+        fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "key=AAAArc-UobE:APA91bEuxAzyQBJfkst1uSClNiWmre1tW5DOePJXMNFuXR7mu5a-8kl9eaMyk2tVLMGB3505YrQZN4634EdnQdW3rligTtQMRp30TsUVgwLh6VJJK-HvaMEXVLqZnNbGOT1ekitoNEPn"
+            },
+            body: JSON.stringify({
+                "to": fcmToken,
+                "notification": {
+                    "title": data.firstname + [' '] + data.lastname,
+                    "body": "Friend request!",
+                },
+                "data": {
+                    "type": "new-request",
+                    "user": [data],
+                    "uid": [uid],
+                    "connection": [connection],
+                },
+                "mutable_content": false,
+                "sound": "Tri-tone"
+            }),
+        }).then(() => {
+            console.warn('sended');
+            navigation.navigate('WaitingRoom');
+        })
+    }
+    const notificationOff = (fcmToken) => {
+        fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "key=AAAArc-UobE:APA91bEuxAzyQBJfkst1uSClNiWmre1tW5DOePJXMNFuXR7mu5a-8kl9eaMyk2tVLMGB3505YrQZN4634EdnQdW3rligTtQMRp30TsUVgwLh6VJJK-HvaMEXVLqZnNbGOT1ekitoNEPn"
+            },
+            body: JSON.stringify({
+                "to": fcmToken,
+                "notification": {
+                    "title": "No user found",
+                    "body": "Try again!",
+                },
+                "data": {
+                    "type": "no-user",
+                },
+                "mutable_content": false,
+                "sound": "Tri-tone"
+            }),
+        }).then(() => {
+            console.warn('sended');
+        })
+    }
+    function generateUUID(digits) {
+        let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ';
+        let uuid = [];
+        for (let i = 0; i < digits; i++) {
+            uuid.push(str[Math.floor(Math.random() * str.length)]);
+        }
+        return uuid.join('');
+    }
+    const handleNotification = async () => {
+        setNotificationLoading(true);
+        let value = await AsyncStorage.getItem('uid');
+        let parse = JSON.parse(value);
+        let check = '';
+        let token = '';
+        let receiveData = '';
+        let uid = '';
+        let count = 0;
+        let connectionId = generateUUID(32);
+        let connections = '';
+        firestore()
+            .collection('Users')
+            .doc(parse.user.uid)
+            .get()
+            .then(dat => {
+                check = dat.data().interest.value;
+                token = dat.data().fcmtoken;
+                receiveData = dat.data();
+                uid = parse.user.uid;
+                connections = dat.data().connection;
+                // console.log('connections=', connections[0].receiverid);
+            });
+        firestore()
+            .collection('Users')
+            .get()
+            .then(querySnapshot => {
+                querySnapshot.forEach(documentSnapshot => {
+                    const data = documentSnapshot.data();
+                    const id = documentSnapshot.id;
+                    // console.log('connections=',connections);
+                    let isCheck = false;
+                    for (var i = 0; i < connections.length; i++) {
+                        if (id === connections[i].receiverid || id === connections[i].senderid) {
+                            isCheck = true;
+                            // console.log('recieverid=', connections[i].recieverid);
+                        }
+                    }
+                    console.log('check=', isCheck);
+                    // console.log('c=', c);
+                    if (isCheck === false) {
+                        if ("interest" in data) {
+                            // console.log('condition=', c);
+                            if (data.interest.value === interest.value && data.fcmtoken != token && data.fcmtoken != 'null') {
+                                notification(data.fcmtoken, receiveData, uid, connectionId);
+                                count++;
+                                firestore()
+                                    .collection('Connection')
+                                    .doc(connectionId)
+                                    .set({
+                                        responded: 'false',
+                                        noofuser: count,
+                                        createdAt: new Date(),
+                                        // otheruser: '',
+                                    })
+                                    .then(() => {
+                                        console.log('Connection added!');
+                                    });
+                            }
+                        }
+                    }
+                });
+                if (count === 0) {
+                    notificationOff(token)
+                }
+            });
+        setNotificationLoading(false);
+    }
+
     return (
         <SafeAreaView>
             <View>
@@ -35,6 +174,7 @@ const Notification = ({ navigation }) => {
                         setOpen={setOpen}
                         setValue={setValue}
                         setItems={setItems}
+                        onChangeItem={(interest) => setInterest(interest)}
                         style={styles.picker}
                         containerStyle={{ height: h('7%') }}
                         arrowColor='#8B8B8B'
@@ -58,7 +198,16 @@ const Notification = ({ navigation }) => {
                     style={styles.switch}
                 />
                 <Text style={styles.text1}>Enable for Notification</Text>
-                <Button title='Submit' onPress={() => navigation.navigate('WaitingRoom')} />
+                <View>
+                    {notificationLoading ? (
+                        <ActivityIndicator color='#FFC69B' animating={notificationLoading} />
+                    ) : (
+                        // <Button title='Submit' onPress={() => navigation.navigate('Notification')} />
+                        // <Button title='Submit' onPress={console.log(interest)} />
+                        <Button title='Submit' onPress={handleNotification} />
+                    )
+                    }
+                </View>
             </View>
         </SafeAreaView>
     );

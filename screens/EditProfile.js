@@ -8,7 +8,6 @@ import ImagePicker from 'react-native-image-crop-picker';
 import DropDownPicker from "react-native-custom-dropdown";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
 import storage from '@react-native-firebase/storage';
@@ -34,6 +33,13 @@ export default class EditProfile extends Component {
             url: '',
             userData: '',
             loading: false,
+            open: false,
+            value: null,
+            items: [{ label: 'Entertainment', value: 'entertainment' },
+            { label: 'Sports', value: 'sports' },
+            { label: 'Travelling', value: 'travelling' },
+            { label: 'Eating', value: 'eating' },],
+            interest: '',
         };
     }
     goToPickImage = () => {
@@ -85,9 +91,19 @@ export default class EditProfile extends Component {
         await this.getUser();
     }
     update = async () => {
+        let value = await AsyncStorage.getItem('uid');
+        let parse = JSON.parse(value);
         // console.log('check=', this.state.check);
         this.setState({ loading: true });
         if (this.state.check) {
+            var desertRef = storage.child(this.state.image);
+
+            // Delete the file
+            desertRef.delete().then(function () {
+                // File deleted successfully
+            }).catch(function (error) {
+                // Uh-oh, an error occurred!
+            });
             try {
                 const uploadUri = this.state.image;
                 let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
@@ -99,9 +115,9 @@ export default class EditProfile extends Component {
             } catch (error) {
                 console.log('error=', error);
             }
+        } else if (this.state.check === false) {
+            this.setState({ url: this.state.image })
         }
-        let value = await AsyncStorage.getItem('uid');
-        let parse = JSON.parse(value);
         // console.log('value=', parse.user.uid);
         firestore()
             .collection('Users')
@@ -110,6 +126,7 @@ export default class EditProfile extends Component {
                 image: this.state.url,
                 firstname: this.state.firstName,
                 lastname: this.state.lastName,
+                interest: this.state.interest,
             })
             .then(() => {
                 Alert.alert('Successfully Updated!')
@@ -119,8 +136,8 @@ export default class EditProfile extends Component {
     }
     render() {
         return (
-            <SafeAreaView>
-                <View>
+            <SafeAreaView style={{ flex: 1 }}>
+                <View style={{ flex: 1 }}>
                     <Header title='Create Profile' onPress={() => this.props.navigation.goBack()} />
                     <ScrollView>
                         <TouchableOpacity style={styles.main} onPress={this.goToPickImage}>
@@ -133,12 +150,43 @@ export default class EditProfile extends Component {
                                     style={styles.image}
                                 />
                             </View>
-                            <TouchableOpacity style={styles.camera}>
+                            <TouchableOpacity style={styles.camera} onPress={this.goToPickImage}>
                                 <Ionicons name="md-camera" size={22} color="#dbd5d5" style={{ top: h('0.3%') }} />
                             </TouchableOpacity>
                         </TouchableOpacity>
                         <Input placeholder='First Name' value={this.state.firstName} onChangeText={(firstName) => this.setState({ firstName })} />
                         <Input placeholder='Last Name' value={this.state.lastName} onChangeText={(lastName) => this.setState({ lastName })} />
+                        <View style={styles.pick}>
+                            <DropDownPicker
+                                placeholder='Select one option here....'
+                                placeholderStyle={{ color: '#8B8B8B' }}
+                                open={this.state.open}
+                                value={this.state.value}
+                                items={this.state.items}
+                                setOpen={(open) => this.setState({ open })}
+                                setValue={(value) => this.setState({ value })}
+                                setItems={(items) => this.setState({ items })}
+                                style={styles.picker}
+                                containerStyle={{ height: h('7%') }}
+                                arrowColor='#8B8B8B'
+                                onChangeItem={(interest) => this.setState({ interest })}
+                                style={{
+                                    borderTopLeftRadius: 50, borderTopRightRadius: 50,
+                                    borderBottomLeftRadius: 50, borderBottomRightRadius: 50,
+                                    backgroundColor: 'white',
+                                    borderColor: '#8B8B8B'
+                                }}
+                                itemStyle={{
+                                    // justifyContent: 'space-between',
+                                    // flex: 1
+                                    justifyContent: 'flex-start',
+                                }}
+                                dropDownStyle={{
+                                    borderTopLeftRadius: 20, borderTopRightRadius: 20,
+                                    borderBottomLeftRadius: 20, borderBottomRightRadius: 20,
+                                }}
+                            />
+                        </View>
                         <View>
                             {this.state.loading ? (
                                 <ActivityIndicator color='#FFC69B' animating={this.state.loading} />
@@ -191,5 +239,14 @@ const styles = StyleSheet.create({
         color: '#008AB6',
         marginVertical: h('1%'),
         fontSize: 18
+    },
+    pick: {
+        marginHorizontal: w('10%'),
+        marginVertical: h('1%'),
+    },
+    picker: {
+        paddingHorizontal: w('3%'),
+        borderRadius: 50,
+        borderColor: '#C4C4C4'
     },
 });

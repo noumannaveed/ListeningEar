@@ -12,11 +12,9 @@ import firestore from '@react-native-firebase/firestore';
 
 const { height, width } = Dimensions.get('screen');
 const Splash = ({ navigation }) => {
-    // const image = '';
     const checkLogin = async () => {
         let value = await AsyncStorage.getItem('uid');
         console.log('splash=', value);
-        // let parse = JSON.parse(value);
         setTimeout(() => {
             if (value === null) {
                 navigation.replace("LogIn");
@@ -46,15 +44,17 @@ const Splash = ({ navigation }) => {
                                 navigation.navigate('PreviousListener');
                             }
                         }
-
                     })
-            } else if (remoteMessage.data.type != 'new-message') {
+            }
+            else if (remoteMessage.data.type != 'request-rejected') {
+                navigation.navigate('PreviousListener');
+            }
+            else if (remoteMessage.data.type != 'new-message') {
                 Alert.alert(
                     JSON.stringify(remoteMessage.notification.title),
                     JSON.stringify(remoteMessage.notification.body),
                 );
             }
-
         });
     }, [])
 
@@ -71,7 +71,6 @@ const Splash = ({ navigation }) => {
                 </ImageBackground>
                 <ImageBackground
                     source={Images.sound_wave}
-                    // resizeMode="contain"
                     style={styles.wave}
                 >
                 </ImageBackground>

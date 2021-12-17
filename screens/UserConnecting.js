@@ -20,7 +20,7 @@ const UserConnecting = ({ navigation, route }) => {
     const senderUid = route.params.senderUid;
     const connectionId = route.params.connectionid;
     let senderFcmToken = '';
-    let receiverId = '';
+    let id = '';
     let type = '';
     let title = '';
     let body = '';
@@ -108,32 +108,19 @@ const UserConnecting = ({ navigation, route }) => {
     }
     const reject = () => {
         firestore()
-            .collection('Users')
-            .doc(senderUid[0])
-            .get()
-            .then(documentsnapshot => {
-                for (var i = 0; i < documentsnapshot.data().connection.length; i++) {
-                    // console.log(documentsnapshot.data().connection[i]);
-                    if (connectionId === documentsnapshot.data().connection[i].connectionid) {
-                        // console.log(documentsnapshot.data().connection[i].connectionid);
-                        // const obj = { connectionid, receiverid } 
-                        firestore()
-                            .collection('Users')
-                            .doc(senderUid[0])
-                            .update({
-                                connection: firestore.FieldValue.arrayRemove(documentsnapshot.data().connection[i]),
-                            })
-                            .then(() => {
-                                console.log('deleted!');
-                                firestore()
-                                    .collection('Connection')
-                                    .doc(connectionId)
-                                    .delete()
-                            })
-                    }
-                }
-                // senderFcmToken = documentsnapshot.data().fcmtoken;
-                // notification(senderFcmToken, type = 'request-rejected', title = 'rejected', body = 'No user available', connectionId);
+            .collection('Connection')
+            .doc(connectionId)
+            .delete()
+            .then(() => {
+                firestore()
+                    .collection('Users')
+                    .doc(senderUid[0])
+                    .get()
+                    .then(documentsnapshot => {
+                        senderFcmToken = documentsnapshot.data().fcmtoken
+                        navigation.navigate('PreviousListener')
+                        notification(senderFcmToken, type = 'request-rejected', title = 'rejected', body = 'No user available', connectionId)
+                    })
             })
     }
     return (

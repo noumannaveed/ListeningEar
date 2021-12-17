@@ -130,21 +130,21 @@ const PhoneNumber = ({ navigation }) => {
                                 notification(data.fcmtoken, receiveData, uid, connectionId);
                                 count++;
                                 firestore()
-                                .collection('Connection')
-                                .doc(connectionId)
-                                .set({
-                                    responded: 'false',
-                                    noofuser: count,
-                                    createdAt: new Date(),
-                                    // otheruser: '',
-                                })
-                                .then(() => {
-                                    console.log('Connection added!');
-                                });
+                                    .collection('Connection')
+                                    .doc(connectionId)
+                                    .set({
+                                        responded: 'false',
+                                        noofuser: count,
+                                        createdAt: new Date(),
+                                        // otheruser: '',
+                                    })
+                                    .then(() => {
+                                        console.log('Connection added!');
+                                    });
                             }
                         }
                     }
-                    else if (count===0) {
+                    else if (count === 0) {
                         notificationOff(token)
                     }
                 });
@@ -180,7 +180,8 @@ const PhoneNumber = ({ navigation }) => {
                     {notificationLoading ? (
                         <ActivityIndicator color='#FFC69B' animating={notificationLoading} />
                     ) : (
-                        <Button title='Send out notification' onPress={handleNotification} />
+                        <Button title='Send out notification' onPress={() => navigation.navigate('Notification')} />
+                        // <Button title='Send out notification' onPress={handleNotification} />
                     )
                     }
                 </View>

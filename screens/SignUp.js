@@ -32,8 +32,10 @@ const SignUp = ({ navigation }) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     const [items, setItems] = useState([
-        { label: 'Apple', value: 'apple' },
-        { label: 'Banana', value: 'banana' },
+        { label: 'Entertainment', value: 'entertainment' },
+        { label: 'Sports', value: 'sports' },
+        { label: 'Travelling', value: 'travelling' },
+        { label: 'Eating', value: 'eating' },
     ]);
     const [interest, setInterest] = useState('');
     // const reference = storage().ref('Images.profile');
@@ -85,78 +87,78 @@ const SignUp = ({ navigation }) => {
         }
     }
     return (
-        <SafeAreaView style={{flex:1}}>
-        <View style={{flex:1}}>
-            <Header title='Create Profile' onPress={() => navigation.goBack()} />
-            <ScrollView style={{flex:1}}>
-                <TouchableOpacity style={styles.main} onPress={() => goToPickImage()}>
-                    <View
-                        resizeMode='contain'
-                        style={styles.image}
-                    >
-                        <Image
-                            source={image ? { uri: image } : Images.profile}
+        <SafeAreaView style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
+                <Header title='Create Profile' onPress={() => navigation.goBack()} />
+                <ScrollView style={{ flex: 1 }}>
+                    <TouchableOpacity style={styles.main} onPress={() => goToPickImage()}>
+                        <View
+                            resizeMode='contain'
                             style={styles.image}
+                        >
+                            <Image
+                                source={image ? { uri: image } : Images.profile}
+                                style={styles.image}
+                            />
+                        </View>
+                        <TouchableOpacity style={styles.camera}>
+                            <Ionicons name="md-camera" size={22} color="#dbd5d5" style={{ top: h('0.3%') }} />
+                        </TouchableOpacity>
+                    </TouchableOpacity>
+                    <Input placeholder='First Name' value={firstName} onChangeText={(firstName) => setFirstName(firstName)} />
+                    <Input placeholder='Last Name' value={lastName} onChangeText={(lastName) => setLastName(lastName)} />
+                    <View style={styles.pick}>
+                        <DropDownPicker
+                            placeholder='Select one option here....'
+                            placeholderStyle={{ color: '#8B8B8B' }}
+                            open={open}
+                            value={value}
+                            items={items}
+                            setOpen={setOpen}
+                            setValue={setValue}
+                            setItems={setItems}
+                            style={styles.picker}
+                            containerStyle={{ height: h('7%') }}
+                            arrowColor='#8B8B8B'
+                            onChangeItem={(interest) => setInterest(interest)}
+                            style={{
+                                borderTopLeftRadius: 50, borderTopRightRadius: 50,
+                                borderBottomLeftRadius: 50, borderBottomRightRadius: 50,
+                                backgroundColor: 'white',
+                                borderColor: '#8B8B8B'
+                            }}
+                            itemStyle={{
+                                // justifyContent: 'space-between',
+                                // flex: 1
+                                justifyContent: 'flex-start',
+                            }}
+                            dropDownStyle={{
+                                borderTopLeftRadius: 20, borderTopRightRadius: 20,
+                                borderBottomLeftRadius: 20, borderBottomRightRadius: 20,
+                            }}
                         />
                     </View>
-                    <TouchableOpacity style={styles.camera}>
-                        <Ionicons name="md-camera" size={22} color="#dbd5d5" style={{top:h('0.3%')}} />
-                    </TouchableOpacity>
-                </TouchableOpacity>
-                <Input placeholder='First Name' value={firstName} onChangeText={(firstName) => setFirstName(firstName)} />
-                <Input placeholder='Last Name' value={lastName} onChangeText={(lastName) => setLastName(lastName)} />
-                <View style={styles.pick}>
-                    <DropDownPicker
-                        placeholder='Select one option here....'
-                        placeholderStyle={{ color: '#8B8B8B' }}
-                        open={open}
-                        value={value}
-                        items={items}
-                        setOpen={setOpen}
-                        setValue={setValue}
-                        setItems={setItems}
-                        style={styles.picker}
-                        containerStyle={{ height: h('7%') }}
-                        arrowColor='#8B8B8B'
-                        onChangeItem={(interest)=>setInterest(interest)}
-                        style={{
-                            borderTopLeftRadius: 50, borderTopRightRadius: 50,
-                            borderBottomLeftRadius: 50, borderBottomRightRadius: 50,
-                            backgroundColor:'white',
-                            borderColor:'#8B8B8B'
-                        }}
-                        itemStyle={{
-                            // justifyContent: 'space-between',
-                            // flex: 1
-                            justifyContent: 'flex-start',
-                        }}
-                        dropDownStyle={{
-                            borderTopLeftRadius: 20, borderTopRightRadius: 20,
-                            borderBottomLeftRadius: 20, borderBottomRightRadius: 20,
-                        }}
+                    <Input placeholder='E-mail Address' value={email} onChangeText={(email) => setEmail(email)} />
+                    <Input
+                        placeholder='Password'
+                        value={password}
+                        onChangeText={(password) => setPassword(password)}
+                        icon={
+                            <TouchableOpacity onPress={() => {
+                                setIsSecureEntry((prev) => !prev)
+                            }}>
+                                <Ionicons name={isSecureEntry ? "eye-outline" : "eye-off-outline"} size={20} />
+                            </TouchableOpacity>
+                        }
+                        secureTextEntry={isSecureEntry}
                     />
-                </View>
-                <Input placeholder='E-mail Address' value={email} onChangeText={(email) => setEmail(email)} />
-                <Input
-                    placeholder='Password'
-                    value={password}
-                    onChangeText={(password) => setPassword(password)}
-                    icon={
-                        <TouchableOpacity onPress={() => {
-                            setIsSecureEntry((prev) => !prev)
-                        }}>
-                            <Ionicons name={isSecureEntry ? "eye-outline" : "eye-off-outline"} size={20} />
-                        </TouchableOpacity>
-                    }
-                    secureTextEntry={isSecureEntry}
-                />
-                <Button title='Create Your Profile' onPress={signUp} />
-                <Text style={styles.text}>OR</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('ProfileQuestion')}>
-                    <Text style={styles.text1}>Create Profile with phone number</Text>
-                </TouchableOpacity>
-            </ScrollView>
-        </View>
+                    <Button title='Create Your Profile' onPress={signUp} />
+                    <Text style={styles.text}>OR</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('ProfileQuestion')}>
+                        <Text style={styles.text1}>Create Profile with phone number</Text>
+                    </TouchableOpacity>
+                </ScrollView>
+            </View>
         </SafeAreaView>
     );
 };

@@ -114,16 +114,14 @@ const ChatScreen = ({ navigation, route }) => {
                             />
                         }}
                         renderTime={(props) => {
-                            return (
-                                <Time
-                                    {...props}
-                                    timeTextStyle={{
-                                        right: {
-                                            color: 'black',
-                                        },
-                                    }}
-                                />
-                            );
+                            return <Time
+                                {...props}
+                                timeTextStyle={{
+                                    right: {
+                                        color: 'black',
+                                    },
+                                }}
+                            />
                         }}
                         renderInputToolbar={(props) => {
                             return <InputToolbar
