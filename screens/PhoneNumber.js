@@ -52,6 +52,29 @@ const PhoneNumber = ({ navigation }) => {
             navigation.navigate('WaitingRoom');
         })
     }
+    const notificationOff = (fcmToken) => {
+        fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "key=AAAArc-UobE:APA91bEuxAzyQBJfkst1uSClNiWmre1tW5DOePJXMNFuXR7mu5a-8kl9eaMyk2tVLMGB3505YrQZN4634EdnQdW3rligTtQMRp30TsUVgwLh6VJJK-HvaMEXVLqZnNbGOT1ekitoNEPn"
+            },
+            body: JSON.stringify({
+                "to": fcmToken,
+                "notification": {
+                    "title": "No user found",
+                    "body": "Try again!",
+                },
+                "data": {
+                    "type": "no-user",
+                },
+                "mutable_content": false,
+                "sound": "Tri-tone"
+            }),
+        }).then(() => {
+            console.warn('sended');
+        })
+    }
     function generateUUID(digits) {
         let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ';
         let uuid = [];
@@ -66,9 +89,7 @@ const PhoneNumber = ({ navigation }) => {
         let parse = JSON.parse(value);
         let check = '';
         let token = '';
-        let recieveData = '';
-        let senderData = '';
-        let senderId = '';
+        let receiveData = '';
         let uid = '';
         let count = 0;
         let connectionId = generateUUID(32);
@@ -80,10 +101,10 @@ const PhoneNumber = ({ navigation }) => {
             .then(dat => {
                 check = dat.data().interest.value;
                 token = dat.data().fcmtoken;
-                recieveData = dat.data();
+                receiveData = dat.data();
                 uid = parse.user.uid;
                 connections = dat.data().connection;
-                // console.log('connections=', connections[0]);
+                // console.log('connections=', connections[0].receiverid);
             });
         firestore()
             .collection('Users')
@@ -95,12 +116,9 @@ const PhoneNumber = ({ navigation }) => {
                     // console.log('connections=',connections);
                     let isCheck = false;
                     for (var i = 0; i < connections.length; i++) {
-                        // console.log('recieverid=',connections[i].recieverid);
-                        if (id === connections[i].recieverid || id === connections[i].senderid) {
+                        if (id === connections[i].receiverid || id === connections[i].senderid) {
                             isCheck = true;
                             // console.log('recieverid=', connections[i].recieverid);
-                        } else {
-                            isCheck = false;
                         }
                     }
                     console.log('check=', isCheck);
@@ -109,42 +127,25 @@ const PhoneNumber = ({ navigation }) => {
                         if ("interest" in data) {
                             // console.log('condition=', c);
                             if (data.interest.value === check && data.fcmtoken != token && data.fcmtoken != 'null') {
-                                const connect = { connectionid: connectionId, recieverid: id }
-                                firestore()
-                                    .collection('Users')
-                                    .doc(parse.user.uid)
-                                    .update({
-                                        connection: firestore.FieldValue.arrayUnion(connect),
-                                    })
-                                    .then(() => {
-                                        console.log('Connection added!');
-                                    });
-                                notification(data.fcmtoken, recieveData, uid, connectionId);
+                                notification(data.fcmtoken, receiveData, uid, connectionId);
                                 count++;
                                 firestore()
-                                    .collection('Users')
-                                    .doc(parse.user.uid)
-                                    .get()
-                                    .then(dat => {
-                                        senderData = dat.data();
-                                        senderId = dat.id;
-                                        firestore()
-                                            .collection('Connection')
-                                            .doc(connectionId)
-                                            .set({
-                                                createdBy: senderData,
-                                                responded: 'false',
-                                                noofuser: count,
-                                                createdAt: new Date(),
-                                                otheruser: '',
-                                                senderid: senderId,
-                                            })
-                                            .then(() => {
-                                                console.log('Connection added!');
-                                            });
-                                    });
+                                .collection('Connection')
+                                .doc(connectionId)
+                                .set({
+                                    responded: 'false',
+                                    noofuser: count,
+                                    createdAt: new Date(),
+                                    // otheruser: '',
+                                })
+                                .then(() => {
+                                    console.log('Connection added!');
+                                });
                             }
                         }
+                    }
+                    else if (count===0) {
+                        notificationOff(token)
                     }
                 });
             });

@@ -5,9 +5,10 @@ import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-nativ
 
 
 const { height, width } = Dimensions.get('screen');
-const Listen = ({ name, source }) => {
+const Listen = ({ name, source, onPress }) => {
     return (
         <View style={styles.Container}>
+            <TouchableOpacity onPress={onPress}>
             <View style={styles.main}>
                 <View>
                     <Text style={styles.text}>{name}</Text>
@@ -18,10 +19,10 @@ const Listen = ({ name, source }) => {
                 </View>
                 <Image
                     source={{uri:source}}
-                    // resizeMode='contain'
                     style={styles.image}
                 />
             </View>
+            </TouchableOpacity>
         </View>
     );
 };

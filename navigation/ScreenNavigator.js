@@ -12,6 +12,7 @@ import PreviousListener from '../screens/PreviousListener';
 import WaitingRoom from '../screens/WaitingRoom';
 import UserConnecting from '../screens/UserConnecting';
 import ThankYou from '../screens/ThankYou';
+import ChatScreen from '../screens/ChatScreen';
 
 const Stack = createStackNavigator();
 
@@ -89,6 +90,11 @@ export const ScreenNavigator = () => {
                 <Stack.Screen
                     name="EditProfile"
                     component={EditProfile}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ChatScreen"
+                    component={ChatScreen}
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>
