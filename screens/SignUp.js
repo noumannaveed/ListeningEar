@@ -165,7 +165,12 @@ const SignUp = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     main: {
-        marginVertical: h('1%')
+        marginVertical: h('4%'),
+        // borderWidth: 1,
+        height: height * 0.15,
+        width: height * 0.15,
+        borderRadius: (height * 0.15) / 2,
+        alignSelf: 'center',
     },
     image: {
         height: height * 0.15,
@@ -178,14 +183,13 @@ const styles = StyleSheet.create({
     camera: {
         alignItems: 'center',
         // justifyContent: 'center',
-        // marginHorizontal: w('46%'),
-        marginHorizontal: width * 0.46,
+        // marginHorizontal: width * 0.46,
         height: width * 0.08,
         width: width * 0.08,
         backgroundColor: '#C4C4C4',
         borderRadius: (width * 0.08) / 2,
         bottom: h('5%'),
-        left: h('6%'),
+        left: h('11%'),
         opacity: 0.9,
     },
     text: {

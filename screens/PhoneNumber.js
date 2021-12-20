@@ -50,14 +50,7 @@ const PhoneNumber = ({ navigation }) => {
                     </View>
                 </View>
                 <Text style={styles.text}>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</Text>
-                <View>
-                    {notificationLoading ? (
-                        <ActivityIndicator color='#FFC69B' animating={notificationLoading} />
-                    ) : (
-                        <Button title='Send out notification' onPress={() => navigation.navigate('Notification')} />
-                    )
-                    }
-                </View>
+                <Button title='Send out notification' onPress={() => navigation.navigate('Notification')} />
                 <Button1 title='Contact a previous listener' onPress={() => navigation.navigate('PreviousListener')} />
                 <View>
                     {isLoading ? (

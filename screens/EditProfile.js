@@ -139,7 +139,7 @@ export default class EditProfile extends Component {
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ flex: 1 }}>
                     <Header title='Create Profile' onPress={() => this.props.navigation.goBack()} />
-                    <ScrollView>
+                    <ScrollView style={{ flex: 1 }}>
                         <TouchableOpacity style={styles.main} onPress={this.goToPickImage}>
                             <View
                                 resizeMode='contain'
@@ -170,15 +170,9 @@ export default class EditProfile extends Component {
                                 containerStyle={{ height: h('7%') }}
                                 arrowColor='#8B8B8B'
                                 onChangeItem={(interest) => this.setState({ interest })}
-                                style={{
-                                    borderTopLeftRadius: 50, borderTopRightRadius: 50,
-                                    borderBottomLeftRadius: 50, borderBottomRightRadius: 50,
-                                    backgroundColor: 'white',
-                                    borderColor: '#8B8B8B'
-                                }}
                                 itemStyle={{
                                     // justifyContent: 'space-between',
-                                    // flex: 1
+                                    // flex: 1,
                                     justifyContent: 'flex-start',
                                 }}
                                 dropDownStyle={{
@@ -204,7 +198,12 @@ export default class EditProfile extends Component {
 
 const styles = StyleSheet.create({
     main: {
-        marginVertical: h('4%')
+        marginVertical: h('4%'),
+        // borderWidth: 1,
+        height: height * 0.15,
+        width: height * 0.15,
+        borderRadius: (height * 0.15) / 2,
+        alignSelf: 'center',
     },
     image: {
         height: height * 0.15,
@@ -217,13 +216,13 @@ const styles = StyleSheet.create({
     camera: {
         alignItems: 'center',
         // justifyContent: 'center',
-        marginHorizontal: width * 0.46,
+        // marginHorizontal: width * 0.46,
         height: width * 0.08,
         width: width * 0.08,
         backgroundColor: '#C4C4C4',
         borderRadius: (width * 0.08) / 2,
         bottom: h('5%'),
-        left: h('6%'),
+        left: h('11%'),
         opacity: 0.9,
     },
     text: {
@@ -243,10 +242,16 @@ const styles = StyleSheet.create({
     pick: {
         marginHorizontal: w('10%'),
         marginVertical: h('1%'),
+        height: h('20%')
     },
     picker: {
-        paddingHorizontal: w('3%'),
-        borderRadius: 50,
-        borderColor: '#C4C4C4'
+        // paddingHorizontal: w('3%'),
+        // borderRadius: 50,
+        // borderColor: '#C4C4C4',
+        borderTopLeftRadius: 50, borderTopRightRadius: 50,
+        borderBottomLeftRadius: 50, borderBottomRightRadius: 50,
+        backgroundColor: 'white',
+        borderColor: '#8B8B8B',
+        flex: 1
     },
 });

@@ -202,8 +202,6 @@ const Notification = ({ navigation }) => {
                     {notificationLoading ? (
                         <ActivityIndicator color='#FFC69B' animating={notificationLoading} />
                     ) : (
-                        // <Button title='Submit' onPress={() => navigation.navigate('Notification')} />
-                        // <Button title='Submit' onPress={console.log(interest)} />
                         <Button title='Submit' onPress={handleNotification} />
                     )
                     }

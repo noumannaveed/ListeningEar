@@ -27,8 +27,6 @@ const SignIn = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [isSecureEntry, setIsSecureEntry] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
-    console.log(email);
-    console.log(password);
     const validate_field = () => {
         if (email == '') {
             alert("Please enter email");
