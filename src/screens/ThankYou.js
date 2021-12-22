@@ -1,12 +1,11 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, SafeAreaView, ImageBackground } from "react-native";
+import { View, Text, Image, StyleSheet, SafeAreaView } from "react-native";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
-import Button from "../content/contacts/Button";
-import Button1 from "../content/contacts/Button1";
-import Header from "../content/contacts/Header";
 
-import { Images } from "../content/Images";
+import Header from "../components/header/Header";
+
+import { Images } from "../assets/Images";
 
 const ThankYou = ({ navigation }) => {
     return (

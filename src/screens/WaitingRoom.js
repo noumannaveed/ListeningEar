@@ -2,15 +2,12 @@ import React from "react";
 import { View, Text, Image, StyleSheet, SafeAreaView, ImageBackground, Dimensions } from "react-native";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
-import Header from "../content/contacts/Header";
+import Header from "../components/header/Header";
 
-import { Images } from "../content/Images";
+import { Images } from "../assets/Images";
 
 const { height, width } = Dimensions.get('screen');
 const WaitingRoom = ({ navigation }) => {
-    // setTimeout(() => {
-    //     navigation.replace("UserConnecting");
-    // }, 5000);
     return (
         <SafeAreaView>
             <View>
@@ -25,7 +22,6 @@ const WaitingRoom = ({ navigation }) => {
                 </View>
                 <ImageBackground
                     source={Images.sound_wave}
-                    // resizeMode="contain"
                     style={styles.wave}
                 >
                     <Text style={styles.text}>Relax in the waiting room</Text>
@@ -68,8 +64,6 @@ const styles = StyleSheet.create({
     wave: {
         height: height * 0.4,
         width: width * 1,
-        // position: 'absolute',
-        // bottom: '20%',
         width: w('100%'),
     },
 });

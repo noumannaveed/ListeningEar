@@ -1,22 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, Dimensions, ScrollView } from "react-native";
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import auth from '@react-native-firebase/auth';
-import messaging from '@react-native-firebase/messaging';
 import firestore from '@react-native-firebase/firestore';
 
-import PushNotification from "react-native-push-notification";
-
-
-import { Images } from "../content/Images";
-import Input from "../content/contacts/Input";
-import Button from "../content/contacts/Button";
-import Button1 from "../content/contacts/Button1";
+import { Images } from "../assets/Images";
+import Input from "../components/input/Input";
+import Button from "../components/buttons/Button";
+import Button1 from "../components/buttons/Button1";
 
 import { ActivityIndicator } from "react-native-paper";
 import { login } from "../auth/FireBase";
@@ -88,9 +82,6 @@ const SignIn = ({ navigation }) => {
                     </View>
                     <Text style={styles.text}>OR</Text>
                     <Button1 title='Create Profile' onPress={() => navigation.navigate('SignUp')} />
-                    {/* <TouchableOpacity onPress={()=>navigation.navigate('PhoneNumber')}>
-                <Text style={styles.text1}>Create Profile with phone number</Text>
-            </TouchableOpacity> */}
                 </ScrollView>
             </View>
         </SafeAreaView>

@@ -6,17 +6,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 import ImagePicker from 'react-native-image-crop-picker';
 import DropDownPicker from "react-native-custom-dropdown";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import messaging from '@react-native-firebase/messaging';
-import storage from '@react-native-firebase/storage';
-
-import { Images } from "../content/Images";
-import Header from "../content/contacts/Header";
-import Input from "../content/contacts/Input";
-import Button from "../content/contacts/Button";
+import { Images } from "../assets/Images";
+import Header from "../components/header/Header";
+import Input from "../components/input/Input";
+import Button from "../components/buttons/Button";
 import { signup } from "../auth/FireBase";
 
 

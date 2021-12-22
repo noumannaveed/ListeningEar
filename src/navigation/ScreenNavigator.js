@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Splash from '../screens/Splash';
@@ -13,13 +12,13 @@ import WaitingRoom from '../screens/WaitingRoom';
 import UserConnecting from '../screens/UserConnecting';
 import ThankYou from '../screens/ThankYou';
 import ChatScreen from '../screens/ChatScreen';
+import SignIn from '../screens/SignIn';
+import EditProfile from '../screens/EditProfile';
 
 const Stack = createStackNavigator();
 
 import auth from '@react-native-firebase/auth'
-import messaging from '@react-native-firebase/messaging';
-import SignIn from '../screens/SignIn';
-import EditProfile from '../screens/EditProfile';
+
 
 
 

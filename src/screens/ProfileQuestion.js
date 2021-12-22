@@ -1,15 +1,13 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, Image, ImageBackground, SafeAreaView } from "react-native";
 
 import Octicons from 'react-native-vector-icons/Octicons';
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 
 
-import { Images } from "../content/Images";
-import Header from "../content/contacts/Header";
-import Input from "../content/contacts/Input";
-import Button from "../content/contacts/Button";
+import { Images } from "../assets/Images";
+import Header from "../components/header/Header";
 
 const ProfileQuestion = ({ navigation }) => {
     return (

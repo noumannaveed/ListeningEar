@@ -2,15 +2,11 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { GiftedChat, Bubble, InputToolbar, Time } from 'react-native-gifted-chat'
 
 import { View, SafeAreaView, Keyboard, TouchableWithoutFeedback } from "react-native";
-import Header from "../content/contacts/Header";
+import Header from "../components/header/Header";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import firestore from '@react-native-firebase/firestore';
 
 import { sendMessage } from '../auth/FireBase';
-
-import messaging from '@react-native-firebase/messaging';
-
 
 const ChatScreen = ({ navigation, route }) => {
     const name = route.params.userName

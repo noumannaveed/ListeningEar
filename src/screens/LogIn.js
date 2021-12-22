@@ -2,8 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, Image, SafeAreaView } from "react-native";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
-import Button from "../content/contacts/Button";
-import Button1 from "../content/contacts/Button1";
+import Button from "../components/buttons/Button";
+import Button1 from "../components/buttons/Button1";
 
 
 

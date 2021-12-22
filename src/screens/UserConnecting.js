@@ -7,16 +7,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import firestore from '@react-native-firebase/firestore';
 
-import Button from "../content/contacts/Button";
-import Button1 from "../content/contacts/Button1";
-import Header from "../content/contacts/Header";
+import Button from "../components/buttons/Button";
+import Button1 from "../components/buttons/Button1";
+import Header from "../components/header/Header";
 
-import { Images } from "../content/Images";
+import { Images } from "../assets/Images";
 
 const { height, width } = Dimensions.get('screen');
 const UserConnecting = ({ navigation, route }) => {
     const image = route.params.image;
-    const user = route.params.user;
     const senderUid = route.params.senderUid;
     const connectionId = route.params.connectionid;
     let senderFcmToken = '';
@@ -85,7 +84,6 @@ const UserConnecting = ({ navigation, route }) => {
                                         senderFcmToken = documentsnapshot.data().fcmtoken;
                                         const send = documentsnapshot.data();
                                         notification(senderFcmToken, type = 'request-accepted', title = 'accepted', body = 'Friend request!', connectionId);
-                                        // console.log('Sender=', senderFcmToken);
                                         firestore()
                                             .collection('Connection')
                                             .doc(connectionId)
@@ -132,13 +130,11 @@ const UserConnecting = ({ navigation, route }) => {
                     <Image
                         style={styles.Ellipse}
                         source={{ uri: image }}
-                    // resizeMode="contain"
                     />
                 </ImageBackground>
                 <Text style={styles.text2}>Are you available to listen and provide positive feedback?</Text>
                 <ImageBackground
                     source={Images.sound_wave}
-                    // resizeMode="contain"
                     style={styles.wave}
                 >
                     <View style={styles.buttonView}>
@@ -184,11 +180,7 @@ const styles = StyleSheet.create({
     wave: {
         height: height * 0.4,
         width: width * 1,
-        // alignSelf: 'center',
         overflow: 'hidden',
-        // position: 'absolute',
-        // bottom: '20%',
-        // width: w('100%'),
     },
     buttonView: {
         bottom: h('14%'),

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView, Alert } from "react-native";
 
-// import DropDownPicker from 'react-native-dropdown-picker';
 import DropDownPicker from "react-native-custom-dropdown";
 
 import { Switch } from 'react-native-paper';
@@ -14,8 +13,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import firestore from '@react-native-firebase/firestore';
 
 
-import Header from "../content/contacts/Header";
-import Button from "../content/contacts/Button";
+import Header from "../components/header/Header";
+import Button from "../components/buttons/Button";
 
 const Notification = ({ navigation }) => {
     const [open, setOpen] = useState(false);
@@ -59,29 +58,6 @@ const Notification = ({ navigation }) => {
             navigation.navigate('WaitingRoom');
         })
     }
-    const notificationOff = (fcmToken) => {
-        fetch('https://fcm.googleapis.com/fcm/send', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "key=AAAArc-UobE:APA91bEuxAzyQBJfkst1uSClNiWmre1tW5DOePJXMNFuXR7mu5a-8kl9eaMyk2tVLMGB3505YrQZN4634EdnQdW3rligTtQMRp30TsUVgwLh6VJJK-HvaMEXVLqZnNbGOT1ekitoNEPn"
-            },
-            body: JSON.stringify({
-                "to": fcmToken,
-                "notification": {
-                    "title": "No user found",
-                    "body": "Try again!",
-                },
-                "data": {
-                    "type": "no-user",
-                },
-                "mutable_content": false,
-                "sound": "Tri-tone"
-            }),
-        }).then(() => {
-            console.warn('sended');
-        })
-    }
     function generateUUID(digits) {
         let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ';
         let uuid = [];
@@ -111,7 +87,6 @@ const Notification = ({ navigation }) => {
                 receiveData = dat.data();
                 uid = parse.user.uid;
                 connections = dat.data().connection;
-                // console.log('connections=', connections[0].receiverid);
             });
         firestore()
             .collection('Users')
@@ -120,19 +95,14 @@ const Notification = ({ navigation }) => {
                 querySnapshot.forEach(documentSnapshot => {
                     const data = documentSnapshot.data();
                     const id = documentSnapshot.id;
-                    // console.log('connections=',connections);
                     let isCheck = false;
                     for (var i = 0; i < connections.length; i++) {
                         if (id === connections[i].receiverid || id === connections[i].senderid) {
                             isCheck = true;
-                            // console.log('recieverid=', connections[i].recieverid);
                         }
                     }
-                    console.log('check=', isCheck);
-                    // console.log('c=', c);
                     if (isCheck === false) {
                         if ("interest" in data) {
-                            // console.log('condition=', c);
                             if (data.interest.value === interest.value && data.fcmtoken != token && data.fcmtoken != 'null') {
                                 notification(data.fcmtoken, receiveData, uid, connectionId);
                                 count++;
@@ -143,7 +113,6 @@ const Notification = ({ navigation }) => {
                                         responded: 'false',
                                         noofuser: count,
                                         createdAt: new Date(),
-                                        // otheruser: '',
                                     })
                                     .then(() => {
                                         console.log('Connection added!');
@@ -153,12 +122,14 @@ const Notification = ({ navigation }) => {
                     }
                 });
                 if (count === 0) {
-                    notificationOff(token)
+                    Alert.alert(
+                        'No User Found!',
+                        'Try Again!',
+                    );
                 }
             });
         setNotificationLoading(false);
     }
-
     return (
         <SafeAreaView>
             <View>

@@ -2,14 +2,12 @@ import React, { Component } from "react";
 import { View, StyleSheet, FlatList, SafeAreaView, Dimensions } from "react-native";
 
 
-import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import firestore from '@react-native-firebase/firestore';
 
-import Header from "../content/contacts/Header";
-import Listen from "../content/contacts/Listen";
-import { Images } from "../content/Images";
+import Header from "../components/header/Header";
+import Listen from "../components/listen/Listen";
 
 import { ActivityIndicator } from "react-native-paper";
 const { height, width } = Dimensions.get('screen');

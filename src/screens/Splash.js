@@ -5,7 +5,7 @@ import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-nativ
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { Images } from "../content/Images";
+import { Images } from "../assets/Images";
 
 import messaging from '@react-native-firebase/messaging';
 import firestore from '@react-native-firebase/firestore';
@@ -56,6 +56,7 @@ const Splash = ({ navigation }) => {
                 );
             }
         });
+        console.log(unsubscribe);
     }, [])
 
     return (
@@ -102,7 +103,6 @@ const styles = StyleSheet.create({
     wave: {
         height: height * 0.4,
         width: width * 1,
-        // position: 'absolute',
         bottom: '20%',
     },
     loading: {

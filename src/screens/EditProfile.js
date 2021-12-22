@@ -1,5 +1,5 @@
-import React, { useState, useEffect, Component } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, Alert } from "react-native";
+import React, { Component } from "react";
+import { View, StyleSheet, Image, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, Alert } from "react-native";
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -9,14 +9,11 @@ import DropDownPicker from "react-native-custom-dropdown";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import firestore from '@react-native-firebase/firestore';
-import messaging from '@react-native-firebase/messaging';
 import storage from '@react-native-firebase/storage';
 
-import { Images } from "../content/Images";
-import Header from "../content/contacts/Header";
-import Input from "../content/contacts/Input";
-import Button from "../content/contacts/Button";
-import { signup } from "../auth/FireBase";
+import Header from "../components/header/Header";
+import Input from "../components/input/Input";
+import Button from "../components/buttons/Button";
 
 
 import { ActivityIndicator } from "react-native-paper";
