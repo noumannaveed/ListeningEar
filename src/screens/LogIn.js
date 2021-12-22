@@ -7,7 +7,7 @@ import Button1 from "../components/buttons/Button1";
 
 
 
-import { Images } from "../content/Images";
+import { Images } from "../assets/Images";
 
 const LogIn = ({ navigation }) => {
     return (

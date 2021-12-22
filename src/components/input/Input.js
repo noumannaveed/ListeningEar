@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: h('8%')
+        height: h('7.2%')
     },
     icon: {
         color: '#8B8B8B'
