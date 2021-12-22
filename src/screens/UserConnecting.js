@@ -18,6 +18,7 @@ const UserConnecting = ({ navigation, route }) => {
     const image = route.params.image;
     const senderUid = route.params.senderUid;
     const connectionId = route.params.connectionid;
+    const respond = '';
     let senderFcmToken = '';
     let id = '';
     let type = '';
@@ -55,54 +56,61 @@ const UserConnecting = ({ navigation, route }) => {
         const sender = { connectionid: connectionId, senderid: senderUid[0] }
         const receiver = { connectionid: connectionId, receiverid: parse.user.uid }
         firestore()
-            .collection('Users')
-            .doc(parse.user.uid)
-            .update({
-                responded: 'true',
-                connection: firestore.FieldValue.arrayUnion(sender),
+            .collection('Connection')
+            .doc(connectionId)
+            .get()
+            .then(snapshot => {
+                respond = snapshot.data().responded
+                if (respond === 'false') {
+                    firestore()
+                        .collection('Users')
+                        .doc(parse.user.uid)
+                        .update({
+                            responded: 'true',
+                            connection: firestore.FieldValue.arrayUnion(sender),
+                        })
+                        .then(() => {
+                            firestore()
+                                .collection('Users')
+                                .doc(parse.user.uid)
+                                .get()
+                                .then(data => {
+                                    const otherUser = data.data();
+                                    const receiverId = data.id;
+                                    firestore()
+                                        .collection('Users')
+                                        .doc(senderUid[0])
+                                        .update({
+                                            connection: firestore.FieldValue.arrayUnion(receiver),
+                                        })
+                                        .then(() => {
+                                            firestore()
+                                                .collection('Users')
+                                                .doc(senderUid[0])
+                                                .get()
+                                                .then(documentsnapshot => {
+                                                    senderFcmToken = documentsnapshot.data().fcmtoken;
+                                                    const send = documentsnapshot.data();
+                                                    notification(senderFcmToken, type = 'request-accepted', title = 'accepted', body = 'Friend request!', connectionId);
+                                                    firestore()
+                                                        .collection('Connection')
+                                                        .doc(connectionId)
+                                                        .update({
+                                                            createdBy: send,
+                                                            otheruser: otherUser,
+                                                            receiverid: receiverId,
+                                                            senderid: senderUid[0],
+                                                            responded: 'true',
+                                                        })
+                                                        .then(() => {
+                                                            console.log('other user added!');
+                                                        })
+                                                })
+                                        })
+                                })
+                        });
+                }
             })
-            .then(() => {
-                firestore()
-                    .collection('Users')
-                    .doc(parse.user.uid)
-                    .get()
-                    .then(data => {
-                        const otherUser = data.data();
-                        const receiverId = data.id;
-                        firestore()
-                            .collection('Users')
-                            .doc(senderUid[0])
-                            .update({
-                                connection: firestore.FieldValue.arrayUnion(receiver),
-                            })
-                            .then(() => {
-                                firestore()
-                                    .collection('Users')
-                                    .doc(senderUid[0])
-                                    .get()
-                                    .then(documentsnapshot => {
-                                        senderFcmToken = documentsnapshot.data().fcmtoken;
-                                        const send = documentsnapshot.data();
-                                        notification(senderFcmToken, type = 'request-accepted', title = 'accepted', body = 'Friend request!', connectionId);
-                                        firestore()
-                                            .collection('Connection')
-                                            .doc(connectionId)
-                                            .update({
-                                                createdBy: send,
-                                                otheruser: otherUser,
-                                                receiverid: receiverId,
-                                                senderid: senderUid[0],
-                                                responded: 'true',
-                                            })
-                                            .then(() => {
-                                                console.log('other user added!');
-                                            })
-                                    })
-                            })
-
-                    })
-
-            });
     }
     const reject = () => {
         firestore()
