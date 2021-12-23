@@ -1,9 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from "react-native";
+import { View, StyleSheet, TextInput } from "react-native";
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
-
-
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Input = ({ placeholder, onChangeText, value, icon, secureTextEntry }) => {
     return (

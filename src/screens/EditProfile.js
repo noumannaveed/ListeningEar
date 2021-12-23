@@ -168,13 +168,12 @@ export default class EditProfile extends Component {
                                 arrowColor='#8B8B8B'
                                 onChangeItem={(interest) => this.setState({ interest })}
                                 itemStyle={{
-                                    // justifyContent: 'space-between',
-                                    // flex: 1,
                                     justifyContent: 'flex-start',
                                 }}
                                 dropDownStyle={{
                                     borderTopLeftRadius: 20, borderTopRightRadius: 20,
                                     borderBottomLeftRadius: 20, borderBottomRightRadius: 20,
+                                    backgroundColor: '#f5f5f5',
                                 }}
                             />
                         </View>
@@ -242,13 +241,10 @@ const styles = StyleSheet.create({
         height: h('20%')
     },
     picker: {
-        // paddingHorizontal: w('3%'),
-        // borderRadius: 50,
-        // borderColor: '#C4C4C4',
         borderTopLeftRadius: 50, borderTopRightRadius: 50,
         borderBottomLeftRadius: 50, borderBottomRightRadius: 50,
-        backgroundColor: 'white',
         borderColor: '#8B8B8B',
-        flex: 1
+        backgroundColor: '#f5f5f5',
+        paddingHorizontal: w('3%'),
     },
 });

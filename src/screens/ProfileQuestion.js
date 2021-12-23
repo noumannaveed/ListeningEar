@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, ImageBackground, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions, SafeAreaView } from "react-native";
 
 import Octicons from 'react-native-vector-icons/Octicons';
 
@@ -9,13 +9,15 @@ import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-nativ
 import { Images } from "../assets/Images";
 import Header from "../components/header/Header";
 
+const { height, width } = Dimensions.get('screen');
+
 const ProfileQuestion = ({ navigation }) => {
     return (
         <SafeAreaView>
             <View>
                 <Header title='Profile Question' onPress={() => navigation.goBack()} />
                 <View style={styles.main}>
-                    <ImageBackground
+                    <View
                         style={styles.image}
                     >
                         <Image
@@ -23,7 +25,7 @@ const ProfileQuestion = ({ navigation }) => {
                             resizeMode='contain'
                             style={styles.image1}
                         />
-                    </ImageBackground>
+                    </View>
                 </View>
                 <View style={styles.view}>
                     <Octicons name="primitive-dot" size={20} color="#BFBFBF" />
@@ -43,20 +45,21 @@ const styles = StyleSheet.create({
         marginVertical: h('4%')
     },
     image: {
-        height: h('15%'),
-        width: w('30%'),
+        height: height * 0.14,
+        width: height * 0.14,
+        borderRadius: (height * 0.14) / 2,
         alignSelf: 'center',
         overflow: 'hidden',
-        borderRadius: 55,
+        borderRadius: 50,
         backgroundColor: '#BFBFBF'
     },
     image1: {
         alignSelf: 'center',
-        height: h('15%')
+        height: h('15%'),
+        overflow: 'hidden',
     },
     view: {
         flexDirection: 'row',
-        // alignItems: 'center',
         marginVertical: h('2%'),
         marginHorizontal: w('10%'),
     },
@@ -67,6 +70,5 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Regular',
     },
 });
-
 
 export default ProfileQuestion;

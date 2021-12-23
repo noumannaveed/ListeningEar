@@ -18,7 +18,6 @@ const ChatScreen = ({ navigation, route }) => {
     const [messages, setMessages] = useState([])
     let type = ''
     const notification = async (fcmToken, title, body, type) => {
-        console.log(fcmToken);
         fetch('https://fcm.googleapis.com/fcm/send', {
             method: 'POST',
             headers: {

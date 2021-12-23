@@ -149,16 +149,13 @@ const Notification = ({ navigation }) => {
                         style={styles.picker}
                         containerStyle={{ height: h('7%') }}
                         arrowColor='#8B8B8B'
-                        style={{
-                            borderTopLeftRadius: 50, borderTopRightRadius: 50,
-                            borderBottomLeftRadius: 50, borderBottomRightRadius: 50
-                        }}
                         itemStyle={{
                             justifyContent: 'flex-start',
                         }}
                         dropDownStyle={{
                             borderTopLeftRadius: 20, borderTopRightRadius: 20,
                             borderBottomLeftRadius: 20, borderBottomRightRadius: 20,
+                            backgroundColor: '#f5f5f5',
                         }}
                     />
                 </View>
@@ -217,9 +214,11 @@ const styles = StyleSheet.create({
         marginVertical: h('5%'),
     },
     picker: {
+        borderTopLeftRadius: 50, borderTopRightRadius: 50,
+        borderBottomLeftRadius: 50, borderBottomRightRadius: 50,
+        borderColor: '#8B8B8B',
+        backgroundColor: '#f5f5f5',
         paddingHorizontal: w('3%'),
-        borderRadius: 50,
-        borderColor: '#C4C4C4'
     },
     switch: {
         alignSelf: 'center',
