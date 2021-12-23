@@ -13,8 +13,8 @@ target 'ListeningEar' do
   )
 
 
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-
+  # pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'RNCallKeep', :path => '../node_modules/react-native-callkeep'
   target 'ListeningEarTests' do
     inherit! :complete
     # Pods for testing

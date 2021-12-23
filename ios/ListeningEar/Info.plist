@@ -24,10 +24,6 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>Allow app to use camera to upload image for profile image,proof upload and chat image.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow app to use photo library to upload image for profile image,proof upload and chat image.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
@@ -39,8 +35,14 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Allow app to use camera to upload image for profile image,proof upload and chat image.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Allow app to use location to show on map. for near by user search.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone permission description</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow app to use photo library to upload image for profile image,proof upload and chat image.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Notable-Regular.ttf</string>
@@ -72,6 +74,12 @@
 		<string>Octicons.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+		<string>voip</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
