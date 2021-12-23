@@ -18,8 +18,8 @@ const configuration = {
   iceCandidatePoolSize: 10,
 };
 
-export default function JoinScreen({ setScreen, screens, roomId }) {
-
+export default function JoinScreen({ setScreen, screens }) {
+  const roomId=route.params.roomId
   function onBackPress() {
     if (cachedLocalPC) {
       cachedLocalPC.removeStream(localStream);

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Text, StyleSheet, Button, View, TextInput } from 'react-native';
 
-export default function RoomScreen({ setScreen, screens, setRoomId, roomId }) {
-
+export default function RoomScreen({ setScreen, screens, navigation }) {
+  const [roomId, setRoomId] = useState('');
   const onCallOrJoin = (screen) => {
     if (roomId.length > 0) {
       setScreen(screen)
@@ -12,12 +12,16 @@ export default function RoomScreen({ setScreen, screens, setRoomId, roomId }) {
   return (
     <>
       <Text style={styles.heading} >Select a Room</Text>
-      <TextInput style={styles.input} value={roomId} onChangeText={setRoomId} />
+      <TextInput style={styles.input} value={roomId} onChangeText={(text)=>setRoomId(text)} />
       <View style={styles.buttonContainer} >
-        <Button title="Join Screen" onPress={() => onCallOrJoin(screens.JOIN)} />
+        <Button title="Join Screen" onPress={() => {
+          navigation.navigate('JoinScreen',{roomId:roomId})
+        }} />
       </View>
       <View style={styles.buttonContainer} >
-        <Button title="Call Screen" onPress={() => onCallOrJoin(screens.CALL)} />
+        <Button title="Call Screen" onPress={() => {
+          navigation.navigate('CallScreen',{roomId:roomId})
+        }} />
       </View>
     </>
   )

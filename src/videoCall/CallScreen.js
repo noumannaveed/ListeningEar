@@ -18,8 +18,9 @@ const configuration = {
   iceCandidatePoolSize: 10,
 };
 
-export default function CallScreen({ setScreen, screens, roomId }) {
-
+export default function CallScreen({ setScreen, screens, route }, props) {
+  const roomId = route.params.roomId
+  console.log("props=>", roomId)
   function onBackPress() {
     if (cachedLocalPC) {
       cachedLocalPC.removeStream(localStream);
@@ -152,11 +153,20 @@ export default function CallScreen({ setScreen, screens, roomId }) {
         </View>
       )}
 
-      <View style={{ display: 'flex', flex: 1, padding: 10 }} >
-        <View style={styles.rtcview}>
+      <View style={{  flex: 1, marginTop:5}} >
+        <View style={[styles.rtcview,{}]}>
           {localStream && <RTCView style={styles.rtc} streamURL={localStream && localStream.toURL()} />}
         </View>
-        <View style={styles.rtcview}>
+        <View
+        style={{
+          height:150,
+          width:100,
+          backgroundColor:"red",
+          position:'absolute',
+          bottom:10,
+          left:20
+        }}
+        >
           {remoteStream && <RTCView style={styles.rtc} streamURL={remoteStream && remoteStream.toURL()} />}
         </View>
       </View>
@@ -172,10 +182,7 @@ const styles = StyleSheet.create({
   },
   rtcview: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'black',
-    margin: 5,
   },
   rtc: {
     flex: 1,
