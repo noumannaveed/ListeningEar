@@ -31,6 +31,7 @@ export const signout = async () => {
     })
 };
 export const login = async (email, password, setIsLoading) => {
+    
     const fcmToken = await messaging().getToken();
     console.log('Token=', fcmToken);
     setIsLoading(true);
@@ -38,6 +39,7 @@ export const login = async (email, password, setIsLoading) => {
         auth()
             .signInWithEmailAndPassword(email, password)
             .then(async (user) => {
+                
                 try {
                     await AsyncStorage.setItem(
                         'uid',

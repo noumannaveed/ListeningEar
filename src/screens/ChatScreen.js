@@ -91,7 +91,7 @@ const ChatScreen = ({ navigation, route }) => {
                     onPress={() => navigation.goBack()}
                      icon="md-videocam" 
                      onPressVideo={()=>{
-                         
+                        navigation.navigate("RoomScreen")
                      }}
                      />
                     <GiftedChat

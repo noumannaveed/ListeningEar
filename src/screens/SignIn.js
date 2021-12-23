@@ -33,6 +33,7 @@ const SignIn = ({ navigation }) => {
     }
     const logIn = async () => {
         if (validate_field()) {
+            
             login(email, password, setIsLoading)
                 .then(async (user) => {
                     const user1 = await firestore().collection('Users').doc(user.user.user.uid).get();
