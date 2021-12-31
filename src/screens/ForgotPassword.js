@@ -28,6 +28,7 @@ const ForgotPassword = ({ navigation }) => {
         if (validate_field()) {
             try {
                 await auth().sendPasswordResetEmail(email);
+                navigation.navigate('SignIn')
             } catch (e) {
                 Alert.alert(
                     e.message
