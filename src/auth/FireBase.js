@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
 import storage from '@react-native-firebase/storage';
+import NetInfo from "@react-native-community/netinfo";
+
 export const signout = async () => {
     let value = await AsyncStorage.getItem('uid', null);
     let parse = JSON.parse(value);
@@ -31,7 +32,7 @@ export const signout = async () => {
     })
 };
 export const login = async (email, password, setIsLoading) => {
-    
+
     const fcmToken = await messaging().getToken();
     console.log('Token=', fcmToken);
     setIsLoading(true);
@@ -39,7 +40,7 @@ export const login = async (email, password, setIsLoading) => {
         auth()
             .signInWithEmailAndPassword(email, password)
             .then(async (user) => {
-                
+
                 try {
                     await AsyncStorage.setItem(
                         'uid',
@@ -100,7 +101,7 @@ export const signup = async (email, password, firstName, lastName, image, intere
     }
     const fcmToken = await messaging().getToken();
     // console.log('url=', url);
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         auth()
             .createUserWithEmailAndPassword(email, password)
             .then(async (user) => {
@@ -149,3 +150,10 @@ export const sendMessage = (connectionId, message) => {
         resolve({ status: true });
     })
 };
+
+// export function CheckConnectivity () {
+//     NetInfo.addEventListener(state => {
+//         console.log(state.isConnected);
+//         return state.isConnected
+//     });
+// };

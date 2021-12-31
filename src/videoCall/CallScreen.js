@@ -153,19 +153,19 @@ export default function CallScreen({ setScreen, screens, route }, props) {
         </View>
       )}
 
-      <View style={{  flex: 1, marginTop:5}} >
-        <View style={[styles.rtcview,{}]}>
+      <View style={{ flex: 1, marginTop: 5 }} >
+        <View style={[styles.rtcview, {}]}>
           {localStream && <RTCView style={styles.rtc} streamURL={localStream && localStream.toURL()} />}
         </View>
         <View
-        style={{
-          height:150,
-          width:100,
-          backgroundColor:"red",
-          position:'absolute',
-          bottom:10,
-          left:20
-        }}
+          style={{
+            height: 150,
+            width: 100,
+            backgroundColor: "red",
+            position: 'absolute',
+            bottom: 10,
+            left: 20
+          }}
         >
           {remoteStream && <RTCView style={styles.rtc} streamURL={remoteStream && remoteStream.toURL()} />}
         </View>

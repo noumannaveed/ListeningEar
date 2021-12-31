@@ -23,6 +23,8 @@ import CallScreen from '../videoCall/CallScreen';
 const Stack = createStackNavigator();
 
 import auth from '@react-native-firebase/auth'
+import NoConnectionScreen from '../screens/NoConnectionScreen';
+import ForgotPassword from '../screens/ForgotPassword';
 
 
 
@@ -114,6 +116,16 @@ export const ScreenNavigator = () => {
                 <Stack.Screen
                     name="CallScreen"
                     component={CallScreen}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="NoConnectionScreen"
+                    component={NoConnectionScreen}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ForgotPassword"
+                    component={ForgotPassword}
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>

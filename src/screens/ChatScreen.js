@@ -86,14 +86,14 @@ const ChatScreen = ({ navigation, route }) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
-                    <Header 
-                    title={name} 
-                    onPress={() => navigation.goBack()}
-                     icon="md-videocam" 
-                     onPressVideo={()=>{
-                        navigation.navigate("RoomScreen")
-                     }}
-                     />
+                    <Header
+                        title={name}
+                        onPress={() => navigation.goBack()}
+                        icon="md-videocam"
+                        onPressVideo={() => {
+                            navigation.navigate("RoomScreen")
+                        }}
+                    />
                     <GiftedChat
                         messages={messages}
                         onSend={messages => onSend(messages)}

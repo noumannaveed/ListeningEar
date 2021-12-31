@@ -248,3 +248,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: w('3%'),
     },
 });
+
+
+// service cloud.firestore {
+//     match /databases/{database}/documents {
+//       match /{document=**} {
+//         allow read, write: if
+//             request.time < timestamp.date(2021, 12, 24);
+//       }
+//     }
+//   }

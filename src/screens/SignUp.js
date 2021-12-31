@@ -91,7 +91,7 @@ const SignUp = ({ navigation }) => {
                     <ScrollView style={styles.container}>
                         <TouchableOpacity style={styles.main} onPress={() => goToPickImage()}>
                             <View
-                                resizeMode='contain'
+                                // resizeMode='contain'
                                 style={styles.image}
                             >
                                 <Image
