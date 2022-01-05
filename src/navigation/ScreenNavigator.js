@@ -30,11 +30,6 @@ import ForgotPassword from '../screens/ForgotPassword';
 
 
 export const ScreenNavigator = () => {
-    useEffect( async () => {
-        await auth().signInAnonymously();
-    }, [])
-
-
     return (
         <NavigationContainer>
             <Stack.Navigator>

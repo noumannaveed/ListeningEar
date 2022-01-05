@@ -18,7 +18,7 @@ const UserConnecting = ({ navigation, route }) => {
     const image = route.params.image;
     const senderUid = route.params.senderUid;
     const connectionId = route.params.connectionid;
-    const respond = '';
+    let respond = '';
     let senderFcmToken = '';
     let id = '';
     let type = '';

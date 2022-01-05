@@ -9,7 +9,10 @@ import firestore from '@react-native-firebase/firestore';
 import Header from "../components/header/Header";
 import Listen from "../components/listen/Listen";
 
+import moment from "moment";
+
 import { ActivityIndicator } from "react-native-paper";
+
 const { height, width } = Dimensions.get('screen');
 
 export default class PreviousListener extends Component {
@@ -20,19 +23,30 @@ export default class PreviousListener extends Component {
             loading: false,
         };
     }
+    removeDuplicate() {
+        console.log("++++++++");
+        const newArrayList = [];
+        this.state.userList.forEach(obj => {
+            if (!newArrayList.some(o => o.firstname === obj.firstname)) {
+                newArrayList.push({ ...obj });
+            }
+        });
+        this.setState({ userList: newArrayList });
+    }
     getUser = async () => {
         let temp = [];
         let value = await AsyncStorage.getItem('uid');
         let parse = JSON.parse(value);
-        console.log('parse=', parse.user.uid);
+        let messages = [];
+        let last = ''
+        let second = ''
+        this.setState({ userList: [] })
         firestore()
             .collection('Users')
             .doc(parse.user.uid)
             .get()
             .then(data => {
-                console.log('value=', data.data().connection.length);
                 for (var i = 0; i < data.data().connection.length; i++) {
-                    console.log('connectionids=', data.data().connection[i].connectionid)
                     let connectionid = data.data().connection[i].connectionid
                     firestore()
                         .collection('Connection')
@@ -40,34 +54,78 @@ export default class PreviousListener extends Component {
                         .get()
                         .then(document => {
                             if (parse.user.uid === document.data().senderid) {
-                                console.log('you are sender!', parse.user.uid);
                                 firestore()
                                     .collection('Users')
                                     .doc(document.data().receiverid)
                                     .get()
                                     .then(doc => {
-                                        temp.push({
-                                            ...doc.data(),
-                                            uid: doc.id,
-                                            connection: connectionid,
-                                        });
-                                        this.setState({ userList: temp });
-                                        console.log('tempreceiveruser=', temp);
+                                        firestore()
+                                            .collection('Connection')
+                                            .doc(connectionid)
+                                            .onSnapshot(sub => {
+                                                if (sub.data().lastMessage) {
+                                                    if (sub.data().lastMessage.createdAt !== null) {
+                                                        last = moment(sub.data().lastMessage.createdAt.toDate(), "YYYYMMDD").fromNow()
+                                                        second = sub.data().lastMessage.createdAt.seconds
+                                                        console.log('temp=', sub.data().lastMessage.createdAt.seconds);
+                                                    }
+                                                    temp.push({
+                                                        ...doc.data(),
+                                                        uid: doc.id,
+                                                        connection: connectionid,
+                                                        message: sub.data().lastMessage.text,
+                                                        time: last,
+                                                        date: second
+                                                    });
+                                                    this.setState({ userList: temp });
+                                                    this.removeDuplicate()
+                                                } else {
+                                                    temp.push({
+                                                        ...doc.data(),
+                                                        uid: doc.id,
+                                                        connection: connectionid,
+                                                    });
+                                                    this.setState({ userList: temp });
+                                                    this.removeDuplicate()
+                                                }
+                                            });
                                     })
                             } else if (parse.user.uid === document.data().receiverid) {
-                                console.log('you are receiver!', parse.user.uid);
                                 firestore()
                                     .collection('Users')
                                     .doc(document.data().senderid)
                                     .get()
                                     .then(doc => {
-                                        temp.push({
-                                            ...doc.data(),
-                                            uid: doc.id,
-                                            connection: connectionid,
-                                        });
-                                        this.setState({ userList: temp });
-                                        console.log('tempsenderuser=', temp);
+                                        firestore()
+                                            .collection('Connection')
+                                            .doc(connectionid)
+                                            .onSnapshot(sub => {
+                                                if (sub.data().lastMessage) {
+                                                    if (sub.data().lastMessage.createdAt !== null) {
+                                                        last = moment(sub.data().lastMessage.createdAt.toDate(), "YYYYMMDD").fromNow()
+                                                        second = sub.data().lastMessage.createdAt.seconds
+                                                        console.log('temp=', sub.data().lastMessage.createdAt.seconds);
+                                                    }
+                                                    temp.push({
+                                                        ...doc.data(),
+                                                        uid: doc.id,
+                                                        connection: connectionid,
+                                                        message: sub.data().lastMessage.text,
+                                                        time: last,
+                                                        date: second
+                                                    });
+                                                    this.setState({ userList: temp });
+                                                    this.removeDuplicate()
+                                                } else {
+                                                    temp.push({
+                                                        ...doc.data(),
+                                                        uid: doc.id,
+                                                        connection: connectionid,
+                                                    });
+                                                    this.setState({ userList: temp });
+                                                    this.removeDuplicate()
+                                                }
+                                            });
                                     })
                             }
                         })
@@ -77,15 +135,15 @@ export default class PreviousListener extends Component {
     async componentDidMount() {
         this.setState({ loading: true });
         await this.getUser();
-        // console.log('uid=',item.uid);
         this.setState({ loading: false });
     }
     renderItem = ({ item }) => (
         <Listen
             name={item.firstname}
             source={item.image}
+            message={item.message}
+            time={item.time}
             onPress={() => this.props.navigation.navigate('ChatScreen', { userName: item.firstname, image: item.image, userId: item.uid, parse: item.parse, connection: item.connection, token: item.fcmtoken })}
-            // onPress={() => console.log(item.fcmtoken)}
         />
     );
     render() {
@@ -104,7 +162,9 @@ export default class PreviousListener extends Component {
                             </View>
                         ) : (
                             <FlatList
-                                data={this.state.userList}
+                                data={this.state.userList.sort(function (a, b) {
+                                    return new Date(b.date) - new Date(a.date);
+                                })}
                                 renderItem={this.renderItem}
                                 style={{ marginTop: '1%' }}
                             />

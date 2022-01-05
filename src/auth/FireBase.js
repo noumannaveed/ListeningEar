@@ -138,22 +138,18 @@ export const signup = async (email, password, firstName, lastName, image, intere
             });
     })
 };
-
 export const sendMessage = (connectionId, message) => {
     return new Promise((resolve) => {
-        console.log('connect=', message);
+        console.log('message=', message);
         firestore()
             .collection('Connection')
             .doc(connectionId)
             .collection('Messages')
             .add({ ...message, createdAt: firestore.FieldValue.serverTimestamp() })
+        firestore()
+            .collection('Connection')
+            .doc(connectionId)
+            .update({ lastMessage: message })
         resolve({ status: true });
     })
 };
-
-// export function CheckConnectivity () {
-//     NetInfo.addEventListener(state => {
-//         console.log(state.isConnected);
-//         return state.isConnected
-//     });
-// };

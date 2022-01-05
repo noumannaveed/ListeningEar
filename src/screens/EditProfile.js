@@ -71,15 +71,12 @@ export default class EditProfile extends Component {
             .get()
             .then((doc) => {
                 if (doc.exists) {
-                    // console.log('pvalue=', doc);
                     const data = doc.data();
-                    // console.log('data=', data.image);
                     this.setState({
                         image: data.image,
                         firstName: data.firstname,
                         lastName: data.lastname,
                     });
-                    // console.log('image=', data.image);
                 }
             });
         this.setState({ loading: false });

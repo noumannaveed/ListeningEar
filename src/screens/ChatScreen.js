@@ -14,7 +14,7 @@ const ChatScreen = ({ navigation, route }) => {
     const userUid = route.params.userId
     const connection = route.params.connection
     const fcmtoken = route.params.token
-    console.log(fcmtoken);
+    // console.log(fcmtoken);
     const [messages, setMessages] = useState([])
     let type = ''
     const notification = async (fcmToken, title, body, type) => {
@@ -76,7 +76,6 @@ const ChatScreen = ({ navigation, route }) => {
                 avatar: image,
             },
         }
-        console.log('mymsg=', mymsg);
         setMessages(previousMessages => GiftedChat.append(previousMessages, mymsg))
         sendMessage(connection, mymsg)
         notification(fcmtoken, name, mymsg.text, type = 'new-message')
