@@ -27,7 +27,7 @@ export default class PreviousListener extends Component {
         console.log("++++++++");
         const newArrayList = [];
         this.state.userList.forEach(obj => {
-            if (!newArrayList.some(o => o.firstname === obj.firstname)) {
+            if (!newArrayList.some(o => o.uid === obj.uid)) {
                 newArrayList.push({ ...obj });
             }
         });
