@@ -9,5 +9,12 @@ const Images = {
     wifi: require('../assets/images/wifi1.png'),
     Ellipse: require('../assets/images/Ellipse6.png'),
     sign: require('../assets/images/signboard1.png'),
+    phone: require('../assets/images/phone-call.png'),
+    mic: require('../assets/images/mic.png'),
+    mic_off: require('../assets/images/mics.png'),
+    mute: require('../assets/images/mute.png'),
+    volume: require('../assets/images/volume.png'),
+
+
 };
 export { Images };

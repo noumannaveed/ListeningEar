@@ -3,7 +3,7 @@ import { GiftedChat, Bubble, InputToolbar, Time } from 'react-native-gifted-chat
 
 import { View, SafeAreaView, Keyboard, TouchableWithoutFeedback } from "react-native";
 import Header from "../components/header/Header";
-
+import AudioCallScreen from './../audioCall/App'
 import firestore from '@react-native-firebase/firestore';
 
 import { sendMessage } from '../auth/FireBase';
@@ -14,8 +14,16 @@ const ChatScreen = ({ navigation, route }) => {
     const userUid = route.params.userId
     const connection = route.params.connection
     const fcmtoken = route.params.token
+    const OtherUser = {
+        name: route.params.userName,
+        image: route.params.image,
+        is: route.params.userId,
+        fcmToken: route.params.token
+    }
     console.log(fcmtoken);
     const [messages, setMessages] = useState([])
+    const [isCalling, setIsCalling] = useState(false)
+
     let type = ''
     const notification = async (fcmToken, title, body, type) => {
         fetch('https://fcm.googleapis.com/fcm/send', {
@@ -81,19 +89,28 @@ const ChatScreen = ({ navigation, route }) => {
         sendMessage(connection, mymsg)
         notification(fcmtoken, name, mymsg.text, type = 'new-message')
     }, [])
-
+    if (isCalling) {
+        return (
+            <AudioCallScreen
+                otherUser={OtherUser}
+                onCancel={()=>{
+                    setIsCalling(false)
+                }}
+            />
+        )
+    }
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
-                    <Header 
-                    title={name} 
-                    onPress={() => navigation.goBack()}
-                     icon="md-videocam" 
-                     onPressVideo={()=>{
-                        navigation.navigate("RoomScreen")
-                     }}
-                     />
+                    <Header
+                        title={name}
+                        onPress={() => navigation.goBack()}
+                        icon="phone"
+                        onPressVideo={() => {
+                            setIsCalling(true)
+                        }}
+                    />
                     <GiftedChat
                         messages={messages}
                         onSend={messages => onSend(messages)}

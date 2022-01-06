@@ -86,7 +86,7 @@ const Notification = ({ navigation }) => {
                 token = dat.data().fcmtoken;
                 receiveData = dat.data();
                 uid = parse.user.uid;
-                connections = dat.data().connection;
+                connections = dat.data()?.connection;
             });
         firestore()
             .collection('Users')
@@ -96,7 +96,7 @@ const Notification = ({ navigation }) => {
                     const data = documentSnapshot.data();
                     const id = documentSnapshot.id;
                     let isCheck = false;
-                    for (var i = 0; i < connections.length; i++) {
+                    for (var i = 0; i < connections?.length; i++) {
                         if (id === connections[i].receiverid || id === connections[i].senderid) {
                             isCheck = true;
                         }

@@ -86,24 +86,26 @@ export const login = async (email, password, setIsLoading) => {
     })
 };
 export const signup = async (email, password, firstName, lastName, image, interest, check) => {
-    const url = '';
+    let url = '';
     if (check) {
         try {
             const uploadUri = image;
             let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
             await storage().ref(filename).putFile(uploadUri);
             url = await storage().ref(filename).getDownloadURL();
-            console.log('upload=', uploadUri);
+            // console.log('upload=', uploadUri);
         } catch (error) {
             console.log('error=', error);
         }
     }
     const fcmToken = await messaging().getToken();
-    // console.log('url=', url);
+   
     return new Promise((resolve) => {
+        console.log('url=23', url);
         auth()
             .createUserWithEmailAndPassword(email, password)
             .then(async (user) => {
+                console.log('url=', url);
                 try {
                     await AsyncStorage.setItem(
                         'uid',
@@ -130,6 +132,7 @@ export const signup = async (email, password, firstName, lastName, image, intere
                 resolve({ status: true, user: user });
             })
             .catch(error => {
+                console.log(error);
                 if (error.code === '[storage/unauthorized]') {
                     console.log('That email address is already in use!');
                     reject({ status: false, error: "That email address is already in use!" });

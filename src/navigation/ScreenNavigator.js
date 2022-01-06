@@ -14,9 +14,7 @@ import ThankYou from '../screens/ThankYou';
 import ChatScreen from '../screens/ChatScreen';
 import SignIn from '../screens/SignIn';
 import EditProfile from '../screens/EditProfile';
-import RoomScreen from '../videoCall/RoomScreen';
-import JoinScreen from '../videoCall/JoinScreen';
-import CallScreen from '../videoCall/CallScreen';
+import CallScreen from '../audioCall/App';
 
 
 
@@ -102,20 +100,11 @@ export const ScreenNavigator = () => {
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen
-                    name="RoomScreen"
-                    component={RoomScreen}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                    name="JoinScreen"
-                    component={JoinScreen}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
                     name="CallScreen"
                     component={CallScreen}
                     options={{ headerShown: false }}
                 />
+               
             </Stack.Navigator>
         </NavigationContainer>
     );
