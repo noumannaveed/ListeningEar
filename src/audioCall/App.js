@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   SafeAreaView,
   View,
@@ -12,6 +12,7 @@ import { useInitializeAgora, useRequestAudioHook } from './hooks';
 import Button from './Button';
 import styles from './styles';
 import { Images } from "../assets/Images";
+import InCallManager from 'react-native-incall-manager';
 const App = (props) => {
   useRequestAudioHook();
   const {
@@ -25,6 +26,7 @@ const App = (props) => {
     leaveChannel,
     toggleIsMute,
     toggleIsSpeakerEnable,
+    destroyAgoraEngine
   } = useInitializeAgora();
 
   return (
@@ -101,6 +103,7 @@ const App = (props) => {
                   alignSelf: "center"
                 }}
                 onPress={() => {
+
                   toggleIsMute()
                 }}
               >
@@ -133,6 +136,8 @@ const App = (props) => {
                   alignSelf: "center"
                 }}
                 onPress={() => {
+                  // destroyAgoraEngine()
+                  leaveChannel()
                   props.onCancel()
                 }}
               >

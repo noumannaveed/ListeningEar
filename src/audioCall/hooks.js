@@ -2,16 +2,16 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { Platform } from 'react-native';
 import RtcEngine from 'react-native-agora';
 import { requestAudioPermission } from './permissions';
-
+import InCallManager from 'react-native-incall-manager';
 export const useRequestAudioHook = () => {
   useEffect(() => {
-    if (Platform.OS === 'android') {
-      // Request required permissions from Android
 
+    if (Platform.OS === 'android') {
       requestAudioPermission().then(() => {
         console.log('requested!');
       });
     }
+    
   }, []);
 };
 
@@ -30,14 +30,15 @@ export const useInitializeAgora = () => {
 
   const initAgora = useCallback(async () => {
     rtcEngine.current = await RtcEngine.create(appId);
-
+    InCallManager.start({media: 'audio', ringback: '_BUNDLE_'})
+   
     await rtcEngine.current?.enableAudio();
     await rtcEngine.current?.muteLocalAudioStream(false);
     await rtcEngine.current?.setEnableSpeakerphone(true);
 
     rtcEngine.current?.addListener('UserJoined', (uid, elapsed) => {
       console.log('UserJoined', uid, elapsed);
-
+      InCallManager.stopRingback();
       setPeerIds((peerIdsLocal) => {
         if (peerIdsLocal.indexOf(uid) === -1) {
           return [...peerIdsLocal, uid];
@@ -78,8 +79,9 @@ export const useInitializeAgora = () => {
   }, [channelName]);
 
   const leaveChannel = useCallback(async () => {
+    InCallManager.stopRingback();
     await rtcEngine.current?.leaveChannel();
-
+    
     setPeerIds([]);
     setJoinSucceed(false);
   }, []);
@@ -100,10 +102,10 @@ export const useInitializeAgora = () => {
 
   useEffect(() => {
     initAgora();
-
-    return () => {
-      destroyAgoraEngine();
-    };
+  return () => {
+   destroyAgoraEngine();
+  }
+    
   }, [destroyAgoraEngine, initAgora]);
 
   return {
@@ -117,5 +119,6 @@ export const useInitializeAgora = () => {
     leaveChannel,
     toggleIsMute,
     toggleIsSpeakerEnable,
+    destroyAgoraEngine
   };
 };

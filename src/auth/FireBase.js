@@ -41,11 +41,24 @@ export const login = async (email, password, setIsLoading) => {
             .signInWithEmailAndPassword(email, password)
             .then(async (user) => {
 
-                try {
+                try {firestore()
+                    .collection('Users')
+                    .doc(user.user.uid)
+                    .get()
+                    .then(async(us)=>{
+                        let user=us.data()
+                        if(us){
+                            await AsyncStorage.setItem(
+                                'user',
+                                JSON.stringify(user)
+                            );
+                        }
+                    })
                     await AsyncStorage.setItem(
                         'uid',
                         JSON.stringify(user)
                     );
+                    
                 } catch (error) {
                     // Error saving data
                 }

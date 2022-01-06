@@ -46,14 +46,30 @@ const Splash = ({ navigation }) => {
                         }
                     })
             }
-            else if (remoteMessage.data.type != 'request-rejected') {
+            else if (remoteMessage.data.type === 'request-rejected') {
                 navigation.navigate('PreviousListener');
             }
-            else if (remoteMessage.data.type != 'new-message') {
+            else if (remoteMessage.data.type === 'new-message') {
                 Alert.alert(
                     JSON.stringify(remoteMessage.notification.title),
                     JSON.stringify(remoteMessage.notification.body),
                 );
+            }
+            else if (remoteMessage.data.type === 'IncomingCall') {
+                let call=remoteMessage.data.call
+                navigation.navigate('CallScreen',{channelName:call.channelName,user:call.user});
+                // Alert.alert(
+                //     JSON.stringify(remoteMessage.data.call),
+                //     JSON.stringify(remoteMessage.data.type),
+                // );
+            }
+            else if (remoteMessage.data.type === 'CancelCall') {
+                let call=remoteMessage.data.call
+                navigation.navigate('CallScreen',{channelName:call.channelName,user:call.user});
+                // Alert.alert(
+                //     JSON.stringify(remoteMessage.data.call),
+                //     JSON.stringify(remoteMessage.data.type),
+                // );
             }
         });
         console.log(unsubscribe);

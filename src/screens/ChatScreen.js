@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { GiftedChat, Bubble, InputToolbar, Time } from 'react-native-gifted-chat'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, SafeAreaView, Keyboard, TouchableWithoutFeedback } from "react-native";
 import Header from "../components/header/Header";
 import AudioCallScreen from './../audioCall/App'
@@ -23,9 +23,22 @@ const ChatScreen = ({ navigation, route }) => {
     console.log(fcmtoken);
     const [messages, setMessages] = useState([])
     const [isCalling, setIsCalling] = useState(false)
+    const [currentUser, setCurrent] = useState(null)
+
 
     let type = ''
-    const notification = async (fcmToken, title, body, type) => {
+    const notification = async (fcmToken, title, body, type, callDetails) => {
+        let data
+        if (type === "IncomingCall") {
+            data = {
+                "type": type,
+                "call": callDetails
+            }
+        } else {
+            data = {
+                "type": type,
+            }
+        }
         fetch('https://fcm.googleapis.com/fcm/send', {
             method: 'POST',
             headers: {
@@ -38,9 +51,7 @@ const ChatScreen = ({ navigation, route }) => {
                     "title": title,
                     "body": body,
                 },
-                "data": {
-                    "type": type,
-                },
+                "data": data,
                 "mutable_content": false,
                 "sound": "Tri-tone"
             }),
@@ -48,7 +59,13 @@ const ChatScreen = ({ navigation, route }) => {
             console.warn('sended');
         })
     }
-    useEffect(() => {
+    useEffect(async () => {
+        let user = await AsyncStorage.getItem('user', null)
+        if (user != null) {
+            console.log(user)
+            let json = JSON.parse(user)
+            setCurrent(json)
+        }
         const messageRef = firestore()
             .collection('Connection')
             .doc(connection)
@@ -92,9 +109,10 @@ const ChatScreen = ({ navigation, route }) => {
         return (
             <AudioCallScreen
                 otherUser={OtherUser}
-                onCancel={()=>{
+                onCancel={() => {
                     setIsCalling(false)
                 }}
+                navigation={navigation}
             />
         )
     }
@@ -107,6 +125,11 @@ const ChatScreen = ({ navigation, route }) => {
                         onPress={() => navigation.goBack()}
                         icon="phone"
                         onPressVideo={() => {
+                            let callDetails = {
+                                channelName: "mychan",
+                                user: currentUser
+                            }
+                            notification(fcmtoken, "Incoming Call from " + currentUser?.firstname, "Audio call", "IncomingCall",callDetails)
                             setIsCalling(true)
                         }}
                     />
