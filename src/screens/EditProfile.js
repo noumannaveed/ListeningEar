@@ -73,6 +73,7 @@ export default class EditProfile extends Component {
             .then((doc) => {
                 if (doc.exists) {
                     const data = doc.data();
+                    console.log(data)
                     this.setState({
                         image: data.image,
                         firstName: data.firstname,
