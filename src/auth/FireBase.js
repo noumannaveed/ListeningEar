@@ -3,11 +3,11 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
 import storage from '@react-native-firebase/storage';
-import NetInfo from "@react-native-community/netinfo";
 
 export const signout = async () => {
     let value = await AsyncStorage.getItem('uid', null);
     let parse = JSON.parse(value);
+    await AsyncStorage.clear();
     console.log('value=', parse.user.uid);
     firestore()
         .collection('Users')
@@ -22,7 +22,6 @@ export const signout = async () => {
         auth()
             .signOut()
             .then(async () => {
-                await AsyncStorage.clear();
                 console.log('User signed out!');
                 resolve({ status: true })
             })
