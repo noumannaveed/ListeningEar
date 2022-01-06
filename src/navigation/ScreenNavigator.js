@@ -21,16 +21,13 @@ import CallScreen from '../audioCall/App';
 const Stack = createStackNavigator();
 
 import auth from '@react-native-firebase/auth'
+import NoConnectionScreen from '../screens/NoConnectionScreen';
+import ForgotPassword from '../screens/ForgotPassword';
 
 
 
 
 export const ScreenNavigator = () => {
-    useEffect( async () => {
-        await auth().signInAnonymously();
-    }, [])
-
-
     return (
         <NavigationContainer>
             <Stack.Navigator>
@@ -104,7 +101,16 @@ export const ScreenNavigator = () => {
                     component={CallScreen}
                     options={{ headerShown: false }}
                 />
-               
+                <Stack.Screen
+                    name="NoConnectionScreen"
+                    component={NoConnectionScreen}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ForgotPassword"
+                    component={ForgotPassword}
+                    options={{ headerShown: false }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );

@@ -104,6 +104,7 @@ const Notification = ({ navigation }) => {
                     if (isCheck === false) {
                         if ("interest" in data) {
                             if (data.interest.value === interest.value && data.fcmtoken != token && data.fcmtoken != 'null') {
+                                console.log('interest=', data.fcmtoken);
                                 notification(data.fcmtoken, receiveData, uid, connectionId);
                                 count++;
                                 firestore()

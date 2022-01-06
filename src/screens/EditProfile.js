@@ -71,15 +71,12 @@ export default class EditProfile extends Component {
             .get()
             .then((doc) => {
                 if (doc.exists) {
-                    // console.log('pvalue=', doc);
                     const data = doc.data();
-                    // console.log('data=', data.image);
                     this.setState({
                         image: data.image,
                         firstName: data.firstname,
                         lastName: data.lastname,
                     });
-                    // console.log('image=', data.image);
                 }
             });
         this.setState({ loading: false });
@@ -248,3 +245,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: w('3%'),
     },
 });
+
+
+// service cloud.firestore {
+//     match /databases/{database}/documents {
+//       match /{document=**} {
+//         allow read, write: if
+//             request.time < timestamp.date(2021, 12, 24);
+//       }
+//     }
+//   }

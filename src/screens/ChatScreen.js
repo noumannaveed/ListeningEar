@@ -84,7 +84,6 @@ const ChatScreen = ({ navigation, route }) => {
                 avatar: image,
             },
         }
-        console.log('mymsg=', mymsg);
         setMessages(previousMessages => GiftedChat.append(previousMessages, mymsg))
         sendMessage(connection, mymsg)
         notification(fcmtoken, name, mymsg.text, type = 'new-message')
