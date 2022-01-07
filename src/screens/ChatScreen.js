@@ -5,7 +5,7 @@ import { View, SafeAreaView, Keyboard, TouchableWithoutFeedback } from "react-na
 import Header from "../components/header/Header";
 import AudioCallScreen from './../audioCall/App'
 import firestore from '@react-native-firebase/firestore';
-
+import { FirebaseIncomingThread } from './../auth/FireBase'
 import { sendMessage } from '../auth/FireBase';
 
 const ChatScreen = ({ navigation, route }) => {
@@ -15,9 +15,9 @@ const ChatScreen = ({ navigation, route }) => {
     const connection = route.params.connection
     const fcmtoken = route.params.token
     const OtherUser = {
-        name: route.params.userName,
+        firstname: route.params.userName,
         image: route.params.image,
-        is: route.params.userId,
+        id: route.params.userId,
         fcmToken: route.params.token
     }
     console.log(fcmtoken);
@@ -56,8 +56,25 @@ const ChatScreen = ({ navigation, route }) => {
                 "sound": "Tri-tone"
             }),
         }).then(() => {
+            if (type === "IncomingCall") {
+                navigation.navigate("CallScreen", { user: OtherUser, type: "OutGoing" })
+            }
             console.warn('sended');
         })
+    }
+    const createFirebaseIncomingThread = () => {
+
+        FirebaseIncomingThread(userUid, "mychan", currentUser)
+            .then((res) => {
+                let callDetails = {
+                    channelName: "mychan",
+                    user: currentUser
+                }
+                notification(fcmtoken, "Incoming Call from " + currentUser?.firstname, "Audio call", "IncomingCall", callDetails)
+            })
+            .catch(() => {
+
+            })
     }
     useEffect(async () => {
         let user = await AsyncStorage.getItem('user', null)
@@ -88,7 +105,7 @@ const ChatScreen = ({ navigation, route }) => {
             })
             setMessages(allmsg)
         })
-    }, [])
+    }, [navigation])
 
     const onSend = useCallback(async (messageArray) => {
         const msg = messageArray[0]
@@ -105,17 +122,22 @@ const ChatScreen = ({ navigation, route }) => {
         sendMessage(connection, mymsg)
         notification(fcmtoken, name, mymsg.text, type = 'new-message')
     }, [])
-    if (isCalling) {
-        return (
-            <AudioCallScreen
-                otherUser={OtherUser}
-                onCancel={() => {
-                    setIsCalling(false)
-                }}
-                navigation={navigation}
-            />
-        )
-    }
+    // if (isCalling) {
+    //     return (
+    //         <AudioCallScreen
+    //             otherUser={OtherUser}
+    //             onCancel={() => {
+    //                 setIsCalling(false)
+    //                 notification(fcmtoken, "Incoming Call Canceled from " + currentUser?.firstname, "Audio call", "CancelCall")
+
+    //             }}
+    //             navigation={navigation}
+    //             // onCancel={()=>{
+    //             //     notification(fcmtoken, "Incoming Call Canceled from " + currentUser?.firstname, "Audio call", "CancelCall",callDetails)
+    //             // }}
+    //         />
+    //     )
+    // }
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <SafeAreaView style={{ flex: 1 }}>
@@ -124,13 +146,22 @@ const ChatScreen = ({ navigation, route }) => {
                         title={name}
                         onPress={() => navigation.goBack()}
                         icon="phone"
-                        onPressVideo={() => {
-                            let callDetails = {
-                                channelName: "mychan",
-                                user: currentUser
-                            }
-                            notification(fcmtoken, "Incoming Call from " + currentUser?.firstname, "Audio call", "IncomingCall",callDetails)
-                            setIsCalling(true)
+                        onPressVideo={async () => {
+                            // let user = await AsyncStorage.getItem('user', null)
+                            // if (user != null) {
+                            //     console.log(user)
+                            //     let json = JSON.parse(user)
+                            //     setCurrent(json)
+                            // }
+                            // console.log(currentUser);
+                            navigation.navigate("CallScreen", { user: OtherUser, type: "OutGoing", CUser: currentUser })
+                            // let callDetails = {
+                            //     channelName: "mychan",
+                            //     user: currentUser
+                            // }
+                            // createFirebaseIncomingThread()
+                            // notification(fcmtoken, "Incoming Call from " + currentUser?.firstname, "Audio call", "IncomingCall", callDetails)
+                            // setIsCalling(true)
                         }}
                     />
                     <GiftedChat

@@ -41,24 +41,29 @@ export const login = async (email, password, setIsLoading) => {
             .signInWithEmailAndPassword(email, password)
             .then(async (user) => {
 
-                try {firestore()
-                    .collection('Users')
-                    .doc(user.user.uid)
-                    .get()
-                    .then(async(us)=>{
-                        let user=us.data()
-                        if(us){
-                            await AsyncStorage.setItem(
-                                'user',
-                                JSON.stringify(user)
-                            );
-                        }
-                    })
+                try {
+                    firestore()
+                        .collection('Users')
+                        .doc(user.user.uid)
+                        .get()
+                        .then(async (us) => {
+                            let user = us.data()
+                            user = {
+                                ...user,
+                                id: us.id
+                            }
+                            if (us) {
+                                await AsyncStorage.setItem(
+                                    'user',
+                                    JSON.stringify(user)
+                                );
+                            }
+                        })
                     await AsyncStorage.setItem(
                         'uid',
                         JSON.stringify(user)
                     );
-                    
+
                 } catch (error) {
                     // Error saving data
                 }
@@ -166,5 +171,58 @@ export const sendMessage = (connectionId, message) => {
             .doc(connectionId)
             .update({ lastMessage: message })
         resolve({ status: true });
+    })
+};
+export const FirebaseIncomingThread = (Ouid, channelName, CurrentUser) => {
+    return new Promise((resolve) => {
+        firestore()
+            .collection('Users')
+            .doc(Ouid)
+            .set({
+                callThread: {
+                    caller: CurrentUser,
+                    channelName: channelName,
+                    status: "calling"
+                }
+            }, { merge: true }).then(() => {
+                resolve({ status: true })
+            }).catch((err) => {
+                console.log(err)
+                reject({ status: false })
+            })
+    })
+};
+export const FirebaseJoinThread = (Ouid) => {
+    return new Promise((resolve) => {
+        firestore()
+            .collection('Users')
+            .doc(Ouid)
+            .set({
+                callThread: {
+                    status: "Join"
+                }
+            }, { merge: true }).then(() => {
+                resolve({ status: true })
+            }).catch((err) => {
+                console.log(err)
+                reject({ status: false })
+            })
+    })
+};
+export const FirebaseEndThread = (Ouid, channelName, CurrentUser) => {
+    return new Promise((resolve) => {
+        firestore()
+            .collection('Users')
+            .doc(Ouid)
+            .set({
+                callThread: {
+                    status: "End"
+                }
+            }, { merge: true }).then(() => {
+                resolve({ status: true })
+            }).catch((err) => {
+                console.log(err)
+                reject({ status: false })
+            })
     })
 };
