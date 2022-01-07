@@ -26,6 +26,7 @@ export default class EditProfile extends Component {
             image: '',
             firstName: '',
             lastName: '',
+            email: '',
             check: false,
             url: '',
             userData: '',
@@ -77,6 +78,7 @@ export default class EditProfile extends Component {
                         image: data.image,
                         firstName: data.firstname,
                         lastName: data.lastname,
+                        email: data.email,
                     });
                 }
             });
@@ -149,6 +151,7 @@ export default class EditProfile extends Component {
                                 <Ionicons name="md-camera" size={22} color="#dbd5d5" style={{ top: h('0.3%') }} />
                             </TouchableOpacity>
                         </TouchableOpacity>
+                        <Input placeholder='Email' value={this.state.email} />
                         <Input placeholder='First Name' value={this.state.firstName} onChangeText={(firstName) => this.setState({ firstName })} />
                         <Input placeholder='Last Name' value={this.state.lastName} onChangeText={(lastName) => this.setState({ lastName })} />
                         <View style={styles.pick}>
