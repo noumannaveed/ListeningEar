@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   SafeAreaView,
   View,
@@ -8,20 +8,12 @@ import {
   TouchableOpacity,
   ImageBackground
 } from 'react-native';
-import firestore from '@react-native-firebase/firestore';
 import { useInitializeAgora, useRequestAudioHook } from './hooks';
-import { FirebaseIncomingThread } from './../auth/FireBase'
-import InCallManager from 'react-native-incall-manager';
 import Button from './Button';
 import styles from './styles';
 import { Images } from "../assets/Images";
-const App = ({ route, navigation }) => {
-  const [type, setType] = useState(route.params.type)
-  const [otherUser, setOtherUser] = useState(route.params.user)
-  const [User, setUser] = useState(route.params.CUser)
-  const [timer, settimer] = useState(0)
-
-
+import InCallManager from 'react-native-incall-manager';
+const App = (props) => {
   useRequestAudioHook();
   const {
     channelName,
@@ -34,94 +26,8 @@ const App = ({ route, navigation }) => {
     leaveChannel,
     toggleIsMute,
     toggleIsSpeakerEnable,
-    OtherUserjoinSucceed,
     destroyAgoraEngine
   } = useInitializeAgora();
-  const notification = async (fcmToken, title, body, type, callDetails) => {
-    let data
-    if (type === "IncomingCall") {
-      data = {
-        "type": type,
-        "call": callDetails
-      }
-    } else {
-      data = {
-        "type": type,
-      }
-    }
-    fetch('https://fcm.googleapis.com/fcm/send', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "key=AAAArc-UobE:APA91bEuxAzyQBJfkst1uSClNiWmre1tW5DOePJXMNFuXR7mu5a-8kl9eaMyk2tVLMGB3505YrQZN4634EdnQdW3rligTtQMRp30TsUVgwLh6VJJK-HvaMEXVLqZnNbGOT1ekitoNEPn"
-      },
-      body: JSON.stringify({
-        "to": fcmToken,
-        "notification": {
-          "title": title,
-          "body": body,
-        },
-        "data": data,
-        "mutable_content": false,
-        "sound": "Tri-tone"
-      }),
-    }).then(() => {
-      listnerFirebase()
-      console.warn('sended');
-    })
-  }
-  const createFirebaseIncomingThread = () => {
-
-    FirebaseIncomingThread(otherUser.id, "mychan", User)
-      .then((res) => {
-        let callDetails = {
-          channelName: "mychan",
-          user: User
-        }
-        notification(otherUser.fcmToken, "Incoming Call from " + User?.firstname, "Audio call", "IncomingCall", callDetails)
-        joinChannel()
-        InCallManager.start({ media: 'audio', ringback: '_BUNDLE_' })
-        timeer()
-      })
-      .catch(() => {
-
-      })
-  }
-  const timeer=()=>{
-    setInterval(
-      () => { settimer(timer + 1) },
-      1000
-    );
-  }
-  const listnerFirebase = () => {
-    // console.log(otherUser.is)
-    firestore()
-      .collection('Users')
-      .doc(otherUser.id)
-      .onSnapshot((res) => {
-        console.log(res.data()?.callThread?.status)
-        let data = res.data()?.callThread
-        if (data.status === "End") {
-          leaveChannel()
-          navigation.goBack()
-        }
-      })
-  }
-  useEffect(() => {
-    if (OtherUserjoinSucceed) {
-
-    } else {
-      
-      destroyAgoraEngine().then(()=>{
-        leaveChannel()
-        navigation.goBack()
-      })
-      
-    }
-    if (peerIds.length > 1) {
-      InCallManager.stopRingback();
-    }
-  }, [OtherUserjoinSucceed, peerIds])
 
   return (
     <SafeAreaView
@@ -129,7 +35,7 @@ const App = ({ route, navigation }) => {
     >
       <ImageBackground
         style={styles.mainView}
-        source={{ uri: otherUser?.image }}
+        source={{ uri: props.otherUser?.image }}
       >
         <View
           style={{
@@ -141,7 +47,7 @@ const App = ({ route, navigation }) => {
             style={styles.imageView}
           >
             <Image
-              source={{ uri: otherUser?.image }}
+              source={{ uri: props.otherUser?.image }}
               style={{
                 height: 150,
                 width: 150,
@@ -152,173 +58,144 @@ const App = ({ route, navigation }) => {
           </View>
           <Text
             style={styles.title}
-          >{otherUser?.firstname}</Text>
-          {peerIds.length > 1 ?
-            <>
-              <Text
-                style={[styles.title, { marginTop: '30%' }]}
-              >Call Started</Text>
-              {/* <Text
-                style={[styles.title, { marginTop: '30%' }]}
-              >{timer}</Text> */}
-            </>
-            :
-            <Text
-              style={[styles.title, { marginTop: '30%' }]}
-            >{!joinSucceed ? "Call" : "OutGoing Call ..."}</Text>
-          }
-          {joinSucceed ?
-            <View
-              style={{
-                position: "absolute",
-                bottom: 0,
-                flexDirection: "row",
-                justifyContent: 'space-between',
-                width: '95%',
-                alignSelf: "center"
-              }}
-            >
-              <View
-                style={[styles.floatLeft, { alignSelf: "center" }]}
-              >
-                <TouchableOpacity
-                  style={{
-                    height: 70,
-                    width: 70,
-                    borderRadius: 70 / 2,
-                    backgroundColor: "white",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    alignSelf: "center"
-                  }}
-                  onPress={() => {
+          >{props.otherUser?.name}</Text>
+          <Text
+            style={[styles.title, { marginTop: '30%' }]}
+          >Calling ...</Text>
+          {/* <View style={styles.channelInputContainer}>
+          <Text>Enter Channel Name:</Text>
 
-                    toggleIsMute()
-                  }}
-                >
-                  <Image
-                    source={isMute ? Images.mic_off : Images.mic}
-                    style={{
-                      height: 40,
-                      width: 40,
-                      resizeMode: "contain"
-                    }}
-                  ></Image>
-                </TouchableOpacity>
-              </View>
-              {/* <View
-          style={styles.floatRight}
-        >
-          <Button onPress={toggleIsMute} title={isMute ? 'UnMute' : 'Mute'} />
-        </View> */}
-              <View
-                style={[styles.floatLeft, { alignSelf: "center" }]}
-              >
-                <TouchableOpacity
-                  style={{
-                    height: 70,
-                    width: 70,
-                    borderRadius: 70 / 2,
-                    backgroundColor: "red",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    alignSelf: "center"
-                  }}
-                  onPress={() => {
-                    // destroyAgoraEngine()
-                    leaveChannel()
-                    navigation.goBack()
-                    // props.onCancel()
-                  }}
-                >
-                  <Image
-                    source={Images.phone}
-                    style={{
-                      height: 40,
-                      width: 40,
-                      resizeMode: "contain"
-                    }}
-                  ></Image>
-                </TouchableOpacity>
-              </View>
-              <View
-                style={[styles.floatLeft, { alignSelf: "center" }]}
-              >
-                <TouchableOpacity
-                  style={{
-                    height: 70,
-                    width: 70,
-                    borderRadius: 70 / 2,
-                    backgroundColor: "white",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    alignSelf: "center"
-                  }}
-                  onPress={() => {
-                    // joinChannel()
-                    toggleIsSpeakerEnable()
-                  }}
-                >
-                  <Image
-                    source={isSpeakerEnable ? Images.volume : Images.mute}
-                    style={{
-                      height: 40,
-                      width: 40,
-                      resizeMode: "contain"
-                    }}
-                  ></Image>
-                </TouchableOpacity>
-              </View>
-              {/* <View
-          style={styles.floatLeft}
-        >
-          <Button
-            onPress={toggleIsSpeakerEnable}
-            title={isSpeakerEnable ? 'Disable Speaker' : 'Enable Speaker'}
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setChannelName(text)}
+            placeholder={'Channel Name'}
+            value={channelName}
           />
         </View> */}
-            </View>
-            :
+
+          {/* <View style={styles.joinLeaveButtonContainer}>
+          <Button
+            onPress={joinSucceed ? leaveChannel : joinChannel}
+            title={`${joinSucceed ? 'Leave' : 'Join'} channel`}
+          />
+        </View> */}
+          <View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              flexDirection: "row",
+              justifyContent: 'space-between',
+              width: '95%',
+              alignSelf: "center"
+            }}
+          >
             <View
-              style={{
-                position: "absolute",
-                bottom: 0,
-                flexDirection: "row",
-                justifyContent: 'center',
-                width: '95%',
-                alignSelf: "center",
-                alignItems: "center"
-              }}
+              style={[styles.floatLeft, { alignSelf: "center" }]}
             >
-              <View
-                style={[styles.floatLeft, { alignSelf: "center" }]}
+              <TouchableOpacity
+                style={{
+                  height: 70,
+                  width: 70,
+                  borderRadius: 70 / 2,
+                  backgroundColor: "white",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  alignSelf: "center"
+                }}
+                onPress={() => {
+
+                  toggleIsMute()
+                }}
               >
-                <TouchableOpacity
+                <Image
+                  source={isMute ? Images.mic_off : Images.mic}
                   style={{
-                    height: 70,
-                    width: 70,
-                    borderRadius: 70 / 2,
-                    backgroundColor: "green",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    alignSelf: "center"
+                    height: 40,
+                    width: 40,
+                    resizeMode: "contain"
                   }}
-                  onPress={() => {
-                    createFirebaseIncomingThread()
-                  }}
-                >
-                  <Image
-                    source={Images.phone}
-                    style={{
-                      height: 40,
-                      width: 40,
-                      resizeMode: "contain"
-                    }}
-                  ></Image>
-                </TouchableOpacity>
-              </View>
+                ></Image>
+              </TouchableOpacity>
             </View>
-          }
+            {/* <View
+            style={styles.floatRight}
+          >
+            <Button onPress={toggleIsMute} title={isMute ? 'UnMute' : 'Mute'} />
+          </View> */}
+            <View
+              style={[styles.floatLeft, { alignSelf: "center" }]}
+            >
+              <TouchableOpacity
+                style={{
+                  height: 70,
+                  width: 70,
+                  borderRadius: 70 / 2,
+                  backgroundColor: "red",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  alignSelf: "center"
+                }}
+                onPress={() => {
+                  // destroyAgoraEngine()
+                  leaveChannel()
+                  props.onCancel()
+                }}
+              >
+                <Image
+                  source={Images.phone}
+                  style={{
+                    height: 40,
+                    width: 40,
+                    resizeMode: "contain"
+                  }}
+                ></Image>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={[styles.floatLeft, { alignSelf: "center" }]}
+            >
+              <TouchableOpacity
+                style={{
+                  height: 70,
+                  width: 70,
+                  borderRadius: 70 / 2,
+                  backgroundColor: "white",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  alignSelf: "center"
+                }}
+                onPress={() => {
+                  toggleIsSpeakerEnable()
+                }}
+              >
+                <Image
+                  source={isSpeakerEnable ? Images.volume : Images.mute}
+                  style={{
+                    height: 40,
+                    width: 40,
+                    resizeMode: "contain"
+                  }}
+                ></Image>
+              </TouchableOpacity>
+            </View>
+            {/* <View
+            style={styles.floatLeft}
+          >
+            <Button
+              onPress={toggleIsSpeakerEnable}
+              title={isSpeakerEnable ? 'Disable Speaker' : 'Enable Speaker'}
+            />
+          </View> */}
+          </View>
+          {/* <View style={styles.usersListContainer}>
+          {peerIds.map((peerId) => {
+            return (
+              <View key={peerId}>
+                <Text>{`Joined User ${peerId}`}</Text>
+              </View>
+            );
+          })}
+        </View> */}
         </View>
       </ImageBackground>
     </SafeAreaView>

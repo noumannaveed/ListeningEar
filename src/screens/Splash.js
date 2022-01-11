@@ -56,20 +56,20 @@ const Splash = ({ navigation }) => {
                 );
             }
             else if (remoteMessage.data.type === 'IncomingCall') {
-                let call=JSON.parse(remoteMessage.data.call)
-                console.log("notiuserrrrrr=>",call.user);
-                navigation.navigate('IncomingCall',{channelName:call.channelName,user:call.user,type:"Incoming"});
+                let call=remoteMessage.data.call
+                navigation.navigate('CallScreen',{channelName:call.channelName,user:call.user});
                 // Alert.alert(
                 //     JSON.stringify(remoteMessage.data.call),
                 //     JSON.stringify(remoteMessage.data.type),
                 // );
             }
             else if (remoteMessage.data.type === 'CancelCall') {
-                Alert.alert(
-                    JSON.stringify(remoteMessage.data),
-                    JSON.stringify(remoteMessage.data),
-                );
-                navigation.popToTop()
+                let call=remoteMessage.data.call
+                navigation.navigate('CallScreen',{channelName:call.channelName,user:call.user});
+                // Alert.alert(
+                //     JSON.stringify(remoteMessage.data.call),
+                //     JSON.stringify(remoteMessage.data.type),
+                // );
             }
         });
         console.log(unsubscribe);
