@@ -46,7 +46,7 @@ export default class PreviousListener extends Component {
             .doc(parse.user.uid)
             .get()
             .then(data => {
-                for (var i = 0; i < data.data().connection.length; i++) {
+                for (var i = 0; i < data.data()?.connection?.length; i++) {
                     let connectionid = data.data().connection[i].connectionid
                     firestore()
                         .collection('Connection')
@@ -89,7 +89,7 @@ export default class PreviousListener extends Component {
                                                 }
                                             });
                                     })
-                            } else if (parse.user.uid === document.data().receiverid) {
+                            } else if (parse.user.uid === document.data()?.receiverid) {
                                 firestore()
                                     .collection('Users')
                                     .doc(document.data().senderid)

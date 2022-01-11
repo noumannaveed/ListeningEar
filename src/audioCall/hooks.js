@@ -18,11 +18,12 @@ export const useRequestAudioHook = () => {
 export const useInitializeAgora = () => {
   // Replace yourAppId with the App ID of your Agora project.
   const appId = '07b511f22225447d8bbdef565abeaa49';
-  const token =
-    '00607b511f22225447d8bbdef565abeaa49IAA30VAyBAuZI3OinfSJeq2wkI1LNEsTOvPccplBmLPkX1Xr0UgAAAAAEABGkIsgdqbGYQEAAQB1psZh';
+  const token ='00607b511f22225447d8bbdef565abeaa49IAAm9qKZcIVZwvNXX0cd2lRFcqH9tCPbENpX7gMPyL0NcFXr0UgAAAAAEADKVPAlZCnZYQEAAQBjKdlh';
 
   const [channelName, setChannelName] = useState('mychan');
   const [joinSucceed, setJoinSucceed] = useState(false);
+  const [OtherUserjoinSucceed, setOtherUserjoinSucceed] = useState(true);
+
   const [peerIds, setPeerIds] = useState([]);
   const [isMute, setIsMute] = useState(false);
   const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
@@ -30,7 +31,7 @@ export const useInitializeAgora = () => {
 
   const initAgora = useCallback(async () => {
     rtcEngine.current = await RtcEngine.create(appId);
-    InCallManager.start({media: 'audio', ringback: '_BUNDLE_'})
+    // InCallManager.start({media: 'audio', ringback: '_BUNDLE_'})
    
     await rtcEngine.current?.enableAudio();
     await rtcEngine.current?.muteLocalAudioStream(false);
@@ -38,9 +39,10 @@ export const useInitializeAgora = () => {
 
     rtcEngine.current?.addListener('UserJoined', (uid, elapsed) => {
       console.log('UserJoined', uid, elapsed);
-      InCallManager.stopRingback();
+      // InCallManager.stopRingback();
       setPeerIds((peerIdsLocal) => {
         if (peerIdsLocal.indexOf(uid) === -1) {
+          setOtherUserjoinSucceed(true)
           return [...peerIdsLocal, uid];
         }
 
@@ -52,6 +54,7 @@ export const useInitializeAgora = () => {
       console.log('UserOffline', uid, reason);
 
       setPeerIds((peerIdsLocal) => {
+        setOtherUserjoinSucceed(false)
         return peerIdsLocal.filter((id) => id !== uid);
       });
     });
@@ -75,13 +78,14 @@ export const useInitializeAgora = () => {
   }, []);
 
   const joinChannel = useCallback(async () => {
+    console.log("====?>",token, channelName, null, 0)
     await rtcEngine.current?.joinChannel(token, channelName, null, 0);
   }, [channelName]);
 
   const leaveChannel = useCallback(async () => {
     InCallManager.stopRingback();
     await rtcEngine.current?.leaveChannel();
-    
+    await destroyAgoraEngine()
     setPeerIds([]);
     setJoinSucceed(false);
   }, []);
@@ -119,6 +123,7 @@ export const useInitializeAgora = () => {
     leaveChannel,
     toggleIsMute,
     toggleIsSpeakerEnable,
-    destroyAgoraEngine
+    destroyAgoraEngine,
+    OtherUserjoinSucceed
   };
 };

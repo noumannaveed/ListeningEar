@@ -1,0 +1,15 @@
+IOS Setup: 
+ 1. brew install node
+2.  brew install watchman
+3. Install Xcode
+4. Install Command lines tools
+5. Install simulators
+6. sudo gem install cocoapods
+7. npx react-native <command>.
+
+Please run commands on terminal and install required things
+
+ANDROID SETUP:
+1. https://reactnative.dev/docs/environment-setup (Please follow this link to install the android studio with required things, make sure to follow guide for react-native cli only)
+2. Setup the environments variables 
+3. Install any simulator from the android studio
