@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "746511966641",
-    "project_id": "listeningear-12068",
-    "storage_bucket": "listeningear-12068.appspot.com"
+    "project_number": "564226792154",
+    "project_id": "listeningear-b5555",
+    "storage_bucket": "listeningear-b5555.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:746511966641:android:4a0d743a2a559073e6dd90",
+        "mobilesdk_app_id": "1:564226792154:android:e5b38c612bc6efce02e3e3",
         "android_client_info": {
           "package_name": "com.listeningear"
         }
       },
       "oauth_client": [
         {
-          "client_id": "746511966641-gm71k3i89aegmipsul5hes32d878hh99.apps.googleusercontent.com",
+          "client_id": "564226792154-br0dt13eqrh9utgjfi59c3bpacs2cthp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDNDyCUFilPan-xMjhfbubsOGOpFnP2QM0"
+          "current_key": "AIzaSyB5PVpCd_AZTZ9RMzpC-Jw7RAlS4Scy2UY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "746511966641-gm71k3i89aegmipsul5hes32d878hh99.apps.googleusercontent.com",
+              "client_id": "564226792154-br0dt13eqrh9utgjfi59c3bpacs2cthp.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

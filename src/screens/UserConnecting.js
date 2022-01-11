@@ -18,6 +18,8 @@ const UserConnecting = ({ navigation, route }) => {
     const image = route.params.image;
     const senderUid = route.params.senderUid;
     const connectionId = route.params.connectionid;
+    const user = route.params.user[0].firstname;
+    console.log('user=', user);
     let respond = '';
     let senderFcmToken = '';
     let id = '';
@@ -29,7 +31,7 @@ const UserConnecting = ({ navigation, route }) => {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "key=AAAArc-UobE:APA91bEuxAzyQBJfkst1uSClNiWmre1tW5DOePJXMNFuXR7mu5a-8kl9eaMyk2tVLMGB3505YrQZN4634EdnQdW3rligTtQMRp30TsUVgwLh6VJJK-HvaMEXVLqZnNbGOT1ekitoNEPn"
+                "Authorization": "key=AAAAg16Jmto:APA91bH2DBbAekBeKvcpbqH8zC0g0xb3AM6_JdS8TPG2mhRAc6xUJW5lO-O_7pNDkce6f2qEwOEBNoSbHNkhVicKRBx22A6XP-tYjSsj37D2DfJ8RG1pG6SpioucqDPc6NOQrX9vFRbh"
             },
             body: JSON.stringify({
                 "to": fcmToken,
@@ -133,7 +135,7 @@ const UserConnecting = ({ navigation, route }) => {
         <SafeAreaView>
             <View>
                 <Header title='Waiting Room' onPress={() => navigation.goBack()} />
-                <Text style={styles.text1}>Someone would like to speak to you</Text>
+                <Text style={styles.text1}>{user} would like to speak to you</Text>
                 <ImageBackground style={styles.black} source={Images.wifi} resizeMode="contain">
                     <Image
                         style={styles.Ellipse}

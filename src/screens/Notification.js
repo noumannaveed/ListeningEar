@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, SafeAreaView, Alert } from "react-native";
 
 import DropDownPicker from "react-native-custom-dropdown";
 
-import { Switch } from 'react-native-paper';
 import { ActivityIndicator } from "react-native-paper";
 
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
@@ -26,8 +25,6 @@ const Notification = ({ navigation }) => {
         { label: 'Travelling', value: 'travelling' },
         { label: 'Eating', value: 'eating' },
     ])
-    const [isSwitchOn, setIsSwitchOn] = useState(false);
-    const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
     const [notificationLoading, setNotificationLoading] = useState(false);
 
@@ -36,7 +33,7 @@ const Notification = ({ navigation }) => {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "key=AAAArc-UobE:APA91bEuxAzyQBJfkst1uSClNiWmre1tW5DOePJXMNFuXR7mu5a-8kl9eaMyk2tVLMGB3505YrQZN4634EdnQdW3rligTtQMRp30TsUVgwLh6VJJK-HvaMEXVLqZnNbGOT1ekitoNEPn"
+                "Authorization": "key=AAAAg16Jmto:APA91bH2DBbAekBeKvcpbqH8zC0g0xb3AM6_JdS8TPG2mhRAc6xUJW5lO-O_7pNDkce6f2qEwOEBNoSbHNkhVicKRBx22A6XP-tYjSsj37D2DfJ8RG1pG6SpioucqDPc6NOQrX9vFRbh"
             },
             body: JSON.stringify({
                 "to": fcmToken,
@@ -103,7 +100,7 @@ const Notification = ({ navigation }) => {
                     }
                     if (isCheck === false) {
                         if ("interest" in data) {
-                            if (data.interest.value === interest.value && data.fcmtoken != token && data.fcmtoken != 'null') {
+                            if (data.interest.value === interest.value && data.fcmtoken != token && data.fcmtoken != 'null' && data.enable === 'true') {
                                 console.log('interest=', data.fcmtoken);
                                 notification(data.fcmtoken, receiveData, uid, connectionId);
                                 count++;
@@ -160,13 +157,6 @@ const Notification = ({ navigation }) => {
                         }}
                     />
                 </View>
-                <Switch
-                    value={isSwitchOn}
-                    onValueChange={onToggleSwitch}
-                    color='#FFC69B'
-                    style={styles.switch}
-                />
-                <Text style={styles.text1}>Enable for Notification</Text>
                 <View>
                     {notificationLoading ? (
                         <ActivityIndicator color='#FFC69B' animating={notificationLoading} />
@@ -220,17 +210,6 @@ const styles = StyleSheet.create({
         borderColor: '#8B8B8B',
         backgroundColor: '#f5f5f5',
         paddingHorizontal: w('3%'),
-    },
-    switch: {
-        alignSelf: 'center',
-        marginVertical: h('1%')
-    },
-    text1: {
-        textAlign: 'center',
-        fontFamily: 'Roboto-Bold',
-        color: '#008AB6',
-        marginVertical: h('1%'),
-        fontSize: 18,
     },
 });
 

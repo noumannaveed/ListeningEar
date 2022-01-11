@@ -49,7 +49,7 @@ const Splash = ({ navigation }) => {
             else if (remoteMessage.data.type === 'request-rejected') {
                 navigation.navigate('PreviousListener');
             }
-            else if (remoteMessage.data.type === 'new-message') {
+            else if (remoteMessage.data.type != 'new-message') {
                 Alert.alert(
                     JSON.stringify(remoteMessage.notification.title),
                     JSON.stringify(remoteMessage.notification.body),

@@ -6,6 +6,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 import ImagePicker from 'react-native-image-crop-picker';
 import DropDownPicker from "react-native-custom-dropdown";
+import { ActivityIndicator } from "react-native-paper";
+
 
 import { Images } from "../assets/Images";
 import Header from "../components/header/Header";
@@ -25,6 +27,7 @@ const SignUp = ({ navigation }) => {
     const [check, setCheck] = useState(false);
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [items, setItems] = useState([
         { label: 'Entertainment', value: 'entertainment' },
         { label: 'Sports', value: 'sports' },
@@ -69,7 +72,7 @@ const SignUp = ({ navigation }) => {
     }
     const signUp = async () => {
         if (validate_field()) {
-            signup(email, password, firstName, lastName, image, interest, check)
+            signup(email, password, firstName, lastName, image, interest, check, setIsLoading)
                 .then((user) => {
                     console.log('user=', user);
                     navigation.replace('SignIn');
@@ -143,7 +146,14 @@ const SignUp = ({ navigation }) => {
                             }
                             secureTextEntry={isSecureEntry}
                         />
-                        <Button title='Create Your Profile' onPress={signUp} />
+                        <View>
+                            {isLoading ? (
+                                <ActivityIndicator color='#FFC69B' animating={setIsLoading} />
+                            ) : (
+                                <Button title='Create Your Profile' onPress={signUp} />
+                            )
+                            }
+                        </View>
                         <Text style={styles.text}>OR</Text>
                         <TouchableOpacity onPress={() => navigation.navigate('ProfileQuestion')}>
                             <Text style={styles.text1}>Create Profile with phone number</Text>

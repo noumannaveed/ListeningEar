@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, FlatList, SafeAreaView, Dimensions } from "react-native";
+import { View, StyleSheet, FlatList, SafeAreaView, Dimensions, Alert } from "react-native";
 
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -51,8 +51,7 @@ export default class PreviousListener extends Component {
                     firestore()
                         .collection('Connection')
                         .doc(data.data().connection[i].connectionid)
-                        .get()
-                        .then(document => {
+                        .onSnapshot(document => {
                             if (parse.user.uid === document.data().senderid) {
                                 firestore()
                                     .collection('Users')
@@ -132,10 +131,53 @@ export default class PreviousListener extends Component {
                 }
             })
     }
-    async componentDidMount() {
+    componentDidMount() {
         this.setState({ loading: true });
-        await this.getUser();
+        const unsubscribe = this.props.navigation.addListener('focus', () => {
+            // The screen is focused
+            // Call any action
+            this.getUser();
+            alert('alert')
+        });
+        firestore()
+            .collection('Connection')
+            .onSnapshot(sub => {
+                this.getUser();
+            })
         this.setState({ loading: false });
+    }
+    deleteChat(item) {
+        console.log(item.connection);
+        firestore()
+            .collection('Connection')
+            .doc(item.connection)
+            .collection('Messages')
+            .get()
+            .then((querySnapshot) => {
+                Promise.all(querySnapshot.docs.map((d) => d.ref.delete()));
+                firestore()
+                    .collection('Connection')
+                    .doc(item.connection)
+                    .update({
+                        lastMessage: firestore.FieldValue.delete()
+                    });
+                this.getUser();
+            });
+    }
+    onLongPress(item) {
+        Alert.alert(
+            "Alert",
+            "Are you sure to delete?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: () => this.deleteChat(item) }
+            ]
+        );
+
     }
     renderItem = ({ item }) => (
         <Listen
@@ -144,6 +186,7 @@ export default class PreviousListener extends Component {
             message={item.message}
             time={item.time}
             onPress={() => this.props.navigation.navigate('ChatScreen', { userName: item.firstname, image: item.image, userId: item.uid, parse: item.parse, connection: item.connection, token: item.fcmtoken })}
+            onLongPress={() => this.onLongPress(item)}
         />
     );
     render() {

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Image, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, Alert } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, Text } from "react-native";
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -15,6 +15,7 @@ import Header from "../components/header/Header";
 import Input from "../components/input/Input";
 import Button from "../components/buttons/Button";
 
+import { Switch } from 'react-native-paper';
 
 import { ActivityIndicator } from "react-native-paper";
 
@@ -38,8 +39,11 @@ export default class EditProfile extends Component {
             { label: 'Travelling', value: 'travelling' },
             { label: 'Eating', value: 'eating' },],
             interest: '',
+            userInterest: '',
+            isSwitchOn: '',
         };
     }
+    onToggleSwitch = () => this.setState({ isSwitchOn: !isSwitchOn });
     goToPickImage = () => {
         ImagePicker.openPicker({
             width: 300,
@@ -79,28 +83,22 @@ export default class EditProfile extends Component {
                         firstName: data.firstname,
                         lastName: data.lastname,
                         email: data.email,
+                        value: data.interest.label,
+                        isSwitchOn: data.enable,
                     });
+                    console.log(this.state.value);
                 }
             });
         this.setState({ loading: false });
     }
-    async componentDidMount() {
-        await this.getUser();
+    componentDidMount() {
+        this.getUser();
     }
     update = async () => {
         let value = await AsyncStorage.getItem('uid');
         let parse = JSON.parse(value);
-        // console.log('check=', this.state.check);
         this.setState({ loading: true });
         if (this.state.check) {
-            var desertRef = storage.child(this.state.image);
-
-            // Delete the file
-            desertRef.delete().then(function () {
-                // File deleted successfully
-            }).catch(function (error) {
-                // Uh-oh, an error occurred!
-            });
             try {
                 const uploadUri = this.state.image;
                 let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
@@ -115,7 +113,6 @@ export default class EditProfile extends Component {
         } else if (this.state.check === false) {
             this.setState({ url: this.state.image })
         }
-        // console.log('value=', parse.user.uid);
         firestore()
             .collection('Users')
             .doc(parse.user.uid)
@@ -124,14 +121,16 @@ export default class EditProfile extends Component {
                 firstname: this.state.firstName,
                 lastname: this.state.lastName,
                 interest: this.state.interest,
+                enable: this.state.isSwitchOn,
             })
             .then(() => {
-                Alert.alert('Successfully Updated!')
+                alert('Successfully Updated!')
                 console.log('User updated!');
                 this.setState({ loading: false });
             });
     }
     render() {
+        const { isSwitchOn } = this.state;
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ flex: 1 }}>
@@ -160,6 +159,7 @@ export default class EditProfile extends Component {
                                 placeholderStyle={{ color: '#8B8B8B' }}
                                 open={this.state.open}
                                 value={this.state.value}
+                                // defaultValue={this.state.value}
                                 items={this.state.items}
                                 setOpen={(open) => this.setState({ open })}
                                 setValue={(value) => this.setState({ value })}
@@ -178,6 +178,14 @@ export default class EditProfile extends Component {
                                 }}
                             />
                         </View>
+                        <Switch
+                            value={this.state.isSwitchOn}
+                            onValueChange={() =>
+                                { this.setState({ isSwitchOn: !isSwitchOn }); }}
+                            color='#FFC69B'
+                            style={styles.switch}
+                        />
+                        <Text style={styles.text1}>Enable for Notification</Text>
                         <View>
                             {this.state.loading ? (
                                 <ActivityIndicator color='#FFC69B' animating={this.state.loading} />
@@ -239,7 +247,7 @@ const styles = StyleSheet.create({
     pick: {
         marginHorizontal: w('10%'),
         marginVertical: h('1%'),
-        height: h('20%')
+        // height: h('20%')
     },
     picker: {
         borderTopLeftRadius: 50, borderTopRightRadius: 50,
@@ -247,6 +255,17 @@ const styles = StyleSheet.create({
         borderColor: '#8B8B8B',
         backgroundColor: '#f5f5f5',
         paddingHorizontal: w('3%'),
+    },
+    switch: {
+        alignSelf: 'center',
+        marginVertical: h('1%')
+    },
+    text2: {
+        textAlign: 'center',
+        fontFamily: 'Roboto-Bold',
+        color: '#008AB6',
+        marginVertical: h('1%'),
+        fontSize: 18,
     },
 });
 

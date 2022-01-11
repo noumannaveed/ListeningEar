@@ -5,23 +5,23 @@ import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-nativ
 
 
 const { height, width } = Dimensions.get('screen');
-const Listen = ({ name, source, onPress, message, time }) => {
+const Listen = ({ name, source, onPress, message, time, onLongPress }) => {
     return (
         <View style={styles.Container}>
-            <TouchableOpacity onPress={onPress}>
-            <View style={styles.main}>
-                <View>
-                    <Text style={styles.text}>{name}</Text>
-                    <View style={styles.dis}>
-                        <Text styles={styles.text1}>{message}</Text>
-                        <Text styles={styles.text1}>{time}</Text>
+            <TouchableOpacity onPress={onPress} onLongPress={onLongPress}>
+                <View style={styles.main}>
+                    <View>
+                        <Text style={styles.text}>{name}</Text>
+                        <View style={styles.dis}>
+                            <Text styles={styles.text1}>{message}</Text>
+                            <Text styles={styles.text1}>{time}</Text>
+                        </View>
                     </View>
+                    <Image
+                        source={{ uri: source }}
+                        style={styles.image}
+                    />
                 </View>
-                <Image
-                    source={{uri:source}}
-                    style={styles.image}
-                />
-            </View>
             </TouchableOpacity>
         </View>
     );

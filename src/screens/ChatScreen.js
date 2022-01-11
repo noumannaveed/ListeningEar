@@ -6,6 +6,8 @@ import Header from "../components/header/Header";
 import AudioCallScreen from './../audioCall/App'
 import firestore from '@react-native-firebase/firestore';
 
+import Clipboard from '@react-native-clipboard/clipboard';
+
 import { sendMessage } from '../auth/FireBase';
 
 const ChatScreen = ({ navigation, route }) => {
@@ -43,7 +45,7 @@ const ChatScreen = ({ navigation, route }) => {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "key=AAAArc-UobE:APA91bEuxAzyQBJfkst1uSClNiWmre1tW5DOePJXMNFuXR7mu5a-8kl9eaMyk2tVLMGB3505YrQZN4634EdnQdW3rligTtQMRp30TsUVgwLh6VJJK-HvaMEXVLqZnNbGOT1ekitoNEPn"
+                "Authorization": "key=AAAAg16Jmto:APA91bH2DBbAekBeKvcpbqH8zC0g0xb3AM6_JdS8TPG2mhRAc6xUJW5lO-O_7pNDkce6f2qEwOEBNoSbHNkhVicKRBx22A6XP-tYjSsj37D2DfJ8RG1pG6SpioucqDPc6NOQrX9vFRbh"
             },
             body: JSON.stringify({
                 "to": fcmToken,
@@ -105,6 +107,45 @@ const ChatScreen = ({ navigation, route }) => {
         sendMessage(connection, mymsg)
         notification(fcmtoken, name, mymsg.text, type = 'new-message')
     }, [])
+    const onDelete = (messageIdToDelete) => {
+        firestore()
+            .collection('Connection')
+            .doc(connection)
+            .collection('Messages')
+            .get()
+            .then(querySnapshot => {
+                querySnapshot.forEach(documentSnapshot => {
+                    if (documentSnapshot.data()._id === messageIdToDelete) {
+                        console.log(documentSnapshot.id);
+                        firestore()
+                            .collection('Connection')
+                            .doc(connection)
+                            .collection('Messages')
+                            .doc(documentSnapshot.id)
+                            .delete()
+                    }
+                })
+            })
+    }
+
+    const onLongPress = (context, message) => {
+        console.log(context, message);
+        const options = ['copy', 'Unsend Message', 'Cancel'];
+        const cancelButtonIndex = options.length - 1;
+        context.actionSheet().showActionSheetWithOptions({
+            options,
+            cancelButtonIndex
+        }, (buttonIndex) => {
+            switch (buttonIndex) {
+                case 0:
+                    Clipboard.setString(message.text);
+                    break;
+                case 1:
+                    onDelete(message._id) //pass the function here
+                    break;
+            }
+        });
+    }
     if (isCalling) {
         return (
             <AudioCallScreen
@@ -129,11 +170,12 @@ const ChatScreen = ({ navigation, route }) => {
                                 channelName: "mychan",
                                 user: currentUser
                             }
-                            notification(fcmtoken, "Incoming Call from " + currentUser?.firstname, "Audio call", "IncomingCall",callDetails)
+                            notification(fcmtoken, "Incoming Call from " + currentUser?.firstname, "Audio call", "IncomingCall", callDetails)
                             setIsCalling(true)
                         }}
                     />
                     <GiftedChat
+                        onLongPress={onLongPress}
                         messages={messages}
                         onSend={messages => onSend(messages)}
                         user={{

@@ -9,19 +9,19 @@ export const signout = async () => {
     let parse = JSON.parse(value);
     await AsyncStorage.clear();
     console.log('value=', parse.user.uid);
-    firestore()
-        .collection('Users')
-        .doc(parse.user.uid)
-        .update({
-            fcmtoken: 'null',
-        })
-        .then(() => {
-            console.log('token deleted');
-        });
     return new Promise((resolve, reject) => {
         auth()
             .signOut()
             .then(async () => {
+                firestore()
+                    .collection('Users')
+                    .doc(parse.user.uid)
+                    .update({
+                        fcmtoken: 'null',
+                    })
+                    .then(() => {
+                        console.log('token deleted');
+                    });
                 console.log('User signed out!');
                 resolve({ status: true })
             })
@@ -39,25 +39,25 @@ export const login = async (email, password, setIsLoading) => {
         auth()
             .signInWithEmailAndPassword(email, password)
             .then(async (user) => {
-
-                try {firestore()
-                    .collection('Users')
-                    .doc(user.user.uid)
-                    .get()
-                    .then(async(us)=>{
-                        let user=us.data()
-                        if(us){
-                            await AsyncStorage.setItem(
-                                'user',
-                                JSON.stringify(user)
-                            );
-                        }
-                    })
+                try {
+                    firestore()
+                        .collection('Users')
+                        .doc(user.user.uid)
+                        .get()
+                        .then(async (us) => {
+                            let user = us.data()
+                            if (us) {
+                                await AsyncStorage.setItem(
+                                    'user',
+                                    JSON.stringify(user)
+                                );
+                            }
+                        })
                     await AsyncStorage.setItem(
                         'uid',
                         JSON.stringify(user)
                     );
-                    
+
                 } catch (error) {
                     // Error saving data
                 }
@@ -98,7 +98,8 @@ export const login = async (email, password, setIsLoading) => {
             });
     })
 };
-export const signup = async (email, password, firstName, lastName, image, interest, check) => {
+export const signup = async (email, password, firstName, lastName, image, interest, check, setIsLoading) => {
+    setIsLoading(true);
     let url = '';
     if (check) {
         try {
@@ -136,16 +137,19 @@ export const signup = async (email, password, firstName, lastName, image, intere
                         image: url,
                         interest: interest,
                         fcmtoken: fcmToken,
+                        enable: 'true'
                     })
                     .then(() => {
                         console.log('User added!');
                     });
                 console.log('uid=', user.user.uid);
+                setIsLoading(false);
                 resolve({ status: true, user: user });
             })
             .catch(error => {
                 console.log(error);
-                if (error.code === '[storage/unauthorized]') {
+                if (error.code === 'auth/email-already-in-use') {
+                    setIsLoading(false);
                     console.log('That email address is already in use!');
                     reject({ status: false, error: "That email address is already in use!" });
                 }
