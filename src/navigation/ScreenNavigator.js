@@ -15,8 +15,6 @@ import ChatScreen from '../screens/ChatScreen';
 import SignIn from '../screens/SignIn';
 import EditProfile from '../screens/EditProfile';
 import CallScreen from '../audioCall/App';
-import IncomingCall from '../audioCall/IncomingCall';
-
 
 
 
@@ -101,11 +99,6 @@ export const ScreenNavigator = () => {
                 <Stack.Screen
                     name="CallScreen"
                     component={CallScreen}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                    name="IncomingCall"
-                    component={IncomingCall}
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen

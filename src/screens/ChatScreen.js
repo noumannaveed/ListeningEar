@@ -17,9 +17,9 @@ const ChatScreen = ({ navigation, route }) => {
     const connection = route.params.connection
     const fcmtoken = route.params.token
     const OtherUser = {
-        firstname: route.params.userName,
+        name: route.params.userName,
         image: route.params.image,
-        id: route.params.userId,
+        is: route.params.userId,
         fcmToken: route.params.token
     }
     console.log(fcmtoken);
@@ -58,25 +58,8 @@ const ChatScreen = ({ navigation, route }) => {
                 "sound": "Tri-tone"
             }),
         }).then(() => {
-            if (type === "IncomingCall") {
-                navigation.navigate("CallScreen", { user: OtherUser, type: "OutGoing" })
-            }
             console.warn('sended');
         })
-    }
-    const createFirebaseIncomingThread = () => {
-
-        FirebaseIncomingThread(userUid, "mychan", currentUser)
-            .then((res) => {
-                let callDetails = {
-                    channelName: "mychan",
-                    user: currentUser
-                }
-                notification(fcmtoken, "Incoming Call from " + currentUser?.firstname, "Audio call", "IncomingCall", callDetails)
-            })
-            .catch(() => {
-
-            })
     }
     useEffect(async () => {
         let user = await AsyncStorage.getItem('user', null)
@@ -107,7 +90,7 @@ const ChatScreen = ({ navigation, route }) => {
             })
             setMessages(allmsg)
         })
-    }, [navigation])
+    }, [])
 
     const onSend = useCallback(async (messageArray) => {
         const msg = messageArray[0]
