@@ -2,11 +2,9 @@ import React from "react";
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Entypo from 'react-native-vector-icons/Entypo';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 const { height, width } = Dimensions.get('screen');
 
-const Header = ({ backIcon, backText, title, onPress, icon, onPressVideo, icon1, onPressProfile }) => {
+const EditHeader = ({ backIcon, backText, title, onPress }) => {
     return (
         <View>
             <View style={styles.container}>
@@ -14,22 +12,9 @@ const Header = ({ backIcon, backText, title, onPress, icon, onPressVideo, icon1,
                     <Ionicons name={backIcon} size={16} color="#948e8e" />
                     <Text style={styles.text}>{backText}</Text>
                 </TouchableOpacity>
-                <View></View>
                 <Text style={styles.text1}>{title}</Text>
-                <TouchableOpacity
-                    onPress={() => {
-                        onPressVideo()
-                    }}
-                >
-                    <Entypo name={icon} size={24} color="black" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                        onPressProfile()
-                    }}
-                >
-                    <AntDesign name={icon1} size={24} color="black" />
-                </TouchableOpacity>
+                <View></View>
+                <View></View>
             </View>
             <View style={styles.seprator}></View>
         </View>
@@ -41,7 +26,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        // margin: '4%',
         margin: height * 0.02,
     },
     back: {
@@ -58,6 +42,7 @@ const styles = StyleSheet.create({
         color: 'black',
         fontFamily: 'Roboto-Bold',
         fontSize: 18,
+        textAlign: 'center'
     },
     seprator: {
         borderWidth: 0.2,
@@ -65,4 +50,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Header;
+export default EditHeader;

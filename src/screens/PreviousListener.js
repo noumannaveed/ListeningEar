@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, FlatList, SafeAreaView, Dimensions, Alert } from "react-native";
-
+import { View, StyleSheet, FlatList, SafeAreaView, Dimensions, Alert, Button } from "react-native";
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -21,10 +20,10 @@ export default class PreviousListener extends Component {
         this.state = {
             userList: [],
             loading: false,
+            user: [],
         };
     }
     removeDuplicate() {
-        console.log("++++++++");
         const newArrayList = [];
         this.state.userList.forEach(obj => {
             if (!newArrayList.some(o => o.uid === obj.uid)) {
@@ -33,11 +32,18 @@ export default class PreviousListener extends Component {
         });
         this.setState({ userList: newArrayList });
     }
+    sortListById() {
+        this.state.userList.sort(function (obj1, obj2) {
+            return obj2.date > obj1.date;
+        });
+        this.setState(previousState => (
+            { userList: previousState.userList }
+        ))
+    }
     getUser = async () => {
         let temp = [];
         let value = await AsyncStorage.getItem('uid');
         let parse = JSON.parse(value);
-        let messages = [];
         let last = ''
         let second = ''
         this.setState({ userList: [] })
@@ -46,13 +52,13 @@ export default class PreviousListener extends Component {
             .doc(parse.user.uid)
             .get()
             .then(data => {
-                for (var i = 0; i < data.data().connection.length; i++) {
+                for (var i = 0; i < data.data()?.connection?.length; i++) {
                     let connectionid = data.data().connection[i].connectionid
                     firestore()
                         .collection('Connection')
                         .doc(data.data().connection[i].connectionid)
                         .onSnapshot(document => {
-                            if (parse.user.uid === document.data().senderid) {
+                            if (parse.user.uid === document.data()?.senderid) {
                                 firestore()
                                     .collection('Users')
                                     .doc(document.data().receiverid)
@@ -66,7 +72,6 @@ export default class PreviousListener extends Component {
                                                     if (sub.data().lastMessage.createdAt !== null) {
                                                         last = moment(sub.data().lastMessage.createdAt.toDate(), "YYYYMMDD").fromNow()
                                                         second = sub.data().lastMessage.createdAt.seconds
-                                                        console.log('temp=', sub.data().lastMessage.createdAt.seconds);
                                                     }
                                                     temp.push({
                                                         ...doc.data(),
@@ -78,6 +83,7 @@ export default class PreviousListener extends Component {
                                                     });
                                                     this.setState({ userList: temp });
                                                     this.removeDuplicate()
+                                                    this.sortListById()
                                                 } else {
                                                     temp.push({
                                                         ...doc.data(),
@@ -89,7 +95,7 @@ export default class PreviousListener extends Component {
                                                 }
                                             });
                                     })
-                            } else if (parse.user.uid === document.data().receiverid) {
+                            } else if (parse.user.uid === document.data()?.receiverid) {
                                 firestore()
                                     .collection('Users')
                                     .doc(document.data().senderid)
@@ -103,7 +109,6 @@ export default class PreviousListener extends Component {
                                                     if (sub.data().lastMessage.createdAt !== null) {
                                                         last = moment(sub.data().lastMessage.createdAt.toDate(), "YYYYMMDD").fromNow()
                                                         second = sub.data().lastMessage.createdAt.seconds
-                                                        console.log('temp=', sub.data().lastMessage.createdAt.seconds);
                                                     }
                                                     temp.push({
                                                         ...doc.data(),
@@ -115,6 +120,7 @@ export default class PreviousListener extends Component {
                                                     });
                                                     this.setState({ userList: temp });
                                                     this.removeDuplicate()
+                                                    this.sortListById()
                                                 } else {
                                                     temp.push({
                                                         ...doc.data(),
@@ -134,10 +140,7 @@ export default class PreviousListener extends Component {
     componentDidMount() {
         this.setState({ loading: true });
         const unsubscribe = this.props.navigation.addListener('focus', () => {
-            // The screen is focused
-            // Call any action
             this.getUser();
-            alert('alert')
         });
         firestore()
             .collection('Connection')
@@ -177,7 +180,6 @@ export default class PreviousListener extends Component {
                 { text: "OK", onPress: () => this.deleteChat(item) }
             ]
         );
-
     }
     renderItem = ({ item }) => (
         <Listen
@@ -193,7 +195,7 @@ export default class PreviousListener extends Component {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ flex: 1 }}>
-                    <Header title='Need a Listening Ear?' onPress={() => this.props.navigation.goBack()} />
+                    <Header backIcon='chevron-back' backText='Back' title='Need a Listening Ear?' onPress={() => this.props.navigation.goBack()} />
                     <View>
                         {this.state.loading ? (
                             <View style={styles.loading}>
@@ -205,9 +207,7 @@ export default class PreviousListener extends Component {
                             </View>
                         ) : (
                             <FlatList
-                                data={this.state.userList.sort(function (a, b) {
-                                    return new Date(b.date) - new Date(a.date);
-                                })}
+                                data={this.state.userList}
                                 renderItem={this.renderItem}
                                 style={{ marginTop: '1%' }}
                             />
@@ -224,6 +224,6 @@ const styles = StyleSheet.create({
     loading: {
         alignItems: 'center',
         justifyContent: "center",
-        marginVertical: height * 0.375
+        marginVertical: height * 0.375,
     }
 });

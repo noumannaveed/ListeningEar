@@ -3,10 +3,9 @@ import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from "react-nati
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 const { height, width } = Dimensions.get('screen');
 
-const Header = ({ backIcon, backText, title, onPress, icon, onPressVideo, icon1, onPressProfile }) => {
+const ChatHeader = ({ backIcon, backText, title, onPress, icon, onPressVideo }) => {
     return (
         <View>
             <View style={styles.container}>
@@ -14,7 +13,6 @@ const Header = ({ backIcon, backText, title, onPress, icon, onPressVideo, icon1,
                     <Ionicons name={backIcon} size={16} color="#948e8e" />
                     <Text style={styles.text}>{backText}</Text>
                 </TouchableOpacity>
-                <View></View>
                 <Text style={styles.text1}>{title}</Text>
                 <TouchableOpacity
                     onPress={() => {
@@ -22,13 +20,6 @@ const Header = ({ backIcon, backText, title, onPress, icon, onPressVideo, icon1,
                     }}
                 >
                     <Entypo name={icon} size={24} color="black" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                        onPressProfile()
-                    }}
-                >
-                    <AntDesign name={icon1} size={24} color="black" />
                 </TouchableOpacity>
             </View>
             <View style={styles.seprator}></View>
@@ -41,7 +32,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        // margin: '4%',
         margin: height * 0.02,
     },
     back: {
@@ -65,4 +55,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Header;
+export default ChatHeader;

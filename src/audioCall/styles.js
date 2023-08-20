@@ -3,12 +3,12 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightgreen'
+    backgroundColor: 'lightgreen',
   },
   mainView: {
     flex: 1,
-    height:'100%',
-    width:'100%'
+    height: '100%',
+    width: '100%',
   },
   imageView: {
     height: 150,
@@ -16,14 +16,14 @@ export default StyleSheet.create({
     backgroundColor: "red",
     borderRadius: 150 / 2,
     alignSelf: "center",
-    marginTop: 20
+    marginTop: 20,
 
   },
-  title:{
-    fontSize:20,
-    alignSelf:"center",
-    marginTop:10,
-    color:"white"
+  title: {
+    fontSize: 20,
+    alignSelf: "center",
+    marginTop: 10,
+    color: "white",
   },
   channelInputContainer: {
     padding: 10,
@@ -35,16 +35,11 @@ export default StyleSheet.create({
     padding: 10,
   },
   floatRight: {
-    // position: 'absolute',
-    // right: 10,
     bottom: 40,
     width: 80,
   },
   floatLeft: {
-    // position: 'absolute',
-    // left: 10,
     bottom: 40,
-    // width: 150,
   },
   input: {
     borderColor: 'gray',

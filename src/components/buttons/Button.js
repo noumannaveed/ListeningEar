@@ -1,11 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet,Dimensions, TouchableOpacity } from "react-native";
 
-import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
-
-
-
-const Button = ({ navigation, title, onPress, style }) => {
+const { height, width } = Dimensions.get('screen');
+const Button = ({ title, onPress, style }) => {
     return (
         <View>
             <TouchableOpacity
@@ -22,21 +19,17 @@ const styles = StyleSheet.create({
     button: {
         alignItems: "center",
         backgroundColor: "#FFC69B",
-        paddingVertical: h('2%'),
-        marginHorizontal: w('17%'),
-        marginVertical: h('1%'),
-        borderRadius: 50
+        paddingVertical: height * 0.02,
+        marginHorizontal: width * 0.17,
+        marginVertical: height * 0.01,
+        borderRadius: width * 0.17/2,
     },
     text: {
         textAlign: 'center',
-        // fontWeight: 'bold',
         fontFamily: 'Roboto-Bold',
-        // fontStyle: 'normal',
-        // fontWeight: 'bold',
         fontSize: 18,
-        color: 'black'
+        color: 'black',
     },
 });
-
 
 export default Button;

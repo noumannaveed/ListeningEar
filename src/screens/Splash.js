@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { View, Text, Image, StyleSheet, SafeAreaView, ImageBackground, Dimensions, Alert } from "react-native";
 
-import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Images } from "../assets/Images";
@@ -28,11 +26,17 @@ const Splash = ({ navigation }) => {
         const unsubscribe = messaging().onMessage(async remoteMessage => {
             if (remoteMessage.data.type === 'new-request') {
                 const user = JSON.parse(remoteMessage.data.user);
+                console.log(remoteMessage.data.user);
                 const image = user[0].image;
                 const senderUid = JSON.parse(remoteMessage.data.uid);
                 const connectionId = JSON.parse(remoteMessage.data.connection);
                 const connectionid = connectionId[0];
-                navigation.navigate('UserConnecting', { image, user, senderUid, connectionid });
+                const story = JSON.parse(remoteMessage.data.story);
+                navigation.replace('UserConnecting', { image, user, senderUid, connectionid, story });
+                Alert.alert(
+                    JSON.stringify(remoteMessage.notification.title),
+                    JSON.stringify(remoteMessage.notification.body),
+                );
             } else if (remoteMessage.data.type === 'request-accepted') {
                 const connection = remoteMessage.data.connectionid;
                 firestore()
@@ -41,35 +45,33 @@ const Splash = ({ navigation }) => {
                     .onSnapshot(doc => {
                         if (doc.exists) {
                             if (doc.data().responded === 'true') {
-                                navigation.navigate('PreviousListener');
+                                navigation.replace('PreviousListener');
                             }
                         }
                     })
+                Alert.alert(
+                    JSON.stringify(remoteMessage.notification.title),
+                    JSON.stringify(remoteMessage.notification.body),
+                );
             }
             else if (remoteMessage.data.type === 'request-rejected') {
-                navigation.navigate('PreviousListener');
-            }
-            else if (remoteMessage.data.type != 'new-message') {
+                navigation.replace('PreviousListener');
                 Alert.alert(
                     JSON.stringify(remoteMessage.notification.title),
                     JSON.stringify(remoteMessage.notification.body),
                 );
             }
             else if (remoteMessage.data.type === 'IncomingCall') {
-                let call=remoteMessage.data.call
-                navigation.navigate('CallScreen',{channelName:call.channelName,user:call.user});
-                // Alert.alert(
-                //     JSON.stringify(remoteMessage.data.call),
-                //     JSON.stringify(remoteMessage.data.type),
-                // );
+                let call = JSON.parse(remoteMessage.data.call)
+                console.log("notiuserrrrrr=>", call.user);
+                navigation.navigate('IncomingCall', { channelName: call.channelName, user: call.user, type: "Incoming" });
             }
             else if (remoteMessage.data.type === 'CancelCall') {
-                let call=remoteMessage.data.call
-                navigation.navigate('CallScreen',{channelName:call.channelName,user:call.user});
-                // Alert.alert(
-                //     JSON.stringify(remoteMessage.data.call),
-                //     JSON.stringify(remoteMessage.data.type),
-                // );
+                Alert.alert(
+                    JSON.stringify(remoteMessage.data),
+                    JSON.stringify(remoteMessage.data),
+                );
+                navigation.popToTop()
             }
         });
         console.log(unsubscribe);
@@ -100,18 +102,18 @@ const Splash = ({ navigation }) => {
 const styles = StyleSheet.create({
     black: {
         backgroundColor: 'black',
-        height: h('70%'),
+        height: height * 0.7,
     },
     logo: {
         alignSelf: 'center',
-        marginVertical: h('10%'),
-        height: h('28%'),
-        width: w('43%'),
+        marginVertical: height * 0.1,
+        height: height * 0.5,
+        width: width * 0.73,
     },
     text: {
         color: 'white',
         position: 'absolute',
-        bottom: ('10%'),
+        bottom: height * 0.1,
         alignSelf: 'center',
         fontSize: 18,
         fontFamily: 'Roboto-Regular',
@@ -119,14 +121,14 @@ const styles = StyleSheet.create({
     wave: {
         height: height * 0.4,
         width: width * 1,
-        bottom: '20%',
+        bottom: height * 0.2,
     },
     loading: {
-        borderBottomWidth: 7,
+        borderBottomWidth: width * 0.02,
         borderColor: '#FFC69B',
         position: 'absolute',
-        bottom: 0,
-        width: w('70%')
+        bottom: height * 0.125,
+        width: width * 0.7,
     },
 });
 

@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import Splash from '../screens/Splash';
 import LogIn from '../screens/LogIn';
 import SignUp from '../screens/SignUp';
-import ProfileQuestion from '../screens/ProfileQuestion';
 import PhoneNumber from '../screens/PhoneNumber';
 import Notification from '../screens/Notification';
 import PreviousListener from '../screens/PreviousListener';
@@ -15,17 +15,11 @@ import ChatScreen from '../screens/ChatScreen';
 import SignIn from '../screens/SignIn';
 import EditProfile from '../screens/EditProfile';
 import CallScreen from '../audioCall/App';
-
-
-
-const Stack = createStackNavigator();
-
-import auth from '@react-native-firebase/auth'
+import IncomingCall from '../audioCall/IncomingCall';
 import NoConnectionScreen from '../screens/NoConnectionScreen';
 import ForgotPassword from '../screens/ForgotPassword';
 
-
-
+const Stack = createStackNavigator();
 
 export const ScreenNavigator = () => {
     return (
@@ -49,11 +43,6 @@ export const ScreenNavigator = () => {
                 <Stack.Screen
                     name="SignUp"
                     component={SignUp}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                    name="ProfileQuestion"
-                    component={ProfileQuestion}
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen
@@ -99,6 +88,11 @@ export const ScreenNavigator = () => {
                 <Stack.Screen
                     name="CallScreen"
                     component={CallScreen}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="IncomingCall"
+                    component={IncomingCall}
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen

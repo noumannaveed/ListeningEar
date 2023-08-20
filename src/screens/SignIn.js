@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, Alert, Platform } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, Dimensions, ScrollView } from "react-native";
 
 import NetInfo from "@react-native-community/netinfo";
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
-import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
-
-import firestore from '@react-native-firebase/firestore';
 
 import { Images } from "../assets/Images";
 import Input from "../components/input/Input";
@@ -26,7 +22,6 @@ const SignIn = ({ navigation }) => {
     const [isSecureEntry, setIsSecureEntry] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [connectStatus, setConnectStatus] = useState('');
-    // var connectStatus = '';
     const validate_field = () => {
         if (email == '') {
             alert("Please enter email");
@@ -42,29 +37,18 @@ const SignIn = ({ navigation }) => {
         NetInfo.addEventListener(state => {
             console.log("Connection type", state.type);
             console.log("Is connected?", state.isConnected);
-            // if (state.isConnected === true) {
-            //     Alert.alert('online')
-            // } else if (state.isConnected === false) {
-            //     Alert.alert('offline')
-            // }
             setConnectStatus(state.isConnected);
         });
     };
 
     useEffect(() => {
         CheckConnectivity();
-        // // var json = JSON.parse(CheckConnectivity())
-        // // setConnectStatus(CheckConnectivity())
-        // connectStatus = CheckConnectivity()
-        // console.log('Check=', connectStatus);
     }, [])
 
-    const logIn = async () => {
+    const logIn = () => {
         if (validate_field()) {
             login(email, password, setIsLoading)
-                .then(async (user) => {
-                    const user1 = await firestore().collection('Users').doc(user.user.user.uid).get();
-                    console.log('user=', user1);
+                .then((user) => {
                     navigation.replace('PhoneNumber');
                 })
                 .catch((error) => {
@@ -76,7 +60,7 @@ const SignIn = ({ navigation }) => {
     return (
         connectStatus ?
             (<SafeAreaView>
-                <View>
+                <View style={{justifyContent: 'center'}}>
                     <ScrollView>
                         <Image
                             source={Images.logo1}
@@ -98,7 +82,7 @@ const SignIn = ({ navigation }) => {
                             secureTextEntry={isSecureEntry}
                         />
                         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-                            <Text style={styles.text1}>Forgot Password</Text>
+                            <Text style={styles.text1}>Forgot Password?</Text>
                         </TouchableOpacity>
                         <View>
                             {isLoading ? (
@@ -119,26 +103,24 @@ const SignIn = ({ navigation }) => {
 const styles = StyleSheet.create({
     logo: {
         alignSelf: 'center',
-        marginVertical: h('10%'),
-        height: h('20%'),
-        width: w('40%'),
+        // marginVertical: h('5%'),
+        height: height * 0.35,
+        width: width * 0.7,
     },
     text: {
         textAlign: 'center',
         fontWeight: 'bold',
         color: 'black',
-        marginVertical: h('1%'),
-        fontSize: 18
+        marginVertical: height * 0.01,
+        fontSize: 18,
     },
     text1: {
-        // textAlign: 'center',
         fontFamily: 'Roboto-Bold',
         color: '#008AB6',
-        marginVertical: h('2%'),
-        marginHorizontal: w('10%'),
-        fontSize: 15
+        marginVertical: height * 0.02,
+        marginHorizontal: width * 0.1,
+        fontSize: 15,
     },
 });
-
 
 export default SignIn;

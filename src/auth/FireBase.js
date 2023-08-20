@@ -9,19 +9,19 @@ export const signout = async () => {
     let parse = JSON.parse(value);
     await AsyncStorage.clear();
     console.log('value=', parse.user.uid);
+    firestore()
+        .collection('Users')
+        .doc(parse.user.uid)
+        .update({
+            fcmtoken: 'null',
+        })
+        .then(async() => {
+            console.log('token deleted');
+        });
     return new Promise((resolve, reject) => {
         auth()
             .signOut()
             .then(async () => {
-                firestore()
-                    .collection('Users')
-                    .doc(parse.user.uid)
-                    .update({
-                        fcmtoken: 'null',
-                    })
-                    .then(() => {
-                        console.log('token deleted');
-                    });
                 console.log('User signed out!');
                 resolve({ status: true })
             })
@@ -30,8 +30,8 @@ export const signout = async () => {
             })
     })
 };
-export const login = async (email, password, setIsLoading) => {
 
+export const login = async (email, password, setIsLoading) => {
     const fcmToken = await messaging().getToken();
     console.log('Token=', fcmToken);
     setIsLoading(true);
@@ -46,6 +46,10 @@ export const login = async (email, password, setIsLoading) => {
                         .get()
                         .then(async (us) => {
                             let user = us.data()
+                            user = {
+                                ...user,
+                                id: us.id
+                            }
                             if (us) {
                                 await AsyncStorage.setItem(
                                     'user',
@@ -98,8 +102,8 @@ export const login = async (email, password, setIsLoading) => {
             });
     })
 };
-export const signup = async (email, password, firstName, lastName, image, interest, check, setIsLoading) => {
-    setIsLoading(true);
+
+export const signup = async (email, password, firstName, lastName, image, check, gender, race, occupation, age) => {
     let url = '';
     if (check) {
         try {
@@ -107,13 +111,11 @@ export const signup = async (email, password, firstName, lastName, image, intere
             let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
             await storage().ref(filename).putFile(uploadUri);
             url = await storage().ref(filename).getDownloadURL();
-            // console.log('upload=', uploadUri);
         } catch (error) {
             console.log('error=', error);
         }
     }
     const fcmToken = await messaging().getToken();
-    // console.log('url=', url);
     return new Promise((resolve, reject) => {
         auth()
             .createUserWithEmailAndPassword(email, password)
@@ -135,27 +137,29 @@ export const signup = async (email, password, firstName, lastName, image, intere
                         lastname: lastName,
                         email: email,
                         image: url,
-                        interest: interest,
                         fcmtoken: fcmToken,
-                        enable: 'true'
+                        gender: gender,
+                        race: race,
+                        occupation: occupation,
+                        age: age,
+                        enable: true,
                     })
                     .then(() => {
                         console.log('User added!');
                     });
                 console.log('uid=', user.user.uid);
-                setIsLoading(false);
                 resolve({ status: true, user: user });
             })
             .catch(error => {
                 console.log(error);
                 if (error.code === 'auth/email-already-in-use') {
-                    setIsLoading(false);
                     console.log('That email address is already in use!');
                     reject({ status: false, error: "That email address is already in use!" });
                 }
             });
     })
 };
+
 export const sendMessage = (connectionId, message) => {
     return new Promise((resolve) => {
         console.log('message=', message);
@@ -169,5 +173,61 @@ export const sendMessage = (connectionId, message) => {
             .doc(connectionId)
             .update({ lastMessage: message })
         resolve({ status: true });
+    })
+};
+
+export const FirebaseIncomingThread = (Ouid, channelName, CurrentUser) => {
+    return new Promise((resolve) => {
+        firestore()
+            .collection('Users')
+            .doc(Ouid)
+            .set({
+                callThread: {
+                    caller: CurrentUser,
+                    channelName: channelName,
+                    status: "calling"
+                }
+            }, { merge: true }).then(() => {
+                resolve({ status: true })
+            }).catch((err) => {
+                console.log(err)
+                reject({ status: false })
+            })
+    })
+};
+
+export const FirebaseJoinThread = (Ouid) => {
+    return new Promise((resolve) => {
+        firestore()
+            .collection('Users')
+            .doc(Ouid)
+            .set({
+                callThread: {
+                    status: "Join"
+                }
+            }, { merge: true }).then(() => {
+                resolve({ status: true })
+            }).catch((err) => {
+                console.log(err)
+                reject({ status: false })
+            })
+    })
+};
+
+export const FirebaseEndThread = (Ouid, channelName, CurrentUser) => {
+    return new Promise((resolve) => {
+        firestore()
+            .collection('Users')
+            .doc(Ouid)
+            .set({
+                callThread: {
+                    status: "End"
+                }
+            }, { merge: true }).then(() => {
+                resolve({ status: true })
+            }).catch((err) => {
+                console.log(err)
+                reject({ status: false })
+            })
     })
 };

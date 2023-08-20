@@ -1,27 +1,25 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from "react-native";
 
-import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
-
 
 const { height, width } = Dimensions.get('screen');
 const Listen = ({ name, source, onPress, message, time, onLongPress }) => {
     return (
         <View style={styles.Container}>
             <TouchableOpacity onPress={onPress} onLongPress={onLongPress}>
-                <View style={styles.main}>
-                    <View>
-                        <Text style={styles.text}>{name}</Text>
-                        <View style={styles.dis}>
-                            <Text styles={styles.text1}>{message}</Text>
-                            <Text styles={styles.text1}>{time}</Text>
-                        </View>
+            <View style={styles.main}>
+                <View>
+                    <Text style={styles.text}>{name}</Text>
+                    <View style={styles.dis}>
+                        <Text styles={styles.text1}>{message}</Text>
+                        <Text styles={styles.text1}>{time}</Text>
                     </View>
-                    <Image
-                        source={{ uri: source }}
-                        style={styles.image}
-                    />
                 </View>
+                <Image
+                    source={{uri:source}}
+                    style={styles.image}
+                />
+            </View>
             </TouchableOpacity>
         </View>
     );
@@ -29,12 +27,12 @@ const Listen = ({ name, source, onPress, message, time, onLongPress }) => {
 
 const styles = StyleSheet.create({
     Container: {
-        marginHorizontal: w('4.7%'),
-        marginVertical: h('1%'),
+        marginHorizontal: width * 0.047,
+        marginVertical: height * 0.01,
     },
     main: {
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
     text: {
         fontFamily: 'Roboto-Bold',
@@ -44,19 +42,18 @@ const styles = StyleSheet.create({
     dis: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: w('70%'),
-        marginVertical: h('1%')
+        width: width * 0.7,
+        marginVertical: height * 0.01,
     },
     text1: {
         fontSize: 18,
         fontFamily: 'Roboto-Regular',
     },
     image: {
-        // overflow: 'hidden',
         height: height * 0.08,
         width: height * 0.08,
         borderRadius: (height * 0.08) / 2,
-        bottom: 7
+        bottom: 7,
     }
 });
 

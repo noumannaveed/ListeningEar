@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, SafeAreaView, ImageBackground, Dimensions } from "react-native";
 
-import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 import Header from "../components/header/Header";
 
 import { Images } from "../assets/Images";
@@ -11,7 +10,7 @@ const WaitingRoom = ({ navigation }) => {
     return (
         <SafeAreaView>
             <View>
-                <Header title='Waiting Room' onPress={() => navigation.goBack()} />
+                <Header title='Waiting Room' />
                 <Text style={styles.text1}>Your notification is being sent out</Text>
                 <View style={styles.black}>
                     <Image
@@ -36,7 +35,7 @@ const styles = StyleSheet.create({
         color: '#008AB6',
         textAlign: 'center',
         fontSize: 36,
-        margin: '10%',
+        margin: width * 0.1,
         fontFamily: 'Roboto-Regular',
     },
     black: {
@@ -46,17 +45,17 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         overflow: 'hidden',
         justifyContent: 'center',
-        backgroundColor: '#C4C4C4'
+        backgroundColor: '#C4C4C4',
     },
     waiting: {
         alignSelf: 'center',
-        height: h('25%'),
-        width: w('20%')
+        height: height * 0.25,
+        width: width * 0.2,
     },
     text: {
         color: 'white',
         position: 'absolute',
-        bottom: h('17%'),
+        bottom: height * 0.17,
         alignSelf: 'center',
         fontSize: 27,
         fontFamily: 'Roboto-Bold',
@@ -64,7 +63,6 @@ const styles = StyleSheet.create({
     wave: {
         height: height * 0.4,
         width: width * 1,
-        width: w('100%'),
     },
 });
 

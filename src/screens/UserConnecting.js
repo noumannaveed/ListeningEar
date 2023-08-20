@@ -1,8 +1,6 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, SafeAreaView, ImageBackground, Dimensions } from "react-native";
 
-import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import firestore from '@react-native-firebase/firestore';
@@ -19,7 +17,8 @@ const UserConnecting = ({ navigation, route }) => {
     const senderUid = route.params.senderUid;
     const connectionId = route.params.connectionid;
     const user = route.params.user[0].firstname;
-    console.log('user=', user);
+    const story = route.params.story[0];
+    console.log('user=', story);
     let respond = '';
     let senderFcmToken = '';
     let id = '';
@@ -48,8 +47,7 @@ const UserConnecting = ({ navigation, route }) => {
             }),
         }).then(() => {
             console.warn('sended');
-            // console.log('data=', data);
-            navigation.navigate('PreviousListener');
+            navigation.replace('PreviousListener');
         })
     }
     const accept = async () => {
@@ -63,12 +61,12 @@ const UserConnecting = ({ navigation, route }) => {
             .get()
             .then(snapshot => {
                 respond = snapshot.data().responded
-                if (respond === 'false') {
+                if (respond === false) {
                     firestore()
                         .collection('Users')
                         .doc(parse.user.uid)
                         .update({
-                            responded: 'true',
+                            responded: true,
                             connection: firestore.FieldValue.arrayUnion(sender),
                         })
                         .then(() => {
@@ -102,7 +100,8 @@ const UserConnecting = ({ navigation, route }) => {
                                                             otheruser: otherUser,
                                                             receiverid: receiverId,
                                                             senderid: senderUid[0],
-                                                            responded: 'true',
+                                                            responded: true,
+                                                            story: story,
                                                         })
                                                         .then(() => {
                                                             console.log('other user added!');
@@ -111,6 +110,8 @@ const UserConnecting = ({ navigation, route }) => {
                                         })
                                 })
                         });
+                } else if (respond === true) {
+                    alert('Other user already accepts the invitation!')
                 }
             })
     }
@@ -118,18 +119,40 @@ const UserConnecting = ({ navigation, route }) => {
         firestore()
             .collection('Connection')
             .doc(connectionId)
-            .delete()
-            .then(() => {
-                firestore()
-                    .collection('Users')
-                    .doc(senderUid[0])
-                    .get()
-                    .then(documentsnapshot => {
-                        senderFcmToken = documentsnapshot.data().fcmtoken
-                        navigation.navigate('PreviousListener')
-                        notification(senderFcmToken, type = 'request-rejected', title = 'rejected', body = 'No user available', connectionId)
-                    })
+            .get()
+            .then(document => {
+                var count = document.data().noofuser
+                if (count === 1) {
+                    firestore()
+                        .collection('Connection')
+                        .doc(connectionId)
+                        .delete()
+                        .then(() => {
+                            firestore()
+                                .collection('Users')
+                                .doc(senderUid[0])
+                                .get()
+                                .then(documentsnapshot => {
+                                    senderFcmToken = documentsnapshot.data().fcmtoken
+                                    navigation.replace('PreviousListener')
+                                    notification(senderFcmToken, type = 'request-rejected', title = 'rejected', body = 'No user available', connectionId)
+                                })
+                        })
+                } else if (count > 1) {
+                    count--
+                    firestore()
+                        .collection('Connection')
+                        .doc(connectionId)
+                        .update({
+                            noofuser: count
+                        })
+                        .then(() => {
+                            navigation.replace('PreviousListener')
+                            console.log('rejected by one user!');
+                        })
+                }
             })
+
     }
     return (
         <SafeAreaView>
@@ -143,6 +166,7 @@ const UserConnecting = ({ navigation, route }) => {
                     />
                 </ImageBackground>
                 <Text style={styles.text2}>Are you available to listen and provide positive feedback?</Text>
+                <Text style={styles.text3}>{story.label}</Text>
                 <ImageBackground
                     source={Images.sound_wave}
                     style={styles.wave}
@@ -163,14 +187,21 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 37,
         fontFamily: 'Roboto-Regular',
-        margin: '5%',
+        // margin: '5%',
+        margin: height * 0.025,
     },
     text2: {
         color: 'black',
         textAlign: 'center',
         fontSize: 27,
         fontFamily: 'Roboto-Regular',
-        marginHorizontal: w('5%'),
+        marginHorizontal: width * 0.05,
+    },
+    text3: {
+        color: 'black',
+        textAlign: 'center',
+        fontSize: 27,
+        fontFamily: 'Roboto-Bold',
     },
     black: {
         height: height * 0.20,
@@ -183,28 +214,25 @@ const styles = StyleSheet.create({
         height: height * 0.15,
         width: height * 0.15,
         borderRadius: (height * 0.15) / 2,
-
-        // borderWidth: 1,
-        // borderColor: 'black'
     },
     wave: {
-        height: height * 0.4,
+        height: height * 0.2,
         width: width * 1,
         overflow: 'hidden',
     },
     buttonView: {
-        bottom: h('14%'),
+        bottom: height * 0.04,
         position: 'absolute',
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-        marginHorizontal: w('19%'),
+        // marginHorizontal: width * 0.19,
     },
     button: {
-        paddingHorizontal: w('10%'),
+        paddingHorizontal: width * 0.1,
     },
     button1: {
         color: 'white',
-        paddingHorizontal: w('10%'),
+        paddingHorizontal: width * 0.1,
     },
 });
 

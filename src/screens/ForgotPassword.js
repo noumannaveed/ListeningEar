@@ -1,18 +1,14 @@
 import React, { useState } from "react";
 
-import { View, Text, Alert } from "react-native";
+import { View, Dimensions, Alert } from "react-native";
 
 import Button from "../components/buttons/Button";
 import Input from "../components/input/Input";
-import Header from "../components/header/Header";
-
+import EditHeader from "../components/header/EditHeader";
 
 import auth from '@react-native-firebase/auth';
 
-import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
-
-
-
+const { height, width } = Dimensions.get('screen');
 const ForgotPassword = ({ navigation }) => {
 
     const [email, setEmail] = useState('');
@@ -24,7 +20,6 @@ const ForgotPassword = ({ navigation }) => {
         return true;
     }
     const reset = async () => {
-        console.log('email=',email);
         if (validate_field()) {
             try {
                 await auth().sendPasswordResetEmail(email);
@@ -39,9 +34,9 @@ const ForgotPassword = ({ navigation }) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <Header title='Forgot Password' onPress={() => navigation.goBack()} />
+            <EditHeader backIcon='chevron-back' backText='Back' title='Forgot Password' onPress={() => navigation.goBack()} />
             <View style={{ flex: 1, justifyContent: 'center' }}>
-                <View style={{ height: h('10%') }}>
+                <View style={{ height: height * 0.1 }}>
                     <Input placeholder='E-mail Address' value={email} onChangeText={(email) => setEmail(email)} />
                 </View>
                 <Button title='Reset Password' onPress={() => reset()} />

@@ -1,7 +1,6 @@
 import React from "react";
-import { View, StyleSheet, TextInput } from "react-native";
-import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
-
+import { View, StyleSheet, Dimensions, TextInput } from "react-native";
+const { height, width } = Dimensions.get('screen');
 const Input = ({ placeholder, onChangeText, value, icon, secureTextEntry }) => {
     return (
         <View style={styles.input}>
@@ -11,7 +10,7 @@ const Input = ({ placeholder, onChangeText, value, icon, secureTextEntry }) => {
                 onChangeText={onChangeText}
                 value={value}
                 secureTextEntry={secureTextEntry}
-                style={{ flex: 1 }}
+                style={{ flex: 1, color: 'black' }}
             />
             <View style={styles.icon}>{icon}</View>
         </View>
@@ -22,18 +21,18 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
         borderColor: "#8B8B8B",
-        borderWidth: 1,
-        paddingHorizontal: w('2%'),
-        marginHorizontal: w('10%'),
-        marginVertical: h('1%'),
-        borderRadius: 50,
+        borderWidth: width * 0.003,
+        paddingHorizontal: width * 0.02,
+        marginHorizontal: width * 0.1,
+        marginVertical: height * 0.01,
+        borderRadius: width * 0.2/2,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: h('7.2%')
+        height: height * 0.072,
     },
     icon: {
-        color: '#8B8B8B'
+        color: '#8B8B8B',
     },
 });
 

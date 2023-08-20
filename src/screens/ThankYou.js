@@ -1,12 +1,11 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, Image, StyleSheet,Dimensions, SafeAreaView } from "react-native";
 
-import { widthPercentageToDP as w, heightPercentageToDP as h } from 'react-native-responsive-screen';
 
 import Header from "../components/header/Header";
 
 import { Images } from "../assets/Images";
-
+const { height, width } = Dimensions.get('screen');
 const ThankYou = ({ navigation }) => {
     return (
         <SafeAreaView>
@@ -29,12 +28,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 25,
         fontFamily: 'Roboto-Bold',
-        marginHorizontal: w('10%')
+        marginHorizontal: width * 0.1,
     },
     sign: {
         alignSelf: 'center',
-        height: h('40%'),
-        width: w('40%')
+        height: height * 0.4,
+        width: width * 0.4,
     },
 });
 

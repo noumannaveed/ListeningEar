@@ -29,7 +29,6 @@ export default function CallScreen({ setScreen, screens, route }, props) {
     setLocalStream();
     setRemoteStream();
     setCachedLocalPC();
-    // cleanup
     setScreen(screens.ROOM);
   }
 
@@ -40,11 +39,9 @@ export default function CallScreen({ setScreen, screens, route }, props) {
   const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {
-    // startLocalStream();
   }, []);
 
   const startLocalStream = async () => {
-    // isFront will determine if the initial camera should face user or environment
     const isFront = true;
     const devices = await mediaDevices.enumerateDevices();
 
@@ -118,13 +115,11 @@ export default function CallScreen({ setScreen, screens, route }, props) {
     localStream.getVideoTracks().forEach(track => track._switchCamera());
   };
 
-  // Mutes the local's outgoing audio
   const toggleMute = () => {
     if (!remoteStream) {
       return;
     }
     localStream.getAudioTracks().forEach(track => {
-      // console.log(track.enabled ? 'muting' : 'unmuting', ' local track', track);
       track.enabled = !track.enabled;
       setIsMuted(!track.enabled);
     });
@@ -170,7 +165,6 @@ export default function CallScreen({ setScreen, screens, route }, props) {
           {remoteStream && <RTCView style={styles.rtc} streamURL={remoteStream && remoteStream.toURL()} />}
         </View>
       </View>
-
     </>
   )
 }

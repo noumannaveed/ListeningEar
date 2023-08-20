@@ -19,7 +19,7 @@ const configuration = {
 };
 
 export default function JoinScreen({ setScreen, screens, route }) {
-  const roomId=route.params.roomId
+  const roomId = route.params.roomId
   function onBackPress() {
     if (cachedLocalPC) {
       cachedLocalPC.removeStream(localStream);
@@ -193,6 +193,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     margin: 5,
-  }
+  },
 });
 
